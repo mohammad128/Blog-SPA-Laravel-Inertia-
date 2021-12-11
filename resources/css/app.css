@@ -1,0 +1,20 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+#nprogress{
+    z-index: 9999999999999999999;
+    position: fixed;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    display: block;
+    background: #fff;
+}
+::-webkit-scrollbar-thumb {
+    background: #2c3e50;
+    border-radius: 5px;
+}
