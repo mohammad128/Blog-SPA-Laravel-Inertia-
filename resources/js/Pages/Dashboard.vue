@@ -10,28 +10,6 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 
-                    <div class="center">
-                        <vs-button
-                            border
-                            :active="active == 0"
-                            @click="active = 0"
-                        >
-                            Active
-                        </vs-button>
-                        <vs-button
-                            border
-                            :active="active == 1"
-                            @click="active = 1"
-                        >
-                            Default
-                        </vs-button>
-                        <vs-button
-                            border
-                            disabled
-                        >
-                            Disabled
-                        </vs-button>
-                    </div>
                 </div>
             </div>
         </div>

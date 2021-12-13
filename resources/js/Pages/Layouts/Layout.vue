@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <slot/>
 
         <div
@@ -27,9 +28,16 @@ export default {
     data() {
         return {
             showPlayer: false,
+            isDashboard: false
         }
     },
     methods: {
+    },
+    mounted() {
+        let url = this.$page.url;
+        if( url.startsWith('/dashboard') )
+            this.isDashboard = true;
+        console.log(this.isDashboard);
     }
 }
 </script>

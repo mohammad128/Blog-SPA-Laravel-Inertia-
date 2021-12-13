@@ -67,13 +67,11 @@
 </template>
 
 <script>
-import Layout from "@/Pages/Layouts/Layout";
 import {Inertia} from '@inertiajs/inertia';
 import Loading from '@/Components/Loading'
 import PreviewPost from "@/Components/PreviewPost";
 
 export default {
-    layout: Layout,
     name: "index",
     components:{
         Loading,

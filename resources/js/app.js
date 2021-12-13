@@ -8,10 +8,10 @@ import Nav from './Partials/Nav';
 import 'boxicons/css/boxicons.min.css';
 import Vuesax from 'vuesax';
 import 'vuesax/dist/vuesax.css';
+import Layout from "@/Pages/Layouts/Layout";
 
 import './helper';
-import { InertiaProgress } from '@inertiajs/progress'
-
+import { InertiaProgress } from '@inertiajs/progress';
 InertiaProgress.init({
     // The delay after which the progress bar will
     // appear during navigation, in milliseconds.
@@ -45,7 +45,15 @@ new Vue({
         h(InertiaApp, {
             props: {
                 initialPage: JSON.parse(app.dataset.page),
-                resolveComponent: (name) => require(`./Pages/${name}`).default,
+                resolveComponent: (name) => {
+                    let page = require(`./Pages/${name}`).default;
+                    // if(!page.layout)
+                    //     page.layout = Layout;
+
+                    page.layout ??= Layout;
+
+                    return page;
+                },
             },
         }),
 }).$mount(app);
