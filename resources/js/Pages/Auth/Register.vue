@@ -25,7 +25,7 @@
                 </vs-button>
             </div>
             <h3 class="text-lg font-extrabold text-gray-700 block sm:hidden text-center mb-5">Register</h3>
-            <form @submit.prevent="submit">
+            <form class="loginForm" @submit.prevent="submit">
                 <div class="center content-inputs grid sm:grid-cols-1 md:grid-cols-2 justify-items-center gap-4">
                     <vs-input v-model="form.name" placeholder="User name"
                               :danger="errors['name']!=null ? true : false  "
@@ -41,15 +41,15 @@
                             @
                         </template>
                     </vs-input>
-                    <vs-input v-model="form.password" placeholder="Password"
-                              :danger="errors['password']!=null ? true : false  "
+                    <vs-input v-model="form.password" placeholder="Password" type="password" id="inputPassword"
+                              :danger="errors['password']!=null ? true : false "
                               :state="errors['password'] ? 'danger' : ''" >
                         <template #icon>
                             <i class='bx bx-key'></i>
                         </template>
                     </vs-input>
-                    <vs-input v-model="form.password_confirmation" placeholder="Confirm Password"
-                              :danger="errors['password_confirmation']!=null ? true : false "
+                    <vs-input v-model="form.password_confirmation" placeholder="Confirm Password" type="password" id="inputPassword2"
+                              :danger="errors['password_confirmation']!=null ? true : false"
                               :state="errors['password_confirmation'] ? 'danger' : ''" >
                         <template #icon>
                             <i class='bx bx-key'></i>
@@ -70,6 +70,23 @@
     </div>
 </template>
 
+<style scoped>
+.loginForm{
+}
+.loginForm .vs-input-parent {
+    background: transparent;
+    border: 0;
+}
+</style>
+<style>
+#vs-input--inputPassword2:focus,
+#vs-input--inputPassword:focus {
+    background: rgba(var(--vs-gray-3), 1);
+    /*padding-left: 15px;*/
+    border-color: rgba(var(--vs-gray-3), 1);
+    box-shadow: none;
+}
+</style>
 <script>
 
     export default {

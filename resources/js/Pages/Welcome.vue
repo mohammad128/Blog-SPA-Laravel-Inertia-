@@ -1,6 +1,5 @@
 <template>
-    <div class="pt-20">
-        <Nav/>
+    <Layout>
         <carousel>
             <img src="https://via.placeholder.com/700x700">
             <img src="https://via.placeholder.com/700x700">
@@ -68,7 +67,7 @@
                 </vs-card-group>
             </div>
         </div>
-    </div>
+    </Layout>
 </template>
 
 <style scoped>
@@ -76,12 +75,9 @@
 
 <script>
 import carousel from 'vue-owl-carousel'
-import Layout from "@/Pages/Layouts/Layout";
-import test from "@/Pages/test";
 
 export default {
-    layout: Layout,
-    components: { carousel,test },
+    components: { carousel },
     props: {
         canLogin: Boolean,
         canRegister: Boolean,

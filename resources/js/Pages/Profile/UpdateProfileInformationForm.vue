@@ -117,6 +117,7 @@
 
             selectNewPhoto() {
                 this.$refs.photo.click();
+
             },
 
             updatePhotoPreview() {

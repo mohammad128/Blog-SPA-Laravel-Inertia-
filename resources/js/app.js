@@ -3,12 +3,16 @@ require('./bootstrap');
 // Import modules...
 import Vue from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue';
+import { Head,Link } from '@inertiajs/inertia-vue';
+
 import PortalVue from 'portal-vue';
 import Nav from './Partials/Nav';
 import 'boxicons/css/boxicons.min.css';
 import Vuesax from 'vuesax';
 import 'vuesax/dist/vuesax.css';
+import RootLayout from "@/Pages/Layouts/RootLayout";
 import Layout from "@/Pages/Layouts/Layout";
+import DashboardLayout from "@/Pages/Layouts/DashboardLayout";
 
 import './helper';
 import { InertiaProgress } from '@inertiajs/progress';
@@ -38,6 +42,13 @@ Vue.use(Vuesax, {
 });
 
 Vue.component('Nav', Nav);
+Vue.component('Head', Head);
+Vue.component('InertiaLink', Link);
+Vue.component('Link', Link);
+Vue.component('Layout', Layout);
+Vue.component('DashboardLayout', DashboardLayout);
+
+
 const app = document.getElementById('app');
 
 new Vue({
@@ -50,7 +61,7 @@ new Vue({
                     // if(!page.layout)
                     //     page.layout = Layout;
 
-                    page.layout ??= Layout;
+                    page.layout ??= RootLayout;
 
                     return page;
                 },

@@ -52,7 +52,7 @@
 
             <form class="loginForm" @submit.prevent="submit">
                 <div class="center content-inputs grid sm:grid-cols-1 md:grid-cols-2 justify-items-center">
-                    <vs-input v-model="form.email" placeholder="User name"
+                    <vs-input v-model="form.email" placeholder="User name" type="email"
                               :danger="errors['email']!=null  ? true : false"
                               :state="errors['email'] ? 'danger' : ''">
                         <template #icon>
@@ -106,7 +106,7 @@
 #inputPassword{
     /*margin-left: -0.7em;*/
 }
-#vs-input--inputPassword:focus {
+.vs-input:focus {
     background: rgba(var(--vs-gray-3), 1);
     /*padding-left: 15px;*/
     border-color: rgba(var(--vs-gray-3), 1);

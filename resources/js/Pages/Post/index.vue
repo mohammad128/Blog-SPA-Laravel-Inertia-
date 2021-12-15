@@ -1,6 +1,10 @@
 <template>
-    <div class="pt-20">
-        <Nav/>
+    <Layout>
+
+        <Head>
+            <title>My App - Posts</title>
+            <meta name="description" head-key="description" content="My App Posts Page">
+        </Head>
 
         <div id="postsContainer" >
 <!--            <div class="grid grid-cols-3 gap-4">-->
@@ -62,7 +66,7 @@
             <PreviewPost :postId="showPostPreviewPostId" v-model="showPostPreview"/>
 
         </div>
-    </div>
+    </Layout>
 
 </template>
 
@@ -75,7 +79,7 @@ export default {
     name: "index",
     components:{
         Loading,
-        PreviewPost
+        PreviewPost,
     },
     props: {
         posts: Object,
