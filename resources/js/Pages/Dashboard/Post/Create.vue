@@ -6,7 +6,7 @@
             <meta name="description" head-key="description" content="Add New Post">
         </Head>
 
-        <CategoryCheckboxGroup :items="categories" v-model="selectedCat"/>
+        <CategoryCheckboxGroup :multiselect="true" :items="categories" v-model="selectedCat"/>
 
     </DashboardLayout>
 </template>

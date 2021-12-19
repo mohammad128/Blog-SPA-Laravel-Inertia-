@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-10 min-h-screen">
+    <div class="pt-10 min-h-screen bg-gray-200 ">
 
         <vs-navbar class="z-10" color="#101827"  fixed text-white square center-collapsed v-model="active">
             <template #left>
@@ -34,51 +34,48 @@
                 </vs-navbar-group>
             </template>
 
-            <template #right>
-                <vs-tooltip interactivity left bottom>
-                    <vs-avatar circle size="30">
-                        <img :src="$page.props.user.profile_photo_url" alt="">
-                    </vs-avatar>
-                    <template #tooltip>
-                        <div class="content-tooltip">
-                            <div class="body">
-                                <div class="text">
-                                    Cosed Tasks
-                                    <span>
-                                89
-                                </span>
-                                </div>
-                                <vs-avatar circle size="80" @click="activeTooltip1=!activeTooltip1">
-                                    <img :src="$page.props.user.profile_photo_url" alt="">
-                                </vs-avatar>
-                                <div class="text">
-                                    Open Tasks
-                                    <span>
-                                8
-                                </span>
-                                </div>
-                            </div>
-                            <footer>
-                                <vs-button circle icon border>
-                                    <i class='bx bxs-share-alt'></i>
-                                </vs-button>
-                                <vs-button circle>
-                                    Message
-                                </vs-button>
-                                <vs-button circle icon border>
-                                    <i class='bx bx-like' ></i>
-                                </vs-button>
-                            </footer>
-                        </div>
+            <vs-tooltip interactivity left bottom>
+                <vs-avatar circle size="40" badge-color="danger" badge-position="top-right">
+                    <img :src="$page.props.user.profile_photo_url" alt="">
+                    <template #badge>
+                        28
                     </template>
-                </vs-tooltip>
+                </vs-avatar>
+                <template #tooltip>
+                    <div class="content-tooltip">
+                        <div class="body">
+                            <div class="text">
+                            </div>
+                            <vs-avatar circle size="80" badge-color="danger" badge-position="top-right">
+                                <img :src="$page.props.user.profile_photo_url" alt="">
+                                <template #badge>
+                                    28
+                                </template>
+                            </vs-avatar>
+                            <div class="text">
+                            </div>
+                        </div>
+                        <footer>
+                            <vs-button circle icon border>
+                                <i class="bx bx-user"></i>
+                            </vs-button>
+                            <vs-button @click="link($event)" method="post" :url="route('logout')"  danger circle>
+                                Logout
+                            </vs-button>
+                            <vs-button circle icon border>
+                                <i class='bx bx-bell' ></i>
+                            </vs-button>
+                        </footer>
+                    </div>
+                </template>
+            </vs-tooltip>
 
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <template #right>
                 <vs-button
-                    danger
-                    color="#FFF"
-                    transparent
+                    danger flat
                     animation-type="scale"
+                    class="font-bold"
+
                     @click="link($event)"
                     :url="route('logout')"
                     method="post" >
@@ -87,7 +84,6 @@
                         <i class='bx bx-log-out' ></i>
                     </template>
                 </vs-button>
-
             </template>
         </vs-navbar>
 
@@ -103,7 +99,7 @@
                             :hover-expand="hover_expand"
                             :reduce="hover_expand"
                             background="#101827"
-                            v-model="active"
+                            v-model="$store.state.dashboard.activeSidebarItem"
                             square
                             textWhite
                             open
@@ -114,53 +110,46 @@
                                     <i class="bx bx-atom"></i>
                                 </vs-avatar>
                             </template>
-                            <vs-sidebar-item id="home">
-                                <template #icon>
-                                    <i class='bx bx-home'></i>
-                                </template>
-                                Home
-                            </vs-sidebar-item>
-                            <vs-sidebar-item id="market">
-                                <template #icon>
-                                    <i class='bx bx-grid-alt'></i>
-                                </template>
-                                Market Overview
-                            </vs-sidebar-item>
-                            <vs-sidebar-item id="Music">
-                                <template #icon>
-                                    <i class='bx bxs-music'></i>
-                                </template>
-                                Music
-                            </vs-sidebar-item>
-                            <vs-sidebar-group>
-                                <template #header>
-                                    <vs-sidebar-item arrow>
-                                        <template #icon>
-                                            <i class='bx bx-group'></i>
-                                        </template>
-                                        Social media
-                                    </vs-sidebar-item>
-                                </template>
 
-                                <vs-sidebar-item id="Instagram">
-                                    <template #icon>
-                                        <i class='bx bxl-instagram'></i>
-                                    </template>
-                                    Instagram
-                                </vs-sidebar-item>
-                                <vs-sidebar-item id="twitter">
-                                    <template #icon>
-                                        <i class='bx bxl-twitter' ></i>
-                                    </template>
-                                    Twitter
-                                </vs-sidebar-item>
-                                <vs-sidebar-item id="Facebook">
-                                    <template #icon>
-                                        <i class='bx bxl-facebook' ></i>
-                                    </template>
-                                    Facebook
-                                </vs-sidebar-item>
-                            </vs-sidebar-group>
+                            <template v-for="item in sidebarItems" >
+                                <template v-if="item.group">
+                                    <vs-sidebar-group v-if="canShowGroup(item.group)">
+                                        <template #header>
+                                            <vs-sidebar-item arrow>
+                                                <template #icon>
+                                                    <i :class='item.icon'></i>
+                                                </template>
+                                                {{ item.title }}
+                                            </vs-sidebar-item>
+                                        </template>
+                                        <template v-for="subItem in item.group">
+                                            <div v-if="can(item.can)" class="w-full" @click="link($event)"
+                                                 :url="subItem.url"
+                                                 method="get" >
+                                                <vs-sidebar-item :id="titleToId(item.title)+'_'+titleToId(subItem.title)" v-if="can(subItem.can)">
+                                                    <template #icon>
+                                                        <i :class='subItem.icon'></i>
+                                                    </template>
+                                                    {{ subItem.title }}
+                                                </vs-sidebar-item>
+                                            </div>
+                                        </template>
+                                    </vs-sidebar-group>
+                                </template>
+                                <template v-else>
+                                    <div v-if="can(item.can)" class="w-full" @click="link($event)"
+                                         :url="item.url"
+                                         method="get" >
+                                        <vs-sidebar-item :id="titleToId(item.title)" >
+                                            <template #icon>
+                                                <i :class='item.icon'></i>
+                                            </template>
+                                            {{ item.title }}
+                                        </vs-sidebar-item>
+                                    </div>
+                                </template>
+                            </template>
+
                             <template #footer>
                                 <vs-row justify="space-between" class="flex justify-between">
                                     <vs-avatar badge-color="danger" dark color="#FFF" badge-position="top-right">
@@ -186,8 +175,11 @@
                         </vs-sidebar>
                     </div>
                 </aside>
-                <main :style="{width: mainContentWidht+'px'}" ref="mainContent" id="mainContent" role="main" class="w-full sm:w-3/3 md:w-9/12 p-4 break-words bg-gray-200">
-                    <slot/>
+                <main :style="{width: mainContentWidht+'px'}" ref="mainContent" id="mainContent" role="main"
+                      class="relative w-full sm:w-3/3 md:w-9/12 p-4 break-words min-h-screen">
+                    <div class="w-full p-2 md:pl-4">
+                        <slot />
+                    </div>
                 </main>
             </div>
         </div>
@@ -259,10 +251,14 @@
     background: #101827;
     border-radius: 15px;
     padding-bottom: 8px;
-    margin-top: -13px;
+    margin-top: -24px;
 }
 </style>
-
+<style>
+body{
+    background: #e4e7eb;
+}
+</style>
 
 <script>
 import DashboardNav from "@/Partials/DashboardNav";
@@ -274,12 +270,151 @@ export default {
     },
     data: () => ({
         hover_expand: false,
-        active: 'home',
+        active: 'AllPosts',
         activeSidebar: true,
         openSideBar: true,
         mainContentWidht: 500,
-        sideBarWidht: 200
+        sideBarWidht: 200,
+
+        sidebarItems: [
+            {
+                'title': 'Dashboard',
+                'url': route('dashboard'),
+                'icon': 'bx bxs-dashboard',
+                'can': '',
+            },
+            {
+                'title': 'Post',
+                'icon': 'bx bxs-dock-top',
+                'group': [
+                    {
+                        'title': 'All Posts',
+                        'url': route('dashboard.post.allPosts'),
+                        'icon': 'bx bx-dock-top',
+                        'can': 'read_post'
+                    },
+                    {
+                        'title': 'Add New',
+                        'url': route('dashboard.post.create'),
+                        'icon': 'bx bx-list-ul',
+                        'can': 'create_post'
+                    },
+                    {
+                        'title': 'Categories',
+                        'url': route('dashboard.post.categories'),
+                        'icon': 'bx bx-add-to-queue',
+                        'can': 'create_category'
+                    },
+                    {
+                        'title': 'Tags',
+                        'url': route('dashboard'),
+                        'icon': 'bx bx-category',
+                        'can': 'create_tag'
+                    },
+                ]
+            },
+            // {
+            //     'title': 'Videos',
+            //     'icon': 'bx bxs-video',
+            //     'group': [
+            //         {
+            //             'title': 'All Videos',
+            //             'url': route('dashboard'),
+            //             'icon': 'bx bx-video',
+            //             'can': 'read_video'
+            //         },
+            //         {
+            //             'title': 'Add New',
+            //             'url': route('dashboard'),
+            //             'icon': 'bx bx-video-plus',
+            //             'can': 'create_video'
+            //         },
+            //         {
+            //             'title': 'Categories',
+            //             'url': route('dashboard'),
+            //             'icon': 'bx bx-add-to-queue',
+            //             'can': 'create_category'
+            //         },
+            //         {
+            //             'title': 'Tags',
+            //             'url': route('dashboard'),
+            //             'icon': 'bx bx-category',
+            //             'can': 'create_tag'
+            //         },
+            //     ]
+            // },
+            {
+                'title': 'Pages',
+                'icon': 'bx bxs-copy-alt',
+                'group': [
+                    {
+                        'title': 'All Pages',
+                        'url': route('dashboard'),
+                        'icon': 'bx bx-copy-alt',
+                        'can': 'read_page'
+                    },
+                    {
+                        'title': 'Add New',
+                        'url': route('dashboard'),
+                        'icon': 'bx bx-add-to-queue',
+                        'can': 'create_page'
+                    }
+                ]
+            },
+            {
+                'title': 'Comments',
+                'url': route('dashboard'),
+                'icon': 'bx bxs-comment',
+                'can': 'comments_actions',
+            },
+            {
+                'title': 'Users',
+                'icon': 'bx bxs-user',
+                'group': [
+                    {
+                        'title': 'All Users',
+                        'url': route('dashboard'),
+                        'icon': 'bx bx-user',
+                        'can': 'read_users'
+                    },
+                    {
+                        'title': 'Add New',
+                        'url': route('dashboard'),
+                        'icon': 'bx bx-user-plus',
+                        'can': 'create_users'
+                    },
+                    {
+                        'title': 'User Roles',
+                        'url': route('dashboard'),
+                        'icon': 'bx bx-block',
+                        'can': 'create_role'
+                    },
+                    {
+                        'title': 'Profile',
+                        'url': route('dashboard'),
+                        'icon': 'bx bxs-user-detail',
+                        'can': ''
+                    },
+
+                ]
+            },
+            {
+                'title': 'Settings',
+                'url': route('dashboard'),
+                'icon': 'bx bxs-dashboard',
+                'can': 'change_site_settings',
+            },
+        ]
     }),
+    methods: {
+        canShowGroup( group ) {
+            for( let i=0; i<group.length; i++ ) {
+                if( this.can( group[i].can ))
+                    return true;
+            }
+            return false;
+        }
+    },
     mounted() {
         let that = this
         function reportWindowSize() {

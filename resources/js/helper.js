@@ -7,6 +7,13 @@ Vue.mixin({
             let method = e.currentTarget.getAttribute('method');
             if(method === '') method = 'get';
             this.$inertia.visit(url, { method: method })
+        },
+        can(permission) {
+            if (!permission) return true;
+            return this.$page.props.can[permission];
+        },
+        titleToId(title) {
+            return title.replace(/\s+/g, '_');
         }
     }
 });

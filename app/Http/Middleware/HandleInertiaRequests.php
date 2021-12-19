@@ -39,17 +39,26 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
-//        Inertia::share('a', Inertia::getShared('prev_url')  );
-//        Inertia::share('b', url()->current()   );
-
-        if( url()->previous() != url()->current() )
-            Inertia::share('prev_url', url()->previous() );
 
         return array_merge(parent::share($request), [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,
             'phpVersion' => PHP_VERSION,
+            'can' => function() {
+                if( ! auth()->check() )
+                    return [];
+                return auth()->user()->getAllPermissions()->mapWithKeys(function ($item, $key) {
+                    return [$item['name'] => $item['id']];
+                });
+            },
+            'roles' => function() {
+                if (!auth()->check())
+                    return [];
+                return auth()->user()->roles()->get()->mapWithkeys(function ($item, $key) {
+                    return [ $item['key'] => $item ];
+                });
+            },
             'flash' => session()->all()
         ]);
     }
