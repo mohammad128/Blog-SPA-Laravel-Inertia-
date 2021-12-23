@@ -297,9 +297,9 @@ export default {
             axios.delete(url).then(function (response) {
                 if( response.data ) that.doFilter();
             })
-            .catch(function (error) {
-                console.log(error);
-            });
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
         doFilter() {
             let url = route('dashboard.media.filter');
@@ -310,12 +310,12 @@ export default {
                 'search': this.search,
                 'user_id': this.user_id,
             })
-            .then(function (response) {
-                that.medias = response.data;
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+                .then(function (response) {
+                    that.medias = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
         onUpload(response) {
             this.doFilter()
@@ -331,9 +331,9 @@ export default {
                 that.selectedItems = [];
                 that.onDeleteProcessing = false;
             })
-            .catch(function (error) {
-                console.log(error);
-            });
+                .catch(function (error) {
+                    console.log(error);
+                });
         },
         updateMedia(media) {
             this.onUpdateProcessing = true;
@@ -344,9 +344,9 @@ export default {
                 that.onUpdateProcessing = false;
                 that.doFilter();
             })
-            .catch(function (error) {
-                console.log(error);
-            });
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
     },
     watch: {

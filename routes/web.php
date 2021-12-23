@@ -50,10 +50,14 @@ Route::middleware([])->group(function () {
                 Route::get('/', [ \App\Http\Controllers\Dashboard\MediaController::class, 'index'])->name('dashboard.media.index');
                 Route::get('/AddMedia', [ \App\Http\Controllers\Dashboard\MediaController::class, 'create'])->name('dashboard.media.create');
 
+                Route::get('/Download/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'download'])->name('dashboard.media.download');
+
                 Route::post('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'store'])->name('dashboard.media.service');
-                Route::put('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'update']);
-                Route::delete('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'delete']);
+                Route::put('/AddMedia/Service/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'update'])->name('dashboard.media.service.update');;
+                Route::delete('/AddMedia/Service/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'delete'])->name('dashboard.media.service.delete');
+                Route::post('/AddMedia/Service/MultiDelete', [ \App\Http\Controllers\Dashboard\MediaController::class, 'multiDelete'])->name('dashboard.media.service.multidelte');
                 Route::post('/AddMedia/Service/filter', [ \App\Http\Controllers\Dashboard\MediaController::class, 'filter'])->name('dashboard.media.filter');
+
 
             });
 
@@ -83,11 +87,10 @@ Route::middleware([])->group(function () {
 
 Route::get('test', function () {
 //    echo asset('storage/media/kNTfSJlEn0y8QDxY7wDRR1LIdt3i3T37osAm0uTN.jpg');
-
-    $img = "image/png";
-    $type = explode("/", $img);
-    echo $type[0];
-
+//    echo storage_path('public');
+//    return response()->download( storage_path( 'app/public/media/ktXjIcsiQgg72ZNihqrniYwA2DTBQDBUlxiGrggM.png' ), 'aaaa' );
+    $ext = pathinfo('media/ktXjIcsiQgg72ZNihqrniYwA2DTBQDBUlxiGrggM.png', PATHINFO_EXTENSION);
+    return $ext;
 //    return Inertia::render('test');
 
 

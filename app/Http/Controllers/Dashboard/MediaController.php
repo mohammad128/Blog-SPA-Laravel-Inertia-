@@ -72,6 +72,7 @@ class MediaController extends Controller
 //            $query->where('title', 'LIKE' , "%".$request->get('search') ."%");
 //        } )->get();
 
+
         $medias = Media::with('user')->orderBy('id', 'desc');
         if( $request->get('search') ) {
             $medias->where('title', 'LIKE' , '%'.$request->get('search').'%');
@@ -81,18 +82,41 @@ class MediaController extends Controller
             in_array( $request->get('mediaType'), ['image', 'video',  'audio', 'document',  'file', 'other'] ) ) {
             $medias->where('type', $request->get('mediaType'));
         }
-        if( $request->get('user_id') != 0 ) {
+        if( auth()->user()->can('read_all_media') && $request->get('user_id') != 0 ) {
             $medias->where('user_id', $request->get('user_id'));
         }
         return $medias->paginate();
     }
 
-    public function update() {
-
+    public function update(Request $request,Media $media) {
+        $request->validate([
+            'title'=> ['required']
+        ]);
+        return $media->update($request->only(['title','description']));
     }
 
-    public function delete() {
+    public function delete(Media $media) {
+        return $media->delete();
+    }
 
+    public function multiDelete(Request $resquest) {
+        if($resquest->get('ids') && is_array($resquest->get('ids')))
+            return Media::destroy($resquest->get('ids'));
+        return '0';
+//        $count = 0;
+//        if($resquest->get('ids') && is_array($resquest->get('ids'))) {
+//            foreach ($resquest->get('ids') as $id) {
+//                $count++;
+//                Media::find($id)->delete();
+//            }
+//        }
+//        return $count;
+    }
+
+    public function download(Media $media)
+    {
+        $ext = pathinfo($media['path'], PATHINFO_EXTENSION);
+        return response()->download( storage_path( 'app/public/'.$media['path'] ), $media['title'].'.'.$ext );
     }
 
 

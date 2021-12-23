@@ -10,7 +10,13 @@ import Vuesax from 'vuesax';
 import 'vuesax/dist/vuesax.css';
 import store from './store';
 
+import VuePlyr from 'vue-plyr'
+import 'vue-plyr/dist/vue-plyr.css'
+Vue.use(VuePlyr, {
+    plyr: {}
+})
 
+window.fileDownload = require('js-file-download');
 
 import VueFileAgent from 'vue-file-agent';
 import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css';
