@@ -14,6 +14,10 @@ Vue.mixin({
         },
         titleToId(title) {
             return title.replace(/\s+/g, '_');
+        },
+        getCsrfToken() {
+            return window.csrf_token;
+
         }
     }
 });

@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\FlashMessage\Facade\FlashMessage;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Middleware;
 
@@ -39,7 +41,6 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request)
     {
-
         return array_merge(parent::share($request), [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
@@ -49,17 +50,21 @@ class HandleInertiaRequests extends Middleware
                 if( ! auth()->check() )
                     return [];
                 return auth()->user()->getAllPermissions()->mapWithKeys(function ($item, $key) {
-                    return [$item['name'] => $item['id']];
+                    return [ $item['name'] => $item['id'] ];
                 });
             },
             'roles' => function() {
                 if (!auth()->check())
                     return [];
                 return auth()->user()->roles()->get()->mapWithkeys(function ($item, $key) {
-                    return [ $item['key'] => $item ];
+                    return [ $item['name'] => $item['id'] ];
                 });
             },
-            'flash' => session()->all()
+            'flash_message'=> function() {
+                $msg = FlashMessage::getAllMessages();
+                Session::forget('messages');
+                return $msg;
+            }
         ]);
     }
 }

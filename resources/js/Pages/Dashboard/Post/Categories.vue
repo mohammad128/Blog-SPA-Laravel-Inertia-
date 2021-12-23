@@ -48,7 +48,7 @@
             </form>
             <div class="flex-1">
                     <form @submit.prevent="deleteCategorys" autocomplete="off">
-                        <div class="relative rounded-2xl bg-white py-4 shadow-2xl drop-shadow-2xl">
+                        <div class="relative rounded-2xl bg-white pb-4 shadow-2xl drop-shadow-2xl">
                             <vs-table
                                 v-model="form2.selectedCats"
                             >
@@ -104,8 +104,8 @@
                                         <vs-td>
                                             {{ catItem.description }}
                                         </vs-td>
-                                        <vs-td>
-                                            0
+                                        <vs-td class="font-bold">
+                                            {{ catItem.post_count }}
                                         </vs-td>
                                     </vs-tr>
                                 </template>
@@ -228,6 +228,7 @@ export default {
                     'description': item.description,
                     'slug': item.slug,
                     'padding': padding,
+                    'post_count': item.post_count,
                     'parent': parent,
                 });
                 if(item.children) {

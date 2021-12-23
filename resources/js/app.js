@@ -10,12 +10,32 @@ import Vuesax from 'vuesax';
 import 'vuesax/dist/vuesax.css';
 import store from './store';
 
+
+
+import VueFileAgent from 'vue-file-agent';
+import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css';
+
+Vue.use(VueFileAgent);
+
+/*
+* CSRF Token
+* */
+let __token = document.head.querySelector('meta[name="csrf-token"]');
+let csrf_token = ''
+if (__token) {
+    csrf_token = __token.content;
+} else {
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+}
+window.csrf_token = csrf_token;
+
 // Components
 import RootLayout from "@/Pages/Layouts/RootLayout";
 import Layout from "@/Pages/Layouts/Layout";
 import DashboardLayout from "@/Pages/Layouts/DashboardLayout";
 import Nav from './Partials/Nav';
 import { Head,Link } from '@inertiajs/inertia-vue';
+
 
 import './helper';
 import { InertiaProgress } from '@inertiajs/progress';

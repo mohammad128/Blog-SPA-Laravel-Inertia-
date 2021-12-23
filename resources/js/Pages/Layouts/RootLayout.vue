@@ -29,14 +29,48 @@
 <script>
 export default {
     name: "Layout",
+    props: {
+        flash_message: Array
+    },
     data() {
         return {
             showPlayer: false,
         }
     },
     methods: {
+        showFlashMessages(messages){
+            console.log(messages);
+            if( messages && Array.isArray(messages) )
+            for(let i=0; i<messages.length; i++) {
+                let message = messages[i];
+                let title = message['title'];
+                let msg = message['msg'];
+                let color = message['color'];
+                let icon = `<i class="bx ${message['icon']}"></i>`;
+                let time_out = message['time_out'];
+                let position = message['position'];
+                let type = message['type'];
+                let message_time = message['message_time'];
+                const noti = this.$vs.notification({
+                    icon,
+                    color,
+                    position,
+                    time_out,
+                    sticky: true,
+                    progress: 'auto',
+                    title: title,
+                    text: msg
+                })
+            }
+        }
     },
     mounted() {
+        this.showFlashMessages(this.$page.props.flash_message);
+    },
+    watch:{
+        flash_message: function () {
+            this.showFlashMessages(this.$page.props.flash_message);
+        }
     }
 }
 </script>

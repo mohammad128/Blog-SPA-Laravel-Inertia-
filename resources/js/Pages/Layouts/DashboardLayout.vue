@@ -399,6 +399,24 @@ export default {
                 ]
             },
             {
+                'title': 'Media',
+                'icon': 'bx bxs-image',
+                'group': [
+                    {
+                        'title': 'All Media',
+                        'url': route('dashboard.media.index'),
+                        'icon': 'bx bx-images',
+                        'can': 'read_media'
+                    },
+                    {
+                        'title': 'Add Media',
+                        'url': route('dashboard.media.create'),
+                        'icon': 'bx bxs-image-add',
+                        'can': 'create_media'
+                    },
+                ]
+            },
+            {
                 'title': 'Settings',
                 'url': route('dashboard'),
                 'icon': 'bx bxs-dashboard',

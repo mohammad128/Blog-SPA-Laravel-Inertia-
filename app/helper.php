@@ -18,20 +18,20 @@ if (!function_exists("get_json_permissions")) {
                     [ 'name' => 'force_delete_all_post', 'desc' => "Delete All Users From Trash" ],
                 ],
             ],
-            "Video" => [
-                'desc' => "Permissions For Manage Videos",
-                'permissions' => [
-                    [ 'name' => 'read_video', 'desc' => "Read Video" ],
-                    [ 'name' => 'create_video', 'desc' => "Create Video" ],
-                    [ 'name' => 'delete_video', 'desc' => "Delete Video" ],
-                    [ 'name' => 'edit_video', 'desc' => "Edit Video" ],
-                    [ 'name' => 'force_delete_video', 'desc' => "Delete Video From Trash" ],
-                    [ 'name' => 'read_all_video', 'desc' => "Read All Video" ],
-                    [ 'name' => 'delete_all_video', 'desc' => "Delete All Video" ],
-                    [ 'name' => 'edit_all_video', 'desc' => "Edit All Video" ],
-                    [ 'name' => 'force_delete_all_video', 'desc' => "Delete All Users Videos From Trash" ],
-                ],
-            ],
+//            "Video" => [
+//                'desc' => "Permissions For Manage Videos",
+//                'permissions' => [
+//                    [ 'name' => 'read_video', 'desc' => "Read Video" ],
+//                    [ 'name' => 'create_video', 'desc' => "Create Video" ],
+//                    [ 'name' => 'delete_video', 'desc' => "Delete Video" ],
+//                    [ 'name' => 'edit_video', 'desc' => "Edit Video" ],
+//                    [ 'name' => 'force_delete_video', 'desc' => "Delete Video From Trash" ],
+//                    [ 'name' => 'read_all_video', 'desc' => "Read All Video" ],
+//                    [ 'name' => 'delete_all_video', 'desc' => "Delete All Video" ],
+//                    [ 'name' => 'edit_all_video', 'desc' => "Edit All Video" ],
+//                    [ 'name' => 'force_delete_all_video', 'desc' => "Delete All Users Videos From Trash" ],
+//                ],
+//            ],
             "Page" => [
                 'desc' => "Permissions For Manage Pages",
                 'permissions' => [
@@ -44,6 +44,20 @@ if (!function_exists("get_json_permissions")) {
                     [ 'name' => 'delete_all_page', 'desc' => "Delete All Page" ],
                     [ 'name' => 'edit_all_page', 'desc' => "Edit All Page" ],
                     [ 'name' => 'force_delete_all_page', 'desc' => "Delete All Users Page From Trash" ],
+                ],
+            ],
+            'Media'=>[
+                'desc' => "Permissions For Manage Media`s",
+                'permissions' => [
+                    [ 'name' => 'read_media', 'desc' => "Read Media" ],
+                    [ 'name' => 'create_media', 'desc' => "Create Media" ],
+                    [ 'name' => 'delete_media', 'desc' => "Delete Media" ],
+                    [ 'name' => 'edit_media', 'desc' => "Edit Media" ],
+                    [ 'name' => 'force_delete_media', 'desc' => "Delete Media From Trash" ],
+                    [ 'name' => 'read_all_media', 'desc' => "Read All Media" ],
+                    [ 'name' => 'delete_all_media', 'desc' => "Delete All Media" ],
+                    [ 'name' => 'edit_all_media', 'desc' => "Edit All Media" ],
+                    [ 'name' => 'force_delete_all_media', 'desc' => "Delete All Users Media From Trash" ],
                 ],
             ],
             "Category" => [

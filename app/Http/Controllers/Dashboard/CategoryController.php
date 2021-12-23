@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\FlashMessage\Facade\FlashMessage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ class CategoryController extends Controller
 
         app('rinvex.categories.category')->create($attributes);
 
+        FlashMessage::success('Created', "Category $request->get('name') was created successfully.");
 
         $redirect = $request->get('redirect') ?  $request->get('redirect') : route('dashboard.post.categories');
         return redirect($redirect);
@@ -44,6 +46,8 @@ class CategoryController extends Controller
         ];
         $category->update( $attributes );
 
+        FlashMessage::success('Update', "Category $request->get('name') was updated successfully.");
+
         $redirect = $request->get('redirect') ?  $request->get('redirect') : route('dashboard.post.categories');
         return redirect($redirect);
     }
@@ -52,6 +56,8 @@ class CategoryController extends Controller
         $category = app('rinvex.categories.category')->where('id', '=', $id);
         if( $category )
             $category->delete();
+
+        FlashMessage::warning('Delete', "Category $request->get('name') was deleted.");
 
         $redirect = $request->get('redirect') ?  $request->get('redirect') : route('dashboard.post.categories');
         return redirect($redirect);
@@ -65,6 +71,9 @@ class CategoryController extends Controller
             if( $category )
                 $category->delete();
         }
+
+        $count = count($request->get('selectedCats'));
+        FlashMessage::error('Delete', "<b>$count</b> Category was deleted.");
 
         $redirect = $request->get('redirect') ?  $request->get('redirect') : route('dashboard.post.categories');
         return redirect($redirect);

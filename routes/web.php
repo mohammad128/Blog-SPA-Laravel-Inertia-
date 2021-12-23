@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +46,17 @@ Route::middleware([])->group(function () {
                 Route::post("/multiDelete", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'multiDelete' ] )->name('dashboard.category.multiDelete');
             });
 
+            Route::prefix('/Media')->group(function () {
+                Route::get('/', [ \App\Http\Controllers\Dashboard\MediaController::class, 'index'])->name('dashboard.media.index');
+                Route::get('/AddMedia', [ \App\Http\Controllers\Dashboard\MediaController::class, 'create'])->name('dashboard.media.create');
+
+                Route::post('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'store'])->name('dashboard.media.service');
+                Route::put('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'update']);
+                Route::delete('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'delete']);
+                Route::post('/AddMedia/Service/filter', [ \App\Http\Controllers\Dashboard\MediaController::class, 'filter'])->name('dashboard.media.filter');
+
+            });
+
         });
 
         /*
@@ -73,56 +82,41 @@ Route::middleware([])->group(function () {
 
 
 Route::get('test', function () {
+//    echo asset('storage/media/kNTfSJlEn0y8QDxY7wDRR1LIdt3i3T37osAm0uTN.jpg');
+
+    $img = "image/png";
+    $type = explode("/", $img);
+    echo $type[0];
+
+//    return Inertia::render('test');
+
+
 //    auth()->user()->syncRoles('admin');
 
-//    $permissions = [
-//        "Post" => [
-//            'desc' => "Permissions For Manage Posts",
-//            'permissions' => [
-//                [ 'name' => 'read_post', 'desc' => "Read Post" ],
-//                [ 'name' => 'create_post', 'desc' => "Create Post" ],
-//                [ 'name' => 'delete_post', 'desc' => "Delete Post" ],
-//                [ 'name' => 'edit_post', 'desc' => "Edit Post" ],
-//                [ 'name' => 'force_delete_post', 'desc' => "Delete From Trash" ],
-//                [ 'name' => 'read_all_post', 'desc' => "Read All Post" ],
-//                [ 'name' => 'delete_all_post', 'desc' => "Delete All Post" ],
-//                [ 'name' => 'edit_all_post', 'desc' => "Edit All Post" ],
-//                [ 'name' => 'force_delete_all_post', 'desc' => "Delete All Users From Trash" ],
-//            ],
-//        ],
-//        "Page" => [
-//            'desc' => "Permissions For Manage Pages",
-//            'permissions' => [
-//                [ 'name' => 'read_page', 'desc' => "Read Page" ],
-//                [ 'name' => 'create_page', 'desc' => "Create Page" ],
-//                [ 'name' => 'delete_page', 'desc' => "Delete Page" ],
-//                [ 'name' => 'edit_page', 'desc' => "Edit Page" ],
-//                [ 'name' => 'force_delete_page', 'desc' => "Delete Page From Trash" ],
-//                [ 'name' => 'read_all_page', 'desc' => "Read All Page" ],
-//                [ 'name' => 'delete_all_page', 'desc' => "Delete All Page" ],
-//                [ 'name' => 'edit_all_page', 'desc' => "Edit All Page" ],
-//                [ 'name' => 'force_delete_all_page', 'desc' => "Delete All Users Page From Trash" ],
-//            ],
-//        ],
-//    ];
+//    $permissions = get_json_permissions();
 //
 //    $roles = [
 //        'Editor' => $permissions,
 //    ];
-//    foreach ($roles as $role_name=>$role_permissions) {
+////    foreach ($roles as $role_name=>$role_permissions) {
 //        $__role_permissions = [];
-//        foreach ($role_permissions as $permission_cat => $_p) {
+//        foreach ($permissions as $permission_cat => $_p) {
 //            foreach ($_p['permissions'] as $__p) {
 //                $name = $__p['name'];
 //                $desc = $__p['desc'];
-//                array_push($__role_permissions, Permission::query()->where(['name'=>$name])->first() );
+//                $p = Permission::query()->where(['name'=>$name])->first();
+//                if($p)
+//                    array_push($__role_permissions, $p );
+//                else
+//                    array_push($__role_permissions, Permission::create(['name'=>$name]) );
+//
 //            }
 //        }
-//        $r = Role::create(['name'=>$role_name]);
-//        $r->syncPermissions($__role_permissions);
-//    }
+////        $r = Role::create(['name'=>$role_name]);
+//        Role::findById(2)->syncPermissions($__role_permissions);
+////    }
 //
-//    $user = \App\Models\User::find(402)->syncRoles('Editor');
+////    $user = \App\Models\User::find(402)->syncRoles('Editor');
 
 
 
@@ -153,6 +147,11 @@ Route::get('test', function () {
 //    echo \Illuminate\Support\Str::slug("", "-");
 
 //    echo ($categories = app('rinvex.categories.category')->get()->toTree() );
+
+
+//    $post = \App\Models\Post::find(505);
+//    $post->attachCategories(59);
+//    dd($post);
 
 });
 
