@@ -7,7 +7,7 @@
             collapse-chips
             placeholder="Category"
             v-model="selected"
-            :style="{'min-width': '20em'}"
+            :style="{'min-width': '100%'}"
         >
             <template v-for="item in listItem" >
                 <vs-option :label="item.name" :value="item.id"  :style="{'margin-left': `${item.padding}em`}">

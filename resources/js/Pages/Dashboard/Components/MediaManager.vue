@@ -1,7 +1,7 @@
 <template>
-    <DashboardLayout>
+    <div>
         <div class="flex flex-col gap-y-5" id="allMediaContainer">
-            <div>
+            <div v-if="can('create_media')">
                 <vs-button
                     @click="addMedia=!addMedia"
                     :color="'primary'"
@@ -15,11 +15,12 @@
                     <AddNewMedia v-if="addMedia" @onUpload="onUpload($event)"/>
                 </transition>
             </div>
-            <div class="bg-white rounded-2xl shadow-2xl p-4 flex flex-col">
+            <div class="bg-white rounded-2xl  p-4 flex flex-col"  v-if="can('read_media')">
 
                 <div class="flex justify-between items-center mb-8 mt-4 flex-col-reverse gap-4 md:flex-row">
                     <div class="flex">
                         <vs-input
+                            type="search"
                             placeholder="Search"
                             v-model="search"
                         >
@@ -44,6 +45,17 @@
                             </vs-button>
                         </transition>
 
+
+                        <transition name="scale">
+                            <vs-button v-if="picker && multiCheck && selectedItems.length" :loading="onDeleteProcessing"
+                                           circle
+                                           icon
+                                           relief class="text-lg font-bold" @click="onMultiPick()" >
+                            <i class="bx bx-check-double"></i>
+                            </vs-button>
+                        </transition>
+
+
                     </div>
                     <div class="flex">
                         <transition name="scale">
@@ -58,6 +70,7 @@
                         </transition>
                         <span class="w-5"></span>
                         <vs-select
+                            v-if="!( this.type != undefined && this.type != '' )"
                             placeholder="Type"
                             v-model="mediaType"
                             style="width: 100px"
@@ -86,7 +99,7 @@
 
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
                     <div v-for="(media, index) in medias.data" :key="index">
                         <vs-card type="1" >
                             <template #title>
@@ -94,25 +107,30 @@
                             </template>
                             <template #img >
                                 <img @click="showMedia(media)" v-if="media.type =='image'" :src="media.media_url" alt="">
-                                <img @click="showMedia(media)" v-else :src="'/uploads/icons/'+media.type+'.png'" alt="">
+                                <img @click="showMedia(media)" style="transform: scale(1.3)" v-else :src="'/uploads/icons/'+media.type+'.png'" alt="">
 
-                                <vs-checkbox danger v-model="selectedItems" :val="media.id" class="selectItemCheckbox">
+                                <vs-checkbox danger v-model="selectedItems" :val="media" class="selectItemCheckbox">
                                 </vs-checkbox>
+                                <vs-button v-if="picker && !multiCheck" circle icon relief class="text-lg font-bold btnPickFIle"
+                                           @click="onPick(media)">
+                                    <i class="bx bx-check "></i>
+                                </vs-button>
+
                             </template>
                             <template #text>
                                 <p>
                                     {{media.description}}
+                                    <vs-button class="btn-chat" primary circle border @click="user_id = media.user.id;  user_name = media.user.name">
+                                        <i class='bx bx-time' ></i>
+                                        <span class="span text-xs">
+                                            {{media.diff_for_human}} / {{ media.user.name }}
+                                        </span>
+                                    </vs-button>
                                 </p>
                             </template>
                             <template #interactions>
                                 <vs-button danger icon @click="deleteMedia(media.id)">
                                     <i class='bx bx-trash'></i>
-                                </vs-button>
-                                <vs-button class="btn-chat" shadow primary @click="user_id = media.user.id;  user_name = media.user.name">
-                                    <i class='bx bx-time' ></i>
-                                    <span class="span">
-                                        {{media.diff_for_human}} / {{ media.user.name }}
-                                    </span>
                                 </vs-button>
                             </template>
                         </vs-card>
@@ -150,7 +168,7 @@
                 <div class="flex flex-col md:flex-row justify-around gap-4" v-if="imageDialogData.id != undefined">
                     <div class="flex-1 grid grid-cols-1 content-center">
                         <div v-if="imageDialogData.type=='image'">
-                            <img  :src="imageDialogData.media_url" :alt="imageDialogData.title">
+                            <inner-image-zoom style="border: 2px solid #999;padding: 4px;border-radius: 8px;box-shadow: 0 6px 16px #aaa;" :src="imageDialogData.media_url" :zoomSrc="imageDialogData.media_url" />
                         </div>
                         <vue-plyr v-else-if="imageDialogData.type=='audio'">
                             <audio controls crossorigin playsinline>
@@ -170,7 +188,7 @@
                                 />
                             </video>
                         </vue-plyr>
-                        <img v-else :src="'/uploads/icons/'+imageDialogData.type+'.png'" alt="">
+                        <img v-else  :src="'/uploads/icons/'+imageDialogData.type+'.png'" alt="">
                     </div>
                     <div class="flex-1">
                         <div class="grid grid-cols-1 py-8 text-center">
@@ -182,7 +200,7 @@
                                     <b>Title: </b>
                                 </div>
                                 <div class="px-4 md:pl-16">
-                                    <vs-input v-model="imageDialogData.title">
+                                    <vs-input :disabled="!can('edit_media')" v-model="imageDialogData.title">
                                     </vs-input>
                                 </div>
                             </div>
@@ -192,7 +210,7 @@
                                     <b>Description: </b>
                                 </div>
                                 <div class="px-4 md:pl-16">
-                                    <vs-input v-model="imageDialogData.description">
+                                    <vs-input :disabled="!can('edit_media')" v-model="imageDialogData.description">
                                     </vs-input>
                                 </div>
                             </div>
@@ -210,18 +228,19 @@
 
                                     <transition name="scale">
                                         <vs-button
+                                            :disabled="!can('edit_media')"
                                             v-show="imageDialogData.title"
                                             success
                                             @click="updateMedia(imageDialogData)"
                                             :loading="onUpdateProcessing"
                                         >
-
                                             Save
                                         </vs-button>
                                     </transition>
                                 </div>
 
                                 <vs-button
+                                    :disabled="!can('delete_media')"
                                     :loading="onUpdateProcessing"
                                     danger
                                     flat
@@ -238,22 +257,25 @@
 
         </vs-dialog>
 
-    </DashboardLayout>
+    </div>
 
 </template>
 
 <script>
-import DashboardLayout from '@/Pages/Layouts/DashboardLayout';
 import AddNewMedia from "@/Pages/Dashboard/Components/AddNewMedia";
+import InnerImageZoom from 'vue-inner-image-zoom';
 
 export default {
     name: "Index",
     props:{
-        all_media: Object
+        mediaMangerLoading: Boolean,
+        multiCheck: Boolean,
+        picker: Boolean,
+        type: String
     },
     components: {
-        DashboardLayout,
-        AddNewMedia
+        AddNewMedia,
+        InnerImageZoom
     },
     data() {
         return {
@@ -289,7 +311,6 @@ export default {
         showMedia(media) {
             this.imageDialogActive=!this.imageDialogActive;
             this.imageDialogData = Object.assign({}, media);
-            console.log(this.imageDialogData);
         },
         deleteMedia(id) {
             let url = route('dashboard.media.service.delete', {id: id});
@@ -297,13 +318,14 @@ export default {
             axios.delete(url).then(function (response) {
                 if( response.data ) that.doFilter();
             })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            .catch(function (error) {
+                console.log(error);
+            });
         },
         doFilter() {
             let url = route('dashboard.media.filter');
             let that = this;
+            this.$emit('onLoading', true);
             axios.post(url, {
                 'mediaType': this.mediaType,
                 'page': this.page,
@@ -315,6 +337,8 @@ export default {
                 })
                 .catch(function (error) {
                     console.log(error);
+                }).finally(function() {
+                    that.$emit('onLoading', false);
                 });
         },
         onUpload(response) {
@@ -324,29 +348,35 @@ export default {
             this.onDeleteProcessing = true;
             let url = route('dashboard.media.service.multidelte');
             let that = this;
-            axios.post(url,{ids: this.selectedItems}).then(function (response) {
-                console.log(response);
+            let ids = this.selectedItems.map( item => item['id'] );
+
+            axios.post(url,{ids: ids}).then(function (response) {
                 if( response.data )
                     that.doFilter();
                 that.selectedItems = [];
                 that.onDeleteProcessing = false;
             })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            .catch(function (error) {
+                console.log(error);
+            });
         },
         updateMedia(media) {
             this.onUpdateProcessing = true;
             let that = this;
             let url = route('dashboard.media.service.update', {id:media.id});
             axios.put(url, media).then(function (response) {
-                console.log(response);
                 that.onUpdateProcessing = false;
                 that.doFilter();
             })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
+        onMultiPick() {
+            this.$emit('onPick', this.selectedItems)
+        },
+        onPick(media) {
+            this.$emit('onPick', media);
         }
     },
     watch: {
@@ -370,18 +400,13 @@ export default {
         user_id: function(){
             this.page = 1;
             this.doFilter();
-        },
-        selectedItems: {
-            handler(val) {
-                console.log(this.selectedItems.length)
-            },
-            deep: true
         }
     },
     beforeMount() {
         // this.medias = this.all_media;
+        if(this.type != undefined && this.type != '' )
+            this.mediaType = this.type;
         this.doFilter();
-        this.$store.state.dashboard.activeSidebarItem = 'Media_All_Media';
     },
     mounted() {
     }
@@ -389,11 +414,16 @@ export default {
 </script>
 
 <style scoped>
+.btnPickFIle{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 .selectItemCheckbox{
     position: absolute;
     left: 6px;
     top: 6px;
-    box-shadow: 0 0 35px;
+    box-shadow: 0 0 35px white;
     border-radius: 7px;
 }
 .slide-fade-enter-active {

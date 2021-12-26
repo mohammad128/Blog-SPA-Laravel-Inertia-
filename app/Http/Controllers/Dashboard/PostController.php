@@ -29,4 +29,8 @@ class PostController extends Controller
         ];
         return Inertia::render('Dashboard/Post/Categories', $data);
     }
+
+    public function tags() {
+        return Inertia::render('Dashboard/Post/Tags');
+    }
 }

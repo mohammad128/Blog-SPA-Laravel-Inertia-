@@ -36,6 +36,7 @@ Route::middleware([])->group(function () {
                 Route::get("/", [ \App\Http\Controllers\Dashboard\PostController::class, 'allPosts' ] )->name('dashboard.post.allPosts');
                 Route::get("/Create", [ \App\Http\Controllers\Dashboard\PostController::class, 'create' ] )->name('dashboard.post.create');
                 Route::get('/Categories', [\App\Http\Controllers\Dashboard\PostController::class, 'categories'])->name('dashboard.post.categories');
+                Route::get('/Tags', [\App\Http\Controllers\Dashboard\PostController::class, 'Tags'])->name('dashboard.post.tags');
             });
 
             // Post Routes
@@ -89,9 +90,9 @@ Route::get('test', function () {
 //    echo asset('storage/media/kNTfSJlEn0y8QDxY7wDRR1LIdt3i3T37osAm0uTN.jpg');
 //    echo storage_path('public');
 //    return response()->download( storage_path( 'app/public/media/ktXjIcsiQgg72ZNihqrniYwA2DTBQDBUlxiGrggM.png' ), 'aaaa' );
-    $ext = pathinfo('media/ktXjIcsiQgg72ZNihqrniYwA2DTBQDBUlxiGrggM.png', PATHINFO_EXTENSION);
-    return $ext;
-//    return Inertia::render('test');
+//    $ext = pathinfo('media/ktXjIcsiQgg72ZNihqrniYwA2DTBQDBUlxiGrggM.png', PATHINFO_EXTENSION);
+//    return $ext;
+    return Inertia::render('test');
 
 
 //    auth()->user()->syncRoles('admin');

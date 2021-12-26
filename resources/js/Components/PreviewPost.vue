@@ -34,8 +34,7 @@
 <!--                    <img :src="post.feature_image" alt="" class="max-w-xs rounded-full">-->
                 </div>
                 <br>
-                <div class="w-full previewPostContent">
-                    {{ post.content }}
+                <div class="w-full previewPostContent prose-sm prose-p:text-red-400" v-html="post.content">
                 </div>
             </div>
         </vs-dialog>

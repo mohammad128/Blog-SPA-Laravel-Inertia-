@@ -1,11 +1,14 @@
 require('./bootstrap');
 
+
 // Import modules...
 import Vue from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue';
 
 import PortalVue from 'portal-vue';
 import 'boxicons/css/boxicons.min.css';
+import 'vue-inner-image-zoom/lib/vue-inner-image-zoom.css';
+
 import Vuesax from 'vuesax';
 import 'vuesax/dist/vuesax.css';
 import store from './store';
@@ -34,6 +37,9 @@ if (__token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 window.csrf_token = csrf_token;
+
+
+
 
 // Components
 import RootLayout from "@/Pages/Layouts/RootLayout";
