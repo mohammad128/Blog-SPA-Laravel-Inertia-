@@ -52,8 +52,8 @@ import { Head,Link } from '@inertiajs/inertia-vue';
 import './helper';
 import { InertiaProgress } from '@inertiajs/progress';
 InertiaProgress.init({
-    delay: 250,
-    color: '#29d',
+    delay: 0,
+    color: '#ff0000',
     includeCSS: true,
     showSpinner: true,
 });

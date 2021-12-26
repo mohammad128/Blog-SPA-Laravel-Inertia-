@@ -111,7 +111,7 @@
 
                                 <vs-checkbox danger v-model="selectedItems" :val="media" class="selectItemCheckbox">
                                 </vs-checkbox>
-                                <vs-button v-if="picker && !multiCheck" circle icon relief class="text-lg font-bold btnPickFIle"
+                                <vs-button v-if="picker && !multiCheck" squire dark icon relief class="text-lg font-bold btnPickFIle absolute -top-4"
                                            @click="onPick(media)">
                                     <i class="bx bx-check "></i>
                                 </vs-button>

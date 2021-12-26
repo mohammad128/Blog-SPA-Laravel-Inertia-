@@ -307,7 +307,7 @@ export default {
                     },
                     {
                         'title': 'Tags',
-                        'url': route('dashboard.post.tags'),
+                        'url': route('dashboard.tag'),
                         'icon': 'bx bx-category',
                         'can': 'create_tag'
                     },

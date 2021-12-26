@@ -6,15 +6,15 @@
             <meta name="description" head-key="description" content="Dashboard Page">
         </Head>
 
-
-        <div v-for="i in 10" :key="i">
-            <h1 class="text-2xl">This is Title {{i}}</h1>
-            <p>aabbcc</p>
-            <p>
-                Fusce id magna id erat tincidunt volutpat. Aliquam velit turpis, semper at hendrerit sed, aliquet eu ante. Morbi nec nulla sollicitudin, porttitor nulla eu, auctor enim. Proin volutpat, quam non placerat consectetur, lorem urna venenatis nulla, vehicula lobortis tortor odio in risus. Donec quis augue dolor. Cras sagittis feugiat mauris sed gravida. Nulla euismod odio sem, vel rutrum neque pharetra ac. Integer sagittis ex eros, eu molestie magna vestibulum tristique. Donec tempor, lectus vitae posuere feugiat, velit leo tristique massa, ac feugiat erat erat vitae purus. Nunc vel scelerisque massa. In hendrerit, urna sed faucibus gravida, libero arcu pulvinar sapien, sed placerat lectus metus vel nisl. Fusce aliquam turpis imperdiet, vulputate augue ut, auctor dolor. Duis tincidunt dui nibh, sit amet suscipit odio imperdiet in.
-            </p>
+        <div class="prose prose-stone prose-h1:text-gray-500 prose-p:text-gray-900 prose-invert max-w-none">
+            <div v-for="i in 10" :key="i">
+                <h1 class="text-2xl">This is Title {{i}}</h1>
+                <p>aabbcc</p>
+                <p>
+                    Fusce id magna id erat tincidunt volutpat. Aliquam velit turpis, semper at hendrerit sed, aliquet eu ante. Morbi nec nulla sollicitudin, porttitor nulla eu, auctor enim. Proin volutpat, quam non placerat consectetur, lorem urna venenatis nulla, vehicula lobortis tortor odio in risus. Donec quis augue dolor. Cras sagittis feugiat mauris sed gravida. Nulla euismod odio sem, vel rutrum neque pharetra ac. Integer sagittis ex eros, eu molestie magna vestibulum tristique. Donec tempor, lectus vitae posuere feugiat, velit leo tristique massa, ac feugiat erat erat vitae purus. Nunc vel scelerisque massa. In hendrerit, urna sed faucibus gravida, libero arcu pulvinar sapien, sed placerat lectus metus vel nisl. Fusce aliquam turpis imperdiet, vulputate augue ut, auctor dolor. Duis tincidunt dui nibh, sit amet suscipit odio imperdiet in.
+                </p>
+            </div>
         </div>
-
     </DashboardLayout>
 
 

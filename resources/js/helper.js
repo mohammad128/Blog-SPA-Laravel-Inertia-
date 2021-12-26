@@ -18,6 +18,11 @@ Vue.mixin({
         getCsrfToken() {
             return window.csrf_token;
 
+        },
+        convertToSlug(Text) {
+            return Text.toLowerCase()
+                .replace(/ /g, '-');
+                // .replace(/[^\w-]+/g, '');
         }
     }
 });

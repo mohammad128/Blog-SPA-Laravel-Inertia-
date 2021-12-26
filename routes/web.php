@@ -36,7 +36,14 @@ Route::middleware([])->group(function () {
                 Route::get("/", [ \App\Http\Controllers\Dashboard\PostController::class, 'allPosts' ] )->name('dashboard.post.allPosts');
                 Route::get("/Create", [ \App\Http\Controllers\Dashboard\PostController::class, 'create' ] )->name('dashboard.post.create');
                 Route::get('/Categories', [\App\Http\Controllers\Dashboard\PostController::class, 'categories'])->name('dashboard.post.categories');
-                Route::get('/Tags', [\App\Http\Controllers\Dashboard\PostController::class, 'Tags'])->name('dashboard.post.tags');
+            });
+
+            Route::prefix('/Tag')->group(function() {
+                Route::get('/', [\App\Http\Controllers\Dashboard\TagController::class, 'index'])->name('dashboard.tag');
+                Route::post('/', [\App\Http\Controllers\Dashboard\TagController::class, 'store'])->name('dashboard.tag.store');
+                Route::put('/{id}', [\App\Http\Controllers\Dashboard\TagController::class, 'update'])->name('dashboard.tag.update');
+                Route::delete('/{id}', [\App\Http\Controllers\Dashboard\TagController::class, 'delete'])->name('dashboard.tag.delete');
+                Route::post('/mulitDelete', [\App\Http\Controllers\Dashboard\TagController::class, 'multiDelete'])->name('dashboard.tag.multiDelete');
             });
 
             // Post Routes
@@ -58,8 +65,6 @@ Route::middleware([])->group(function () {
                 Route::delete('/AddMedia/Service/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'delete'])->name('dashboard.media.service.delete');
                 Route::post('/AddMedia/Service/MultiDelete', [ \App\Http\Controllers\Dashboard\MediaController::class, 'multiDelete'])->name('dashboard.media.service.multidelte');
                 Route::post('/AddMedia/Service/filter', [ \App\Http\Controllers\Dashboard\MediaController::class, 'filter'])->name('dashboard.media.filter');
-
-
             });
 
         });

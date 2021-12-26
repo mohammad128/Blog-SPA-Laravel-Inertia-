@@ -2,7 +2,7 @@
 
     <div>
         <div id='edit' class="prose sm:prose-sm md:prose-md lg:prose-lg xl:prose-xl" ></div>
-        <vs-dialog blur v-model="mediaMangerActive"  :loading="mediaMangerLoading">
+        <vs-dialog v-model="mediaMangerActive"  :loading="mediaMangerLoading">
             <MediaManager :picker="true" :type="mediaMangerType" :multiCheck="false" @onPick="onPickMediaPicker($event)" @onLoading="onLoadingMediaPicker($event)"/>
         </vs-dialog>
     </div>

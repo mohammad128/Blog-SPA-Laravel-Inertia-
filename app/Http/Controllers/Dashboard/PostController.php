@@ -8,6 +8,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+use Spatie\Tags\Tag;
 
 class PostController extends Controller
 {
@@ -30,7 +31,24 @@ class PostController extends Controller
         return Inertia::render('Dashboard/Post/Categories', $data);
     }
 
-    public function tags() {
-        return Inertia::render('Dashboard/Post/Tags');
-    }
+//    public function tags() {
+//        return Inertia::render('Dashboard/Post/Tags', [
+//            'tags'=> Tag::paginate()
+//        ]);
+//    }
+//    public function createTag(Request $request) {
+//        $request->validate([
+//            'name'=>['required']
+//        ]);
+//        Tag::findOrCreate($request->get('name'));
+//        return redirect()->back();
+//    }
+//    public function updateTag($id, Request $request) {
+//        $request->validate([
+//            'name'=>['required']
+//        ]);
+//        Tag::findOrCreate($request->get('name'));
+//        return redirect()->back();
+//    }
+
 }
