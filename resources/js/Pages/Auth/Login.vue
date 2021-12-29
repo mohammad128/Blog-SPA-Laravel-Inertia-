@@ -23,7 +23,7 @@
 <!--        </div>-->
 
         <div>
-            <div class="flex justify-between fixed top-0 right-0 sm:relative mb-6 sm:px-4">
+            <div class="flex justify-between fixed top-0 right-0 sm:relative mb-6 p-0">
 
                 <vs-button
                     icon
@@ -51,7 +51,7 @@
             <h3 class="text-lg font-extrabold text-gray-700 block sm:hidden text-center mb-5">Login</h3>
 
             <form class="loginForm" @submit.prevent="submit">
-                <div class="center content-inputs grid sm:grid-cols-1 md:grid-cols-2 justify-items-center">
+                <div class="center content-inputs grid gap-4 sm:grid-cols-1 md:grid-cols-2 justify-items-center">
                     <vs-input v-model="form.email" placeholder="User name" type="email"
                               :danger="errors['email']!=null  ? true : false"
                               :state="errors['email'] ? 'danger' : ''">
@@ -94,25 +94,6 @@
         </div>
     </div>
 </template>
-<style scoped>
-.loginForm{
-}
-.loginForm .vs-input-parent {
-    background: transparent;
-    border: 0;
-}
-</style>
-<style>
-#inputPassword{
-    /*margin-left: -0.7em;*/
-}
-.vs-input:focus {
-    background: rgba(var(--vs-gray-3), 1);
-    /*padding-left: 15px;*/
-    border-color: rgba(var(--vs-gray-3), 1);
-    box-shadow: none;
-}
-</style>
 <script>
     export default {
         components: {
@@ -171,3 +152,6 @@
         }
     }
 </script>
+
+<style scoped>
+</style>

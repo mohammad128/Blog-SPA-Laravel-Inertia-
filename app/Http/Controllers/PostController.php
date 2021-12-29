@@ -10,8 +10,6 @@ class PostController extends Controller
 {
 
     public function index() {
-        sleep(2);
-
         Session()->flash('success', 'Test Message');
         $posts = Post::query()
             ->when(\Illuminate\Support\Facades\Request::input('search'), function ($query, $search){
@@ -33,7 +31,6 @@ class PostController extends Controller
     }
 
     public function postPreview($id) {
-        sleep(1);
         $post = Post::find($id);
         return [
             'id' => $post->id,

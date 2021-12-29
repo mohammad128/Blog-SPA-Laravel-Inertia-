@@ -36,6 +36,9 @@ Route::middleware([])->group(function () {
                 Route::get("/", [ \App\Http\Controllers\Dashboard\PostController::class, 'allPosts' ] )->name('dashboard.post.allPosts');
                 Route::get("/Create", [ \App\Http\Controllers\Dashboard\PostController::class, 'create' ] )->name('dashboard.post.create');
                 Route::get('/Categories', [\App\Http\Controllers\Dashboard\PostController::class, 'categories'])->name('dashboard.post.categories');
+
+
+                Route::post('/Create', [\App\Http\Controllers\Dashboard\PostController::class, 'store'])->name('dashboard.post.create');
             });
 
             Route::prefix('/Tag')->group(function() {

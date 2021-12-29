@@ -1,7 +1,10 @@
 <template>
 
     <div>
-        <div id='edit' class="prose sm:prose-sm md:prose-md lg:prose-lg xl:prose-xl" ></div>
+        <div :class="{'err': error}">
+            <div ref="edit"  class="edit prose sm:prose-sm md:prose-md lg:prose-lg xl:prose-xl" ></div>
+        </div>
+        <span v-if="error_message" class="text-xs text-red-500">{{error_message}}</span>
         <vs-dialog v-model="mediaMangerActive"  :loading="mediaMangerLoading">
             <MediaManager :picker="true" :type="mediaMangerType" :multiCheck="false" @onPick="onPickMediaPicker($event)" @onLoading="onLoadingMediaPicker($event)"/>
         </vs-dialog>
@@ -62,7 +65,17 @@ export default {
     components: {
         MediaManager
     },
-    props: ['value'],
+    props: {
+        value:String,
+        error: {
+            type: Boolean,
+            default: false
+        },
+        error_message: {
+            type: String,
+            default: ''
+        }
+    },
     data() {
         return {
             body: '',
@@ -198,7 +211,7 @@ export default {
             "tableHeader", "tableStyle", "textColor", "textMore", "underline", "undo", "unlink",
             "unorderedList", "verticalAlignBottom", "verticalAlignMiddle", "verticalAlignTop"]
         */
-        this.editor = new FroalaEditor('#edit', {
+        this.editor = new FroalaEditor(this.$refs.edit, {
             // Add the custom buttons in the toolbarButtons list, after the separator.
             // toolbarButtons: [
             //     ['paragraphFormat','paragraphStyle', '|',
@@ -242,24 +255,53 @@ export default {
             },
 
         });
-
-
         setTimeout(function() {
-            that.editor.html.insert(that.conentValue);
+            that.editor.html.set(that.conentValue);
         },1000)
 
     }
 }
 </script>
 <style >
-#edit {
+.edit {
     min-width: 100%;
+    background: #FFF;
+}
+.err {
+    /*min-width: 100%;*/
+    /*background: #ff000017;*/
+    box-shadow: 0px 0px 9px #ff000073;
+}
+.fr-wrapper{
+    min-height: 23em;
 }
 .fr-floating-btn {
     padding-top: 1px;
 }
 .fr-buttons button:first-child {
     display: none !important;
+}
+.fr-toolbar {
+    background: transparent !important;
+}
+.fr-wrapper {
+    background: transparent !important;
+}
+.fr-second-toolbar{
+    display: flex;
+    justify-content: space-between;
+    background: #101827;
+    align-items: center;
+    color: #FFF;
+}
+.fr-second-toolbar>*{
+    width:100%
+}
+.fr-counter {
+    width: 100%;
+    text-align: right;
+    font-size: 12px;
+    margin-right: 1em;
 }
 </style>
 

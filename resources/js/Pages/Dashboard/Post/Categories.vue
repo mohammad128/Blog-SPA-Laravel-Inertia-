@@ -8,7 +8,7 @@
 
         <div class="flex flex-col sm:flex-row 0 flex-wrap gap-8">
             <form class="flex-none" @submit.prevent="addCategory" autocomplete="off">
-                <div class="flex relative flex-col space-y-8 px-8 pt-4 pb-8  rounded-2xl bg-white shadow-2xl drop-shadow-2xl">
+                <div class="flex relative flex-col space-y-8 px-8 pt-4 pb-8  rounded-2xl bg-white shadow-2xl drop-shadow-2xl lg:sticky lg:top-16 ">
                     <h2 class="font-extrabold" >Add New Category:</h2>
                     <vs-input
                         label-placeholder="Name"

@@ -5,26 +5,50 @@
             <meta name="description" head-key="description" content="Manage All Posts">
         </Head>
 
-        <div class="flex space-x-4 ">
-            <div class="text-5xl font-extrabold">
-                  <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-purple-800">
-                    Posts
-                  </span>
+        <div class="flex justify-between lg:items-center mb-4 mt-4 flex-col  gap-4 md:flex-row flex bg-white p-4 rounded-2xl">
+            <div class="flex space-x-4 flex space-x-4">
+                <div class="text-5xl font-extrabold">
+                      <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-purple-800">
+                        Posts
+                      </span>
+                </div>
+                <vs-button
+                    circle
+                    icon
+                    floating
+                    @click="link($event)"
+                    method="get"
+                    :url="route('dashboard.post.create')"
+                >
+                    <i class='bx bx-plus' ></i>
+                </vs-button>
             </div>
-            <vs-button
-                circle
-                icon
-                floating
-            >
-                <i class='bx bx-plus' ></i>
-            </vs-button>
+            <div class="flex bg-white rounded-full">
+                <a :class="{'bg-purple-200' : filters['post_type']==='all' }" class="bg-gray-100 rounded-l-full px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900" href="javascript:void(0)"
+                    @click="post_type='all'" >
+                    All
+                </a>
+                <a :class="{'bg-purple-200' : filters['post_type']==='trash' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-red-600 hover:text-red-800" href="javascript:void(0)"
+                    @click="post_type='trash'" >
+                    Trash
+                </a>
+                <a :class="{'bg-purple-200' : filters['post_type']==='draft' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-yellow-600 hover:text-yellow-400" href="javascript:void(0)"
+                    @click="post_type='draft'" >
+                    Draft
+                </a>
+                <a :class="{'bg-purple-200' : filters['post_type']==='published' }" class="bg-gray-100 rounded-r-full px-4 py-2 text-sm font-bold text-blue-600 hover:text-blue-800" href="javascript:void(0)"
+                    @click="post_type='published'" >
+                    Published
+                </a>
+            </div>
         </div>
 
-        <div class="flex justify-between items-center mb-8 mt-4 flex-col-reverse gap-4 md:flex-row">
+        <div class="flex justify-between lg:items-center mb-4 mt-4 flex-col-reverse gap-4 md:flex-row flex lg:space-x-4 bg-white p-4 rounded-2xl">
             <div class="flex">
                 <vs-input
                     placeholder="Search"
                     v-model="search"
+                    type="search"
                     :loading="searchLoading"
                 >
                     <template #icon>
@@ -38,8 +62,8 @@
                     v-model="postPrePage"
                     style="width: 100px"
                 >
-                    <vs-option label="10" value="10">
-                        10
+                    <vs-option label="15" value="15">
+                        15
                     </vs-option>
                     <vs-option label="20" value="20">
                         20
@@ -55,47 +79,29 @@
                 <span class="w-5"></span>
                 <span class="text-sm text-gray-400 pl-5 pt-3">total: 222</span>
             </div>
-            <div class="flex bg-white rounded-full">
-                <a class="bg-white rounded-l-full px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900" href="#">All</a>
-                <a class="bg-white bg-purple-200 px-4 py-2 text-sm font-bold text-red-600 hover:text-red-800" href="#">Trash</a>
-                <a class="bg-white px-4 py-2 text-sm font-bold text-yellow-600 hover:text-yellow-400" href="#">Draft</a>
-                <a class="bg-white rounded-r-full px-4 py-2 text-sm font-bold text-blue-600 hover:text-blue-800" href="#">Published</a>
+            <CategoryCheckboxGroup :multiselect="true" :items="categories" v-model="selectedCat"/>
+        </div>
+
+        <div class="flex justify-center lg:justify-end mb-8 flex-row lg:flex-col-reverse gap-4 md:flex-row bg-white p-4 rounded-2xl">
+
+            <div class="flex gap-4 flex-col lg:flex-row items-center ">
+                <div class="flex gap-2 items-center">
+                    <span class="text-xs text-gray-700">From:</span>
+                    <vs-input
+                        v-model="fromDate"
+                        type="date"
+                    />
+                </div>
+                <div class="flex gap-2 items-center">
+                    <span class="text-xs text-gray-700">To:</span>
+                    <vs-input
+                        v-model="toDate"
+                        type="date"
+                    />
+                </div>
             </div>
         </div>
 
-        <div class="flex justify-between items-center mb-8 mt-4 flex-col-reverse gap-4 md:flex-row">
-
-            <vs-select
-                label="Multiple collapse chips"
-                filter
-                multiple
-                collapse-chips
-                placeholder="Category"
-                v-model="categories"
-            >
-                <vs-option label="Vuesax" value="1">
-                    Vuesax
-                </vs-option>
-                <vs-option label="Vue" value="2" parent_id="1" style="margin-left: 2em">
-                    Vue
-                </vs-option>
-                <vs-option label="Javascript" value="3">
-                    Javascript
-                </vs-option>
-                <vs-option label="Sass" value="4">
-                    Sass
-                </vs-option>
-                <vs-option label="Typescript" value="5">
-                    Typescript
-                </vs-option>
-                <vs-option label="Webpack" value="6">
-                    Webpack
-                </vs-option>
-                <vs-option label="Nodejs" value="7">
-                    Nodejs
-                </vs-option>
-            </vs-select>
-        </div>
         <div class="flex flex-col space-y-10">
             <div>
 
@@ -107,11 +113,11 @@
                     <vs-tr>
                         <vs-th>
                             <vs-checkbox
-                                :indeterminate="selected.length == users.length" v-model="allCheck"
-                                @change="selected = $vs.checkAll(selected, users)"
+                                :indeterminate="selected.length == posts.data.length" v-model="allCheck"
+                                @change="selected = $vs.checkAll(selected, posts.data)"
                             />
                         </vs-th>
-                        <vs-th sort @click="users = $vs.sortData($event ,users, 'name')">
+                        <vs-th sort @click="posts.data = $vs.sortData($event ,posts.data, 'name')">
                             Title
                         </vs-th>
                         <vs-th>
@@ -127,14 +133,14 @@
                             <i class="text-2xl bx bxs-comment"></i>
                         </vs-th>
                         <vs-th>
-                            Date
+                            Last Modified
                         </vs-th>
                     </vs-tr>
                 </template>
                 <template #tbody>
                     <vs-tr
                         :key="i"
-                        v-for="(tr, i) in users"
+                        v-for="(tr, i) in posts.data"
                         :data="tr"
                         :is-selected="!!selected.includes(tr)"
                         class="group"
@@ -143,7 +149,7 @@
                             <vs-checkbox :val="tr" v-model="selected" />
                         </vs-td>
                         <vs-td class="font-bold text-lg">
-                            {{ tr.name }}
+                            {{ tr.title }}
                             <div class="pt-2 flex opacity-0 group-hover:opacity-100 duration-300 transition space-x-4 pl-2 ">
                                 <a class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="#" ><i class="text-lg bx bx-edit"></i> Edit</a>
                                 <a class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="#" ><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
@@ -151,17 +157,13 @@
                             </div>
                         </vs-td>
                         <vs-td>
-                            {{ tr.email }}
+                            {{ tr.user.name }}
                         </vs-td>
                         <vs-td>
-                            {{ tr.id }}
+                            {{ tr.categories.map( function(item){return item.name } ).join(', ') }}
                         </vs-td>
                         <vs-td>
-                            <a class="text-blue-700 opacity-80 hover:opacity-100 transform duration-300" href="#">tag1</a>,
-                            <a class="text-blue-700 opacity-80 hover:opacity-100 transform duration-300" href="#">tag1</a>,
-                            <a class="text-blue-700 opacity-80 hover:opacity-100 transform duration-300" href="#">tag1</a>,
-                            <a class="text-blue-700 opacity-80 hover:opacity-100 transform duration-300" href="#">tag1</a>,
-                            <a class="text-blue-700 opacity-80 hover:opacity-100 transform duration-300" href="#">tag1</a>
+                            {{ tr.tags.map( function(item){return item.name.en } ).join(', ') }}
                         </vs-td>
                         <vs-td>
                             <span>
@@ -171,7 +173,7 @@
                             </span>
                         </vs-td>
                         <vs-td>
-                            2021/12/16 at 7:02 am
+                            {{tr.updated_at}}
                         </vs-td>
                     </vs-tr>
                 </template>
@@ -187,6 +189,7 @@
             <div class="center relative">
                 <vs-pagination not-margin v-model="page" :length="20" />
             </div>
+            <div class="actions"></div>
         </div>
 
     </DashboardLayout>
@@ -194,96 +197,111 @@
 
 <script>
 import DashboardLayout from "@/Pages/Layouts/DashboardLayout";
+import CategoryCheckboxGroup from "@/Components/CategoryCheckboxGroup";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     name: "AllPosts",
     components: {
-        DashboardLayout
+        DashboardLayout,
+        CategoryCheckboxGroup
+    },
+    props: {
+        categories: Array,
+        posts: Object,
+        filters: Object
     },
 
     data:() => ({
         allCheck: false,
         selected: [],
-        search: '',
         searchLoading: false,
-        postPrePage: 10,
-        categories: [],
+        selectedCat: [57],
+        fromDate: '',
+        toDate: '',
+        search: '',
+        post_type: '',
+        postPrePage: 15,
         page: 1,
-        users: [
-            {
-                "id": 1,
-                "name": "Leanne Graham",
-                "username": "Bret",
-                "email": "Sincere@april.biz",
-                "website": "hildegard.org",
-            },
-            {
-                "id": 2,
-                "name": "Ervin Howell",
-                "username": "Antonette",
-                "email": "Shanna@melissa.tv",
-                "website": "anastasia.net",
-            },
-            {
-                "id": 3,
-                "name": "Clementine Bauch",
-                "username": "Samantha",
-                "email": "Nathan@yesenia.net",
-                "website": "ramiro.info",
-            },
-            {
-                "id": 4,
-                "name": "Patricia Lebsack",
-                "username": "Karianne",
-                "email": "Julianne.OConner@kory.org",
-                "website": "kale.biz",
-            },
-            {
-                "id": 5,
-                "name": "Chelsey Dietrich",
-                "username": "Kamren",
-                "email": "Lucio_Hettinger@annie.ca",
-                "website": "demarco.info",
-            },
-            {
-                "id": 6,
-                "name": "Mrs. Dennis Schulist",
-                "username": "Leopoldo_Corkery",
-                "email": "Karley_Dach@jasper.info",
-                "website": "ola.org",
-            },
-            {
-                "id": 7,
-                "name": "Kurtis Weissnat",
-                "username": "Elwyn.Skiles",
-                "email": "Telly.Hoeger@billy.biz",
-                "website": "elvis.io",
-            },
-            {
-                "id": 8,
-                "name": "Nicholas Runolfsdottir V",
-                "username": "Maxime_Nienow",
-                "email": "Sherwood@rosamond.me",
-                "website": "jacynthe.com",
-            },
-            {
-                "id": 9,
-                "name": "Glenna Reichert",
-                "username": "Delphine",
-                "email": "Chaim_McDermott@dana.io",
-                "website": "conrad.com",
-            },
-            {
-                "id": 10,
-                "name": "Clementina DuBuque",
-                "username": "Moriah.Stanton",
-                "email": "Rey.Padberg@karina.biz",
-                "website": "ambrose.net",
-            }
-        ]
+        allow: false,
     }),
+    methods: {
+        joinObject(obj, key, spliter=',') {
+            console.log(spliter)
+        },
+        doFilter() {
+            let data = {};
+            // if(this.selectedCat !== [] )
+            //     data['selectedCat'] = this.selectedCat.join(',');
+            if(this.fromDate !== '' )
+                data['fromDate'] = this.fromDate;
+            if(this.toDate !== '' )
+                data['toDate'] = this.toDate;
+            if(this.search !== '' )
+                data['search'] = this.search;
+            if(this.post_type !== '' )
+                data['post_type'] = this.post_type;
+            if(this.postPrePage !== 15 )
+                data['postPrePage'] = this.postPrePage;
+            if(this.page !== 1 )
+                data['page'] = this.page;
+
+            Inertia.get(route('dashboard.post.allPosts'), data, {
+                preserveState: true,
+                preserveScroll: true,
+            });
+        }
+    },
     beforeMount() {
+        this.allow = false;
         this.$store.state.dashboard.activeSidebarItem = 'Post_All_Posts';
+
+        // this.selectedCat = this.filters['selectedCat'];
+        this.fromDate = this.filters['fromDate'];
+        this.toDate = this.filters['toDate'];
+        this.search = this.filters['search'];
+        this.post_type = this.filters['post_type'];
+        this.postPrePage = parseInt(this.filters['postPrePage']);
+        this.page = this.filters['page'];
+
+        this.allow = true;
+    },
+    watch: {
+        selectedCat: function(val, oldVal) {
+            if (!this.allow) return;
+            // this.doFilter();
+            console.log('selectedCat:',val)
+        },
+        fromDate: function(val, oldVal) {
+            if (!this.allow) return;
+            this.doFilter();
+            console.log('fromDate:',val)
+        },
+        toDate: function(val, oldVal) {
+            if (!this.allow) return;
+            this.doFilter();
+            console.log('toDate:',val)
+        },
+        search: function(val, oldVal) {
+            if (!this.allow) return;
+            this.doFilter();
+            console.log('search:',val)
+        },
+        post_type: function(val, oldVal) {
+            if (!this.allow) return;
+            this.doFilter();
+            console.log('post_type:',val)
+        },
+        postPrePage: function(val, oldVal) {
+            if (!this.allow) return;
+            this.doFilter();
+            console.log('postPrePage:',val)
+        },
+        page: function(val, oldVal) {
+            if (!this.allow) return;
+            this.doFilter();
+            console.log('page:',val)
+        },
     }
 }
 </script>
