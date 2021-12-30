@@ -17,31 +17,37 @@ class PostController extends Controller
     public function allPosts() {
         $pre_page = RequestFacade::input('postPrePage') ? RequestFacade::input('postPrePage') : 15;
             $posts = Post::query()->with([
-                'categories:id,name',
-                'tags' => function($query) {
-                    $query->select('id','name');
-                },
-                'user:id,name'
-            ])
-            ->when(RequestFacade::input('post_type'), function ($query) {
-                switch (RequestFacade::input('post_type')) {
-                    case 'all':
-                        return $query;
-                    case 'trash':
-                        return $query->onlyTrashed();
-                    case 'draft':
-                        return $query->draft();
-                    case 'published':
-                        return $query->published();
-                }
-                return $query;
-            })
-            ->when(RequestFacade::input('search'), function ($query) {
-                return $query->where('title', 'LIKE', '%'.RequestFacade::input('search').'%');
-            })
-            ->select(['id', 'title', 'user_id','updated_at'])
-            ->orderBy('id', 'desc')
-            ->paginate($pre_page)->withQueryString();
+                    'categories:id,name',
+                    'tags' => function($query) {
+                        $query->select('id','name');
+                    },
+                    'user:id,name'
+                ])
+                ->when(RequestFacade::input('post_type'), function ($query) {
+                    switch (RequestFacade::input('post_type')) {
+                        case 'all':
+                            return $query;
+                        case 'trash':
+                            return $query->onlyTrashed();
+                        case 'draft':
+                            return $query->draft();
+                        case 'published':
+                            return $query->published();
+                    }
+                    return $query;
+                })
+                ->when(RequestFacade::input('search'), function ($query) {
+                    return $query->where('title', 'LIKE', '%'.RequestFacade::input('search').'%');
+                })
+                ->when(RequestFacade::input('fromDate'),function ($query){
+                    $query->whereDate('updated_at', '>=', RequestFacade::input('fromDate'));
+                })
+                ->when(RequestFacade::input('toDate'),function ($query){
+                    $query->whereDate('updated_at', '<=', RequestFacade::input('toDate'));
+                })
+                ->select(['id', 'title', 'user_id','updated_at', 'created_at'])
+                ->orderBy('id', 'desc')
+                ->paginate($pre_page)->withQueryString();
 
         return Inertia::render('Dashboard/Post/AllPosts', [
             'categories' => app('rinvex.categories.category')->get()->map(function ($item){
@@ -50,12 +56,12 @@ class PostController extends Controller
             })->toTree(),
             'posts'=>$posts,
             'filters'=> [
-                'selectedCat' => RequestFacade::input('selectedCat', []),
+                'selectedCat' => '57-60',//RequestFacade::input('selectedCat', ''),
                 'fromDate' => RequestFacade::input('fromDate', ''),
                 'toDate' => RequestFacade::input('toDate', ''),
                 'search' => RequestFacade::input('search', ''),
-                'post_type' => RequestFacade::input('post_type', 'all'),
-                'postPrePage' => RequestFacade::input('postPrePage','10'),
+                'post_type' => RequestFacade::input('post_type', ''),
+                'postPrePage' => RequestFacade::input('postPrePage',15),
                 'page' => RequestFacade::input('page', 1),
             ]
         ]);

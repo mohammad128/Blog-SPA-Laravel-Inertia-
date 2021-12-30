@@ -57,9 +57,11 @@ export default {
     },
     watch: {
         value: function(newVal){
+            console.log('value');
             this.selected = newVal;
         },
         selected: function(val) {
+            console.log('selected');
             this.$emit('input', val);
         },
         items: function (){

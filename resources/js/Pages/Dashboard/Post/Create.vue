@@ -131,7 +131,7 @@ export default {
             console.log(result)
         },
         submit() {
-            console.log(this.form)
+            console.log(this.form);
             this.form
                 .transform(data => ({
                     ... data,

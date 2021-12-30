@@ -23,20 +23,20 @@
                     <i class='bx bx-plus' ></i>
                 </vs-button>
             </div>
-            <div class="flex bg-white rounded-full">
-                <a :class="{'bg-purple-200' : filters['post_type']==='all' }" class="bg-gray-100 rounded-l-full px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900" href="javascript:void(0)"
+            <div class="flex bg-white rounded-full divide-x divide-gray-300">
+                <a :class="{'bg-indigo-200' : filters['post_type']==='all' | filters['post_type']==='' }" class="bg-gray-100 rounded-l-full px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900" href="javascript:void(0)"
                     @click="post_type='all'" >
                     All
                 </a>
-                <a :class="{'bg-purple-200' : filters['post_type']==='trash' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-red-600 hover:text-red-800" href="javascript:void(0)"
+                <a :class="{'bg-indigo-200' : filters['post_type']==='trash' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-red-600 hover:text-red-800" href="javascript:void(0)"
                     @click="post_type='trash'" >
                     Trash
                 </a>
-                <a :class="{'bg-purple-200' : filters['post_type']==='draft' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-yellow-600 hover:text-yellow-400" href="javascript:void(0)"
+                <a :class="{'bg-indigo-200' : filters['post_type']==='draft' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-yellow-600 hover:text-yellow-700" href="javascript:void(0)"
                     @click="post_type='draft'" >
                     Draft
                 </a>
-                <a :class="{'bg-purple-200' : filters['post_type']==='published' }" class="bg-gray-100 rounded-r-full px-4 py-2 text-sm font-bold text-blue-600 hover:text-blue-800" href="javascript:void(0)"
+                <a :class="{'bg-indigo-200' : filters['post_type']==='published' }" class="bg-gray-100 rounded-r-full px-4 py-2 text-sm font-bold text-blue-600 hover:text-blue-800" href="javascript:void(0)"
                     @click="post_type='published'" >
                     Published
                 </a>
@@ -173,7 +173,7 @@
                             </span>
                         </vs-td>
                         <vs-td>
-                            {{tr.updated_at}}
+                            {{tr.updated_at.substring(0,10)}}<br><span class="text-xs text-gray-600">{{tr.updated_at_for_human}}</span>
                         </vs-td>
                     </vs-tr>
                 </template>
@@ -187,7 +187,7 @@
 
             </div>
             <div class="center relative">
-                <vs-pagination not-margin v-model="page" :length="20" />
+                <vs-pagination not-margin v-model="page" :length="posts.last_page" />
             </div>
             <div class="actions"></div>
         </div>
@@ -216,7 +216,7 @@ export default {
         allCheck: false,
         selected: [],
         searchLoading: false,
-        selectedCat: [57],
+        selectedCat: [],
         fromDate: '',
         toDate: '',
         search: '',
@@ -226,13 +226,10 @@ export default {
         allow: false,
     }),
     methods: {
-        joinObject(obj, key, spliter=',') {
-            console.log(spliter)
-        },
         doFilter() {
             let data = {};
-            // if(this.selectedCat !== [] )
-            //     data['selectedCat'] = this.selectedCat.join(',');
+            // if(this.selectedCat.length > 0 )
+            //     data['selectedCat'] = this.selectedCat.join('-');
             if(this.fromDate !== '' )
                 data['fromDate'] = this.fromDate;
             if(this.toDate !== '' )
@@ -253,10 +250,18 @@ export default {
         }
     },
     beforeMount() {
-        this.allow = false;
         this.$store.state.dashboard.activeSidebarItem = 'Post_All_Posts';
-
-        // this.selectedCat = this.filters['selectedCat'];
+    },
+    created() {
+        this.allow = false;
+        if( this.filters['selectedCat'] != '' ) {
+            let tmp = this.filters['selectedCat'].split("-");
+            let tmp2 = [];
+            for(let i=0; i<tmp.length;i++)
+                tmp2.push( parseInt( tmp[i] ) );
+            this.selectedCat = tmp2;
+            console.log( 'created . selectedCat2',this.selectedCat ,this.filters['selectedCat']);
+        }
         this.fromDate = this.filters['fromDate'];
         this.toDate = this.filters['toDate'];
         this.search = this.filters['search'];
@@ -264,43 +269,59 @@ export default {
         this.postPrePage = parseInt(this.filters['postPrePage']);
         this.page = this.filters['page'];
 
-        this.allow = true;
+        let that = this;
+        setInterval(function () {
+            that.allow = true;
+        }, 1000)
     },
     watch: {
-        selectedCat: function(val, oldVal) {
-            if (!this.allow) return;
-            // this.doFilter();
-            console.log('selectedCat:',val)
+        selectedCat: {
+            handler(val, oldVal) {
+                if (!this.allow) return;
+                console.log("selectedCat3", this.selectedCat);
+                // if(this.selectedCat.length) {
+                //     console.log("selectedCat3", this.selectedCat);
+                //     console.log("selectedCat3", this.selectedCat.join('-'));
+                // }
+                this.doFilter();
+            },
+            deep: true
         },
         fromDate: function(val, oldVal) {
             if (!this.allow) return;
+            this.page = 1;
             this.doFilter();
             console.log('fromDate:',val)
         },
         toDate: function(val, oldVal) {
             if (!this.allow) return;
+            this.page = 1;
+            console.log('toDate:',val);
             this.doFilter();
-            console.log('toDate:',val)
         },
         search: function(val, oldVal) {
+            alert(20);
             if (!this.allow) return;
+            this.page = 1;
+            console.log('search:',val);
             this.doFilter();
-            console.log('search:',val)
         },
         post_type: function(val, oldVal) {
             if (!this.allow) return;
+            this.page = 1;
+            console.log('post_type:',val);
             this.doFilter();
-            console.log('post_type:',val)
         },
         postPrePage: function(val, oldVal) {
             if (!this.allow) return;
+            this.page = 1;
+            console.log('postPrePage:',val);
             this.doFilter();
-            console.log('postPrePage:',val)
         },
         page: function(val, oldVal) {
             if (!this.allow) return;
+            console.log('page:',val);
             this.doFilter();
-            console.log('page:',val)
         },
     }
 }
