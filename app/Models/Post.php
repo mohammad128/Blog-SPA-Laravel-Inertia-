@@ -12,7 +12,7 @@ class Post extends Model
 {
     use HasFactory, SoftDeletes, Categorizable, HasTags;
 
-    protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug' ];
+    protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug'];
 
     protected $appends = ['updated_at_for_human', 'created_at_for_human'];
 
