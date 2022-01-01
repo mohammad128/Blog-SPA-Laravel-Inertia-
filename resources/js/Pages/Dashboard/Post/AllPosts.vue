@@ -151,9 +151,10 @@
                         <vs-td class="font-bold text-lg">
                             {{ tr.title }}
                             <div class="pt-2 flex opacity-0 group-hover:opacity-100 duration-300 transition space-x-4 pl-2 ">
-                                <a class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="#" ><i class="text-lg bx bx-edit"></i> Edit</a>
-                                <a class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="#" ><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
-                                <a class="flex items-center text-xs text-green-900 opacity-70 space-x-1 hover:opacity-100 " href="#" ><i class="text-lg bx bxs-show"></i> View</a>
+                                <a class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                    @click="link($event)" method="get" :url="route('dashboard.post.edit', {'post':tr.slug})"><i class="text-lg bx bx-edit"></i> Edit</a>
+                                <a class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)" ><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
+                                <a class="flex items-center text-xs text-green-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)" ><i class="text-lg bx bxs-show"></i> View</a>
                             </div>
                         </vs-td>
                         <vs-td>

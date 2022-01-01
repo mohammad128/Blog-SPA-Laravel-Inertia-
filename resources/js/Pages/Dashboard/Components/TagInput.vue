@@ -1,6 +1,6 @@
 <template>
 
-    <input ref='tagifyInput' id="onlyMarvel" type="text" name="mcu" autocomplete placeholer="Tag`s">
+    <input ref='tagifyInput' id="onlyMarvel" type="text" name="mcu" autocomplete placeholer="Tag`s" >
 
 </template>
 <script>
@@ -32,10 +32,13 @@ export default {
             whitelist: this.tags,
             enforceWhitelist: false
         });
+
+
         input.addEventListener('change', onChange)
         function onChange(e){
             that.$emit('input', tagify.value)
         }
+        tagify.addTags(this.value);
         // tagify.on("add", function(e) {
         //     console.log(tagify.value);
         //     // console.log(e.detail.data);

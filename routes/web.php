@@ -26,6 +26,7 @@ Route::middleware([])->group(function () {
          * Dashboard Routes
          * */
         Route::prefix('/dashboard')->group(function () {
+            // Index Dashboard
             Route::get('', function () {
                 sleep(2);
                 return Inertia::render('Dashboard/Index');
@@ -35,12 +36,14 @@ Route::middleware([])->group(function () {
             Route::prefix('/Post')->group(function (){
                 Route::get("/", [ \App\Http\Controllers\Dashboard\PostController::class, 'allPosts' ] )->name('dashboard.post.allPosts');
                 Route::get("/Create", [ \App\Http\Controllers\Dashboard\PostController::class, 'create' ] )->name('dashboard.post.create');
+                Route::get("/Edit/{post:slug}", [ \App\Http\Controllers\Dashboard\PostController::class, 'edit' ] )->name('dashboard.post.edit');
+                Route::put("/Edit/{post:slug}", [ \App\Http\Controllers\Dashboard\PostController::class, 'update' ] )->name('dashboard.post.update');
                 Route::get('/Categories', [\App\Http\Controllers\Dashboard\PostController::class, 'categories'])->name('dashboard.post.categories');
-
 
                 Route::post('/Create', [\App\Http\Controllers\Dashboard\PostController::class, 'store'])->name('dashboard.post.create');
             });
 
+            // Tag Routes
             Route::prefix('/Tag')->group(function() {
                 Route::get('/', [\App\Http\Controllers\Dashboard\TagController::class, 'index'])->name('dashboard.tag');
                 Route::post('/', [\App\Http\Controllers\Dashboard\TagController::class, 'store'])->name('dashboard.tag.store');
@@ -49,7 +52,7 @@ Route::middleware([])->group(function () {
                 Route::post('/mulitDelete', [\App\Http\Controllers\Dashboard\TagController::class, 'multiDelete'])->name('dashboard.tag.multiDelete');
             });
 
-            // Post Routes
+            // Category Routes
             Route::prefix('/Category')->group(function (){
                 Route::post("/", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'create' ] )->name('dashboard.category.create');
                 Route::put("/{id}", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'update' ] )->name('dashboard.category.update');
@@ -57,6 +60,7 @@ Route::middleware([])->group(function () {
                 Route::post("/multiDelete", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'multiDelete' ] )->name('dashboard.category.multiDelete');
             });
 
+            // Media Routes
             Route::prefix('/Media')->group(function () {
                 Route::get('/', [ \App\Http\Controllers\Dashboard\MediaController::class, 'index'])->name('dashboard.media.index');
                 Route::get('/AddMedia', [ \App\Http\Controllers\Dashboard\MediaController::class, 'create'])->name('dashboard.media.create');
