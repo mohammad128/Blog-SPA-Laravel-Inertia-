@@ -41,6 +41,9 @@ Route::middleware([])->group(function () {
                 Route::get('/Categories', [\App\Http\Controllers\Dashboard\PostController::class, 'categories'])->name('dashboard.post.categories');
 
                 Route::post('/Create', [\App\Http\Controllers\Dashboard\PostController::class, 'store'])->name('dashboard.post.create');
+
+                Route::post('/MultiDelete', [\App\Http\Controllers\Dashboard\PostController::class, 'destroy'])->name('dashboard.post.multiDelte');
+                Route::delete('/{post:id}', [\App\Http\Controllers\Dashboard\PostController::class, 'delete'])->name('dashboard.post.delete');
             });
 
             // Tag Routes

@@ -24,21 +24,21 @@
                 </vs-button>
             </div>
             <div class="flex bg-white rounded-full divide-x divide-gray-300">
-                <a :class="{'bg-indigo-200' : filters['post_type']==='all' | filters['post_type']==='' }" class="bg-gray-100 rounded-l-full px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900" href="javascript:void(0)"
+                <a :class="{'bg-indigo-100 transform -translate-y-1' : filters['post_type']==='all' | filters['post_type']==='' }" class="bg-gray-100 rounded-l-full px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900" href="javascript:void(0)"
                     @click="post_type='all'" >
-                    All
+                    All <span class="text-xs text-gray-600">({{post_count.all}})</span>
                 </a>
-                <a :class="{'bg-indigo-200' : filters['post_type']==='trash' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-red-600 hover:text-red-800" href="javascript:void(0)"
+                <a :class="{'bg-indigo-100 transform -translate-y-1' : filters['post_type']==='trash' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-red-600 hover:text-red-800" href="javascript:void(0)"
                     @click="post_type='trash'" >
-                    Trash
+                    Trash <span class="text-xs text-gray-600">({{post_count.trash}})</span>
                 </a>
-                <a :class="{'bg-indigo-200' : filters['post_type']==='draft' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-yellow-600 hover:text-yellow-700" href="javascript:void(0)"
+                <a :class="{'bg-indigo-100 transform -translate-y-1' : filters['post_type']==='draft' }" class="bg-gray-100 px-4 py-2 text-sm font-bold text-yellow-600 hover:text-yellow-700" href="javascript:void(0)"
                     @click="post_type='draft'" >
-                    Draft
+                    Draft <span class="text-xs text-gray-600">({{post_count.draft}})</span>
                 </a>
-                <a :class="{'bg-indigo-200' : filters['post_type']==='published' }" class="bg-gray-100 rounded-r-full px-4 py-2 text-sm font-bold text-blue-600 hover:text-blue-800" href="javascript:void(0)"
+                <a :class="{'bg-indigo-100 transform -translate-y-1' : filters['post_type']==='published' }" class="bg-gray-100 rounded-r-full px-4 py-2 text-sm font-bold text-blue-600 hover:text-blue-800" href="javascript:void(0)"
                     @click="post_type='published'" >
-                    Published
+                    Published <span class="text-xs text-gray-600">({{post_count.published}})</span>
                 </a>
             </div>
         </div>
@@ -103,7 +103,23 @@
         </div>
 
         <div class="flex flex-col space-y-10">
-            <div>
+            <div class="relative">
+
+
+                <transition name="bounce">
+                    <div class="absolute -bottom-8 -left-6"  v-if="selected.length">
+                        <vs-button floating icon danger  @click="deleteSelected()" :loading="loading">
+                            Delete ({{selected.length}})
+                        </vs-button>
+                    </div>
+                </transition>
+                <transition name="bounce">
+                    <div class="absolute -top-8 -left-6"  v-if="selected.length">
+                        <vs-button floating icon danger  @click="deleteSelected()" :loading="loading">
+                            Delete ({{selected.length}})
+                        </vs-button>
+                    </div>
+                </transition>
 
                 <vs-table
                 v-model="selected"
@@ -153,7 +169,8 @@
                             <div class="pt-2 flex opacity-0 group-hover:opacity-100 duration-300 transition space-x-4 pl-2 ">
                                 <a class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
                                     @click="link($event)" method="get" :url="route('dashboard.post.edit', {'post':tr.slug})"><i class="text-lg bx bx-edit"></i> Edit</a>
-                                <a class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)" ><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
+                                <a class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                    @click="link($event)" method="delete" :url="route('dashboard.post.delete', {'post': tr.id})"><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
                                 <a class="flex items-center text-xs text-green-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)" ><i class="text-lg bx bxs-show"></i> View</a>
                             </div>
                         </vs-td>
@@ -210,10 +227,12 @@ export default {
     props: {
         categories: Array,
         posts: Object,
-        filters: Object
+        filters: Object,
+        post_count: Object
     },
 
     data:() => ({
+        loading: false,
         allCheck: false,
         selected: [],
         searchLoading: false,
@@ -248,6 +267,17 @@ export default {
                 preserveState: true,
                 preserveScroll: true,
             });
+        },
+        deleteSelected() {
+            this.loading=true;
+            Inertia.post(route('dashboard.post.multiDelte'), {'ids':this.selected.map(item=>item['id'])}, {
+                preserveState: false,
+                preserveScroll: false,
+                onFinish() {
+                    this.loading = false;
+                    this.selected = [];
+                }
+            })
         }
     },
     beforeMount() {
@@ -301,7 +331,6 @@ export default {
             this.doFilter();
         },
         search: function(val, oldVal) {
-            alert(20);
             if (!this.allow) return;
             this.page = 1;
             console.log('search:',val);
@@ -329,5 +358,24 @@ export default {
 </script>
 
 <style scoped>
-
+.bounce-enter-active {
+    animation: bounce-in .5s;
+}
+.bounce-leave-active {
+    animation: bounce-in .5s reverse;
+}
+@keyframes bounce-in {
+    0% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 </style>
+

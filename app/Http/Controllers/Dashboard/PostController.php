@@ -55,6 +55,12 @@ class PostController extends Controller
                 $item['post_count'] = app('rinvex.categories.category')->find($item['id'])->entries(\App\Models\Post::class)->count();
                 return $item;
             })->toTree(),
+            'post_count'=>[
+                'all'=> Post::all()->count(),
+                'trash'=>Post::onlyTrashed()->count(),
+                'draft'=>Post::draft()->count(),
+                'published'=>Post::published()->count(),
+            ],
             'posts'=>$posts,
             'filters'=> [
                 'selectedCat' => '57-60',//RequestFacade::input('selectedCat', ''),
@@ -140,6 +146,16 @@ class PostController extends Controller
         $post->syncTags($request->get('tags'));
         $post->attachCategories($request->get('categuries'));
         return redirect()->route('dashboard.post.allPosts');
+    }
+
+    public function delete( Post $post ) {
+        $post->delete();
+        return redirect()->back();
+    }
+
+    public function destroy( Request $request ) {
+        Post::destroy($request->get('ids'));
+        return redirect()->back();
     }
 
 }
