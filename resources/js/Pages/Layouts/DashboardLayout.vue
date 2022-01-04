@@ -349,13 +349,13 @@ export default {
                 'group': [
                     {
                         'title': 'All Pages',
-                        'url': route('dashboard'),
+                        'url': route('dashboard.page.index'),
                         'icon': 'bx bx-copy-alt',
                         'can': 'read_page'
                     },
                     {
                         'title': 'Add New',
-                        'url': route('dashboard'),
+                        'url': route('dashboard.page.create'),
                         'icon': 'bx bx-add-to-queue',
                         'can': 'create_page'
                     }

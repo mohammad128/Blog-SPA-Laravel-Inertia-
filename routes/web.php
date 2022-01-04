@@ -46,6 +46,18 @@ Route::middleware([])->group(function () {
                 Route::delete('/{post:id}', [\App\Http\Controllers\Dashboard\PostController::class, 'delete'])->name('dashboard.post.delete');
             });
 
+            // Post Routes
+            Route::prefix('/Page')->group(function (){
+                Route::get("/", [ \App\Http\Controllers\Dashboard\PageController ::class, 'index' ] )->name('dashboard.page.index');
+                Route::get("/Create", [ \App\Http\Controllers\Dashboard\PageController::class, 'create' ] )->name('dashboard.page.create');
+                Route::post("/", [ \App\Http\Controllers\Dashboard\PageController ::class, 'store' ] )->name('dashboard.page.store');
+                Route::get("/Edit/{page:slug}", [ \App\Http\Controllers\Dashboard\PageController::class, 'edit' ] )->name('dashboard.page.edit');
+                Route::put("/Edit/{page:slug}", [ \App\Http\Controllers\Dashboard\PageController::class, 'update' ] )->name('dashboard.page.update');
+
+                Route::delete('/{page:id}', [\App\Http\Controllers\Dashboard\PageController::class, 'delete'])->name('dashboard.page.delete');
+                Route::delete('/', [\App\Http\Controllers\Dashboard\PageController::class, 'delete'])->name('dashboard.page.multiDelete');
+            });
+
             // Tag Routes
             Route::prefix('/Tag')->group(function() {
                 Route::get('/', [\App\Http\Controllers\Dashboard\TagController::class, 'index'])->name('dashboard.tag');

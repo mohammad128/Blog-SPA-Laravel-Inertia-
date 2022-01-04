@@ -46,7 +46,7 @@ class PostController extends Controller
                 ->when(RequestFacade::input('toDate'),function ($query){
                     $query->whereDate('updated_at', '<=', RequestFacade::input('toDate'));
                 })
-                ->select(['id', 'title', 'user_id','updated_at', 'created_at', 'slug'])
+                ->select(['id', 'title', 'user_id','updated_at', 'created_at', 'slug', 'draft'])
                 ->orderBy('id', 'desc')
                 ->paginate($pre_page)->withQueryString();
 
