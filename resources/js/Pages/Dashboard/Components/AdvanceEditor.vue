@@ -5,7 +5,7 @@
             <div ref="edit"  class="edit prose sm:prose-sm md:prose-md lg:prose-lg xl:prose-xl" ></div>
         </div>
         <span v-if="error_message" class="text-xs text-red-500">{{error_message}}</span>
-        <vs-dialog v-model="mediaMangerActive"  :loading="mediaMangerLoading">
+        <vs-dialog blur v-model="mediaMangerActive"  :loading="mediaMangerLoading">
             <MediaManager :picker="true" :type="mediaMangerType" :multiCheck="false" @onPick="onPickMediaPicker($event)" @onLoading="onLoadingMediaPicker($event)"/>
         </vs-dialog>
     </div>

@@ -89,7 +89,7 @@
 
         <div class="w-full">
             <div class="flex flex-row justify-between">
-                <aside :style="{width: sideBarWidht+'px'}" class="sticky top-10 w-full sm:w-0 md:w-3/12 sm:relative relative z-0">
+                <aside :style="{width: sideBarWidht+'px'}" class="sticky top-10 w-full sm:w-0 md:w-3/12 sm:relative relative z-50">
                     <div class="w-full h-full">
                         <vs-sidebar
                             id="sideBar"
@@ -344,7 +344,7 @@ export default {
             //     ]
             // },
             {
-                'title': 'Pages',
+                'title': 'Page',
                 'icon': 'bx bxs-copy-alt',
                 'group': [
                     {
@@ -363,7 +363,7 @@ export default {
             },
             {
                 'title': 'Comments',
-                'url': route('dashboard'),
+                'url': route('dashboard.comment.index'),
                 'icon': 'bx bxs-comment',
                 'can': 'comments_actions',
             },

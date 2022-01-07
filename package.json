@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@inertiajs/progress": "^0.2.6",
+        "@tailwindcss/line-clamp": "^0.3.0",
         "@yaireo/tagify": "^4.9.4",
         "boxicons": "^2.1.1",
         "froala-editor": "^4.0.8",

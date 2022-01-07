@@ -18,7 +18,7 @@
                     floating
                     @click="link($event)"
                     method="get"
-                    :url="route('dashboard.post.create')"
+                    :url="route('dashboard.page.create')"
                 >
                     <i class='bx bx-plus' ></i>
                 </vs-button>
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="flex justify-between lg:items-center mb-4 mt-4 flex-col-reverse gap-4 md:flex-row flex lg:space-x-4 bg-white p-4 rounded-2xl">
+        <div class="flex justify-between mb-4 mt-4 flex-col gap-4 xl:flex-row flex lg:space-x-4 bg-white p-4 rounded-2xl">
             <div class="flex">
                 <vs-input
                     placeholder="Search"
@@ -80,7 +80,7 @@
                 <span class="text-sm text-gray-400 pl-5 pt-3">total: 222</span>
             </div>
 
-            <div class="flex gap-4 flex-col lg:flex-row items-center ">
+            <div class="flex gap-4 flex-col sm:flex-row  ">
                 <div class="flex gap-2 items-center">
                     <span class="text-xs text-gray-700">From:</span>
                     <vs-input
@@ -103,16 +103,22 @@
 
 
                 <transition name="bounce">
-                    <div class="absolute -bottom-8 -left-6"  v-if="selected.length">
+                    <div class="flex absolute -bottom-8 -left-6"  v-if="selected.length">
                         <vs-button floating icon danger  @click="deleteSelected()" :loading="loading">
                             Delete ({{selected.length}})
+                        </vs-button>
+                        <vs-button v-if="post_type == 'trash'" floating icon warn  @click="restoreSelected()" :loading="loading">
+                            Restore ({{selected.length}})
                         </vs-button>
                     </div>
                 </transition>
                 <transition name="bounce">
-                    <div class="absolute -top-8 -left-6"  v-if="selected.length">
+                    <div class="flex absolute -top-8 -left-6"  v-if="selected.length">
                         <vs-button floating icon danger  @click="deleteSelected()" :loading="loading">
                             Delete ({{selected.length}})
+                        </vs-button>
+                        <vs-button v-if="post_type == 'trash'" floating icon warn  @click="restoreSelected()" :loading="loading">
+                            Restore ({{selected.length}})
                         </vs-button>
                     </div>
                 </transition>
@@ -158,11 +164,18 @@
                             {{ tr.title }} <span v-if="tr.draft" class="text-xs text-gray-700 bg-amber-200 px-2 py-1 rounded-lg">draft</span>
                                             <span v-else class="text-xs text-gray-700 bg-lime-200 px-2 py-1 rounded-lg">publish</span>
                             <div class="pt-2 flex opacity-0 group-hover:opacity-100 duration-300 transition space-x-4 pl-2 ">
-                                <a class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
-                                    @click="link($event)" method="get" :url="route('dashboard.page.edit', {'page':tr.slug})"><i class="text-lg bx bx-edit"></i> Edit</a>
-                                <a class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
-                                    @click="link($event)" method="delete" :url="route('dashboard.page.delete', {'page': tr.id})"><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
-                                <a class="flex items-center text-xs text-green-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)" ><i class="text-lg bx bxs-show"></i> View</a>
+
+                                <a v-if="post_type=='trash'" class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                   @click="link($event)" method="get" :url="route('dashboard.page.restore', {'id':tr.id})"><i class="text-lg bx bx-reset"></i> Restore</a>
+                                <a v-else class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                   @click="link($event)" method="get" :url="route('dashboard.page.edit', {'page':tr.slug})"><i class="text-lg bx bx-edit"></i> Edit</a>
+
+                                <a v-if="post_type=='trash'" class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                   @click="link($event)" method="delete" :url="route('dashboard.page.forceDelete', {'page': tr.id})"><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
+                                <a v-else class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                   @click="link($event)" method="delete" :url="route('dashboard.page.delete', {'page': tr.id})"><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
+
+                                <a v-if="post_type != 'trash'" class="flex items-center text-xs text-green-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)" ><i class="text-lg bx bxs-show"></i> View</a>
                             </div>
                         </vs-td>
                         <vs-td>
@@ -254,7 +267,11 @@ export default {
         },
         deleteSelected() {
             this.loading=true;
-            Inertia.post(route('dashboard.post.multiDelte'), {'ids':this.selected.map(item=>item['id'])}, {
+            let url;
+            if(this.post_type === 'trash')
+                url = route('dashboard.page.multiForceDelete');
+            else url = route('dashboard.page.multiDelete');
+            Inertia.post(url, {'ids':this.selected.map(item=>item['id'])}, {
                 preserveState: false,
                 preserveScroll: false,
                 onFinish() {
@@ -262,10 +279,21 @@ export default {
                     this.selected = [];
                 }
             })
-        }
+        },
+        restoreSelected() {
+            this.loading=true;
+            Inertia.post(route('dashboard.page.multiRestore'), {'ids':this.selected.map(item=>item['id'])}, {
+                preserveState: false,
+                preserveScroll: false,
+                onFinish() {
+                    this.loading = false;
+                    this.selected = [];
+                }
+            })
+        },
     },
     beforeMount() {
-        this.$store.state.dashboard.activeSidebarItem = 'Post_All_Posts';
+        this.$store.state.dashboard.activeSidebarItem = 'Page_All_Pages';
     },
     created() {
         this.allow = false;

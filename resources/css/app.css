@@ -18,3 +18,8 @@
     background: #2c3e50;
     border-radius: 5px;
 }
+
+.blur {
+    --tw-blur: blur(0px);
+    filter: var(--tw-filter);
+}

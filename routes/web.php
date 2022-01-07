@@ -50,12 +50,17 @@ Route::middleware([])->group(function () {
             Route::prefix('/Page')->group(function (){
                 Route::get("/", [ \App\Http\Controllers\Dashboard\PageController ::class, 'index' ] )->name('dashboard.page.index');
                 Route::get("/Create", [ \App\Http\Controllers\Dashboard\PageController::class, 'create' ] )->name('dashboard.page.create');
-                Route::post("/", [ \App\Http\Controllers\Dashboard\PageController ::class, 'store' ] )->name('dashboard.page.store');
+                Route::post("/Create", [ \App\Http\Controllers\Dashboard\PageController ::class, 'store' ] )->name('dashboard.page.store');
                 Route::get("/Edit/{page:slug}", [ \App\Http\Controllers\Dashboard\PageController::class, 'edit' ] )->name('dashboard.page.edit');
                 Route::put("/Edit/{page:slug}", [ \App\Http\Controllers\Dashboard\PageController::class, 'update' ] )->name('dashboard.page.update');
 
                 Route::delete('/{page:id}', [\App\Http\Controllers\Dashboard\PageController::class, 'delete'])->name('dashboard.page.delete');
-                Route::delete('/', [\App\Http\Controllers\Dashboard\PageController::class, 'delete'])->name('dashboard.page.multiDelete');
+                Route::post('/', [\App\Http\Controllers\Dashboard\PageController::class, 'destroy'])->name('dashboard.page.multiDelete');
+                Route::post('/multiForceDelete', [\App\Http\Controllers\Dashboard\PageController::class, 'multiForceDelete'])->name('dashboard.page.multiForceDelete');
+                Route::delete('/forceDelete/{page:id}', [\App\Http\Controllers\Dashboard\PageController::class, 'forceDelete'])->name('dashboard.page.forceDelete');
+
+                Route::get('/restore/{id}', [\App\Http\Controllers\Dashboard\PageController::class, 'restore'])->name('dashboard.page.restore');
+                Route::post('/restore', [\App\Http\Controllers\Dashboard\PageController::class, 'multiRestore'])->name('dashboard.page.multiRestore');
             });
 
             // Tag Routes
@@ -89,6 +94,21 @@ Route::middleware([])->group(function () {
                 Route::post('/AddMedia/Service/filter', [ \App\Http\Controllers\Dashboard\MediaController::class, 'filter'])->name('dashboard.media.filter');
             });
 
+            Route::prefix('/Comments')->group(function() {
+                Route::get('/', [\App\Http\Controllers\Dashboard\CommentController::class, 'index'])->name('dashboard.comment.index');
+                Route::put('/{comment:id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'update'])->name('dashboard.comment.update');
+                Route::delete('/{comment:id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'trash'])->name('dashboard.comment.trash');
+
+                Route::post('/approveComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'approveComments'])->name('dashboard.comment.approveComments');
+                Route::post('/trashComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'trashComments'])->name('dashboard.comment.trashComments');
+                Route::post('/spamComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'spamComments'])->name('dashboard.comment.spamComments');
+
+                Route::get('/delete/{id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'delete'])->name('dashboard.comment.delete');
+                Route::post('/deleteComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'deleteComments'])->name('dashboard.comment.deleteComments');
+                Route::get('/restore/{id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'restore'])->name('dashboard.comment.restore');
+                Route::post('/restoreComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'restoreComments'])->name('dashboard.comment.restoreComments');
+            });
+
         });
 
         /*
@@ -114,76 +134,18 @@ Route::middleware([])->group(function () {
 
 
 Route::get('test', function () {
-//    echo asset('storage/media/kNTfSJlEn0y8QDxY7wDRR1LIdt3i3T37osAm0uTN.jpg');
-//    echo storage_path('public');
-//    return response()->download( storage_path( 'app/public/media/ktXjIcsiQgg72ZNihqrniYwA2DTBQDBUlxiGrggM.png' ), 'aaaa' );
-//    $ext = pathinfo('media/ktXjIcsiQgg72ZNihqrniYwA2DTBQDBUlxiGrggM.png', PATHINFO_EXTENSION);
-//    return $ext;
-    return Inertia::render('test');
+//    for($i=0; $i<2; $i++)
+//        \App\Models\Post::find(867)->comments()->create([
+//            'content' => "This is Test Comemnt ".$i,
+//            'user_id' => auth()->id(),
+//            'parent_id' => 2
+//        ]);
 
+    $comment = \App\Models\Post::find(867)->comments()->rootComments()->paginate(null, ['*'], 'page', 2);//->offset(10)->limit(10)->get();
 
-//    auth()->user()->syncRoles('admin');
-
-//    $permissions = get_json_permissions();
-//
-//    $roles = [
-//        'Editor' => $permissions,
-//    ];
-////    foreach ($roles as $role_name=>$role_permissions) {
-//        $__role_permissions = [];
-//        foreach ($permissions as $permission_cat => $_p) {
-//            foreach ($_p['permissions'] as $__p) {
-//                $name = $__p['name'];
-//                $desc = $__p['desc'];
-//                $p = Permission::query()->where(['name'=>$name])->first();
-//                if($p)
-//                    array_push($__role_permissions, $p );
-//                else
-//                    array_push($__role_permissions, Permission::create(['name'=>$name]) );
-//
-//            }
-//        }
-////        $r = Role::create(['name'=>$role_name]);
-//        Role::findById(2)->syncPermissions($__role_permissions);
-////    }
-//
-////    $user = \App\Models\User::find(402)->syncRoles('Editor');
-
-
-
-//    app('rinvex.categories.category')->create(['name' => ['en' => 'New Category 3'], 'slug' => 'Cat3']);
-//    $parent = app('rinvex.categories.category')->find(12);
-//    $parent->children()->create(['name' => ['en' => 'Sub Category 12-1']]);
-
-//    $attributes = [
-//        'name' => "Cat7",
-//        'parent_id' => '',
-//        'slug' => 'دسته هفت',
-//        'description' =>'Test Description For Cat 6'
-//    ];
-//
-//    app('rinvex.categories.category')->create($attributes); // Saved as root
-
-
-//    $categories = app('rinvex.categories.category')->get()->toTree();
-//    $traverse = function ($categories, $prefix = '') use (&$traverse) {
-//        foreach ($categories as $category) {
-//            echo PHP_EOL.$prefix.' '.$category->name.'<br>';
-//
-//            $traverse($category->children, $prefix.'___');
-//        }
-//    };
-//    $traverse($categories);
-
-//    echo \Illuminate\Support\Str::slug("", "-");
-
-//    echo ($categories = app('rinvex.categories.category')->get()->toTree() );
-
-
-//    $post = \App\Models\Post::find(505);
-//    $post->attachCategories(59);
-//    dd($post);
-
+    return Inertia::render('test', [
+        'comments' => $comment
+    ]);
 });
 
 

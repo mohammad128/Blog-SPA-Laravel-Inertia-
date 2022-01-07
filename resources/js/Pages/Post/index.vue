@@ -41,7 +41,7 @@
                             <img :src="post.feature_image" alt="">
                         </template>
                         <template #text style="width: 100%" class="bg-gray-800">
-                            <h3>{{post.title}}</h3> <inertia-link class="text-sm text-blue-700" :href="route('Post.index')">more...</inertia-link>
+                            <h3 class="line-clamp-2">{{post.title}}</h3> <inertia-link class="text-sm text-blue-700" :href="route('Post.index')">more...</inertia-link>
                         </template>
                         <template #interactions>
                             <vs-button icon gradient @click="showPreviewPsot(post.id)">

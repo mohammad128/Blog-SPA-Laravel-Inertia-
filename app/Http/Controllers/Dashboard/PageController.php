@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request as RequestFacade;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class PageController extends Controller
@@ -62,17 +64,40 @@ class PageController extends Controller
     }
 
     public function create() {
-        dd("Create Page");
+        return Inertia::render('Dashboard/Page/Create');
     }
     public function store( Request $request) {
-        dd($request->all());
+        $request->validate([
+            'title' => ['required'],
+            'slug' => ['required', 'unique:posts'],
+            'content' => ['required'],
+            'feature_image' => ['required'],
+//            'disible_comment' => ['required'],
+//            'password' => ['required'],
+//            'draft' => ['required'],
+        ]);
+        $password = $request->get('password')=='' ? null : Hash::make($request->get('password'));
+        Page::create(  ['user_id' => auth()->user()->id, 'password'=> $password ] + $request->all() );
+        return redirect()->route('dashboard.page.index');
     }
 
-    public function edit() {
-        dd("Create Page");
+    public function edit( Page  $page) {
+        return Inertia::render('Dashboard/Page/Edit', [
+            'post' => $page
+        ]);
     }
     public function update(Page $page, Request $request) {
-        dd($page,$request->all());
+        $request->validate([
+            'title' => ['required'],
+            'slug' => ['required',
+                Rule::unique('posts')->ignore($page)
+            ],
+            'content' => ['required'],
+            'feature_image' => ['required']
+        ]);
+        $password = $request->get('password')=='' ? null : Hash::make($request->get('password'));
+        $page->update(  ['user_id' => auth()->user()->id, 'password'=> $password ] + $request->all() );
+        return redirect()->route('dashboard.page.index');
     }
 
 
@@ -81,5 +106,27 @@ class PageController extends Controller
         return redirect()->back();
     }
 
+    public function destroy(Request $request) {
+        Page::destroy($request->get('ids'));
+        return redirect()->back();
+    }
+
+    public function multiForceDelete(Request $request) {
+        Page::withTrashed()->whereIn( 'id', $request->get('ids', []) )->forceDelete();
+        return redirect()->back();
+    }
+    public function forceDelete($id) {
+        Page::withTrashed()->find($id)->forceDelete();
+        return redirect()->back();
+    }
+
+    public function restore($id) {
+        Page::onlyTrashed()->find($id)->restore();
+        return redirect()->back();
+    }
+    public function multiRestore(Request $request) {
+        Page::onlyTrashed()->whereIn('id', $request->get('ids'))->restore();
+        return redirect()->back();
+    }
 
 }

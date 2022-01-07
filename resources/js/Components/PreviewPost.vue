@@ -1,6 +1,6 @@
 <template>
     <div>
-        <vs-dialog scroll overflow-hidden v-model="active" v-on:close="close" >
+        <vs-dialog blur scroll overflow-hidden v-model="active" v-on:close="close" >
             <template #header>
                 <vue-content-loading v-if="loading" :width="300" :height="24" class="grid items-center justify-items-center">
                     <rect x="100" y="0" rx="4" ry="4" width="100" height="15" />
