@@ -146,16 +146,16 @@
                                     @change="selected = $vs.checkAll(selected, comments.data)"
                                 />
                             </vs-th>
-                            <vs-th sort @click="">
+                            <vs-th sort ref="th_name" @click="sort($event, 'name')">
                                 Name
                             </vs-th>
-                            <vs-th sort @click="">
+                            <vs-th sort ref="th_comment" @click="sort($event, 'comment')">
                                 Comment
                             </vs-th>
-                            <vs-th sort @click="">
+                            <vs-th sort ref="th_date" @click="sort($event, 'date')">
                                 Date
                             </vs-th>
-                            <vs-th sort @click="">
+                            <vs-th sort ref="th_status" @click="sort($event, 'status')">
                                 Status
                             </vs-th>
                         </vs-tr>
@@ -344,6 +344,8 @@ export default {
             allow: false,
             prePage: 15,
             awaitingSearch: false,
+            sortKey: '',
+            sortType: ''
         }
     },
     created() {
@@ -355,12 +357,62 @@ export default {
         this.fromDate = this.filters.fromDate;
         this.toDate = this.filters.toDate;
         this.prePage = this.filters.prePage;
+        this.sortKey = this.filters.sortKey;
+        this.sortType = this.filters.sortType;
         let that = this;
         setInterval(function () {
             that.allow = true;
         }, 1000)
+
+    },
+    mounted(){
+        let el = null;
+        switch(this.sortKey) {
+            case 'name':
+                el = this.$refs.th_name.$el;
+                break;
+            case 'comment':
+                el = this.$refs.th_comment.$el;
+                break;
+            case 'date':
+                el = this.$refs.th_date.$el;
+                break;
+            case 'status':
+                el = this.$refs.th_status.$el;
+                break;
+        }
+        if( el ) {
+            el.dataset["sortType" + this.sortKey] = this.sortType;
+            el.dataset["sortType"] = this.sortType;
+            el.dataset["sortKey"] = "sortType" + this.sortKey;
+        }
     },
     methods: {
+        sort(event, sortKey, type) {
+
+            var sortType = type || 'desc';
+            var el = event.target;
+
+            if (el.dataset["sortType" + sortKey] == 'desc') {
+                sortType = 'asc';
+            } else if (el.dataset["sortType" + sortKey] == 'asc') {
+                sortType = null;
+            }
+
+            el.dataset["sortType" + sortKey] = sortType;
+            el.dataset["sortType"] = sortType;
+            el.dataset["sortKey"] = "sortType" + sortKey;
+            var parent = el.closest('.vs-table__tr');
+            var ths = parent.querySelectorAll('th.sort');
+            ths.forEach(function (th) {
+                if (th != el) {
+                    th.dataset.sortType = null;
+                    th.dataset[th.dataset["sortKey"]] = null;
+                }
+            });
+            this.sortKey = sortKey;
+            this.sortType = sortType;
+        },
         deleteComment(id) {
             this.$inertia.delete(route('dashboard.comment.trash', {'id': id}), {
                 preserveScroll: true,
@@ -391,6 +443,11 @@ export default {
                 data['toDate'] = this.toDate;
             if(this.prePage !== 15 )
                 data['prePage'] = this.prePage;
+
+            if(this.sortKey && this.sortType ) {
+                data['sortKey'] = this.sortKey;
+                data['sortType'] = this.sortType;
+            }
             this.selected = [];
             this.$inertia.get(route('dashboard.comment.index'), data, {
                 preserveState: true,
@@ -454,6 +511,12 @@ export default {
                 }, 1000); // 1 sec delay
             }
             this.awaitingSearch = true;
+        },
+        sortKey: function(){
+            this.doFilter();
+        },
+        sortType: function(){
+            this.doFilter();
         },
         fromDate: function() {
             this.doFilter();

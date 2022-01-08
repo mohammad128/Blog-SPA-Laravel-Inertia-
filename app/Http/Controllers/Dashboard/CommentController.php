@@ -48,6 +48,31 @@ class CommentController extends Controller
             ->when(RequestFacade::input('toDate'),function ($query){
                 $query->whereDate('created_at', '<=', RequestFacade::input('toDate'));
             })
+            ->when( RequestFacade::input('sortKey') && RequestFacade::input('sortType'), function($query) {
+                $sortKey = RequestFacade::input('sortKey');
+                $sortType = RequestFacade::input('sortType');
+                if( !in_array($sortType, ['desc', 'asc']) OR !in_array($sortKey, ['name', 'comment', 'date', 'status']) )
+                    return $query;
+                switch ($sortKey) {
+                    case 'name':
+                        return $query->join('users', 'comments.user_id', '=', 'users.id')
+                            ->select('comments.*', 'users.name')
+                            ->orderBy('name', RequestFacade::input('sortType'));
+                        break;
+                    case 'comment':
+                        return $query->orderBy( 'content',  RequestFacade::input('sortType'));
+                        break;
+                    case 'date':
+                        return $query->orderBy( 'created_at',  RequestFacade::input('sortType'));
+                        break;
+                    case 'status':
+                        return $query->orderBy( 'status',  RequestFacade::input('sortType'));
+                        break;
+                }
+                return $query;
+            }, function ($query) {
+                return $query->orderBy('id', 'desc');
+            })
             ->paginate($pre_page);
         $comments->through(function ($item) {
             if($item['parent_id'] != 0 ) {
@@ -68,6 +93,8 @@ class CommentController extends Controller
                 'fromDate' => RequestFacade::input('fromDate', ''),
                 'toDate' => RequestFacade::input('toDate', ''),
                 'prePage' => RequestFacade::input('prePage', 15),
+                'sortKey' => RequestFacade::input('sortKey', ''),
+                'sortType' => RequestFacade::input('sortType', ''),
             ],
             'comments_count' => [
                 'all'=> Comment::count(),
