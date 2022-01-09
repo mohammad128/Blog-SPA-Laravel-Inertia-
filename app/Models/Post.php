@@ -14,7 +14,7 @@ class Post extends Model
 
     protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug' ];
 
-    protected $appends = ['updated_at_for_human', 'created_at_for_human'];
+    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url'];
 
     public function user() {
         return $this->belongsTo(User::class);
@@ -32,6 +32,9 @@ class Post extends Model
     }
     public function getCreatedAtForHumanAttribute() {
         return $this->created_at->diffForHumans();
+    }
+    public function getUrlAttribute() {
+        return route('Post.show', ['post'=>$this->slug]);
     }
 
     /*

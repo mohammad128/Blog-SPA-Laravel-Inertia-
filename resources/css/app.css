@@ -2,7 +2,15 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-
+@layer components {
+    .card {
+        background-color: theme('colors.white');
+        border-radius: theme('borderRadius.lg');
+        padding: theme('spacing.6');
+        box-shadow: theme('boxShadow.xl');
+    }
+    /* ... */
+}
 #nprogress{
     z-index: 9999999999999999999;
     position: fixed;

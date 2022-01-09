@@ -27,10 +27,7 @@ Route::middleware([])->group(function () {
          * */
         Route::prefix('/dashboard')->group(function () {
             // Index Dashboard
-            Route::get('', function () {
-                sleep(2);
-                return Inertia::render('Dashboard/Index');
-            })->name('dashboard');
+            Route::get('/', [\App\Http\Controllers\Dashboard\DashboardController::class,'index'])->name('dashboard');
 
             // Post Routes
             Route::prefix('/Post')->group(function (){
@@ -94,6 +91,7 @@ Route::middleware([])->group(function () {
                 Route::post('/AddMedia/Service/filter', [ \App\Http\Controllers\Dashboard\MediaController::class, 'filter'])->name('dashboard.media.filter');
             });
 
+            //Comments Route
             Route::prefix('/Comments')->group(function() {
                 Route::get('/', [\App\Http\Controllers\Dashboard\CommentController::class, 'index'])->name('dashboard.comment.index');
                 Route::put('/{comment:id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'update'])->name('dashboard.comment.update');
@@ -109,7 +107,16 @@ Route::middleware([])->group(function () {
                 Route::post('/restoreComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'restoreComments'])->name('dashboard.comment.restoreComments');
             });
 
-        });
+            // Users Routes
+            Route::prefix('/User')->group(function() {
+                Route::get('/', function (){
+                    dd("Users");
+                })->name('dashboard.user.index');
+
+            });
+
+
+            });
 
         /*
          * Other Routes
@@ -128,6 +135,7 @@ Route::middleware([])->group(function () {
     Route::prefix("/Post")->group(function () {
         Route::get('/', [\App\Http\Controllers\PostController::class, 'index'])->name('Post.index');
         Route::post('/{id}', [\App\Http\Controllers\PostController::class, 'postPreview'])->name('Post.postPreview');
+        Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
     });
 
 });

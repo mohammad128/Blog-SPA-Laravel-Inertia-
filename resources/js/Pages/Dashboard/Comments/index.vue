@@ -206,6 +206,12 @@
                                     </div>
                                     <div class="flex-1 px-4 mx-4 text-xs">
                                         <div class="flex flex-col">
+                                            <div class="flex flex-row items-center">
+                                                &nbsp;&nbsp; <span class="line-clamp-1 text-sm font-bold text-sky-500">{{tr.commentable.title}}</span>
+                                                <vs-button circle  size="small" floating @click="link($event)" method="get" :url="tr.commentable.url" >
+                                                    <i class="font-bold text-xl bx bxs-show"></i>
+                                                </vs-button>
+                                            </div>
                                             <div v-if="tr.parent" class="flex flex-row items-center gap-2">
                                                 <span  class="text-xs text-sky-700 my-2">In reply to {{tr.parent.user.email}}</span>
                                                 <div class="text-gray-800 line-clamp-1">[{{tr.parent.content}}]</div>
@@ -433,7 +439,7 @@ export default {
             let data = {};
             if(this.page>1)
                 data['page'] = this.page;
-            if(this.comment_type !== '')
+            if(this.comment_type !== '' && this.comment_type !== 'all')
                 data['comment_type'] = this.comment_type;
             if(this.search !== '')
                 data['search'] = this.search;
@@ -441,7 +447,7 @@ export default {
                 data['fromDate'] = this.fromDate;
             if(this.toDate !== '')
                 data['toDate'] = this.toDate;
-            if(this.prePage !== 15 )
+                if(this.prePage !== 15 && this.prePage !== '15' )
                 data['prePage'] = this.prePage;
 
             if(this.sortKey && this.sortType ) {
@@ -500,6 +506,7 @@ export default {
             this.doFilter();
         },
         comment_type: function() {
+            this.page = 1;
             this.doFilter();
         },
         search: function() {
@@ -519,9 +526,11 @@ export default {
             this.doFilter();
         },
         fromDate: function() {
+            this.page = 1;
             this.doFilter();
         },
         toDate: function() {
+            this.page = 1;
             this.doFilter();
         },
         prePage: function() {
