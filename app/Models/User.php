@@ -51,6 +51,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
     /**
      * The accessors to append to the model's array form.
      *
@@ -63,8 +64,17 @@ class User extends Authenticatable
     public function posts() {
         return $this->hasMany(Post::class);
     }
+    public function pages() {
+        return $this->hasMany(Page::class);
+    }
 
     public function medias() {
         return $this->hasMany(Media::class);
     }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+
 }

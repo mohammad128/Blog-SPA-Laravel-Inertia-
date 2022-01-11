@@ -7,49 +7,65 @@
         </Head>
 
         <div class="max-w-none">
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-4 gap-2">
-                    <div class="w-full flex flex-col bg-white rounded-lg shadow-lg p-4 gap-4">
-                        <h2 class="w-full text-lg font-bold text-center">Post</h2>
-                        <vs-button size="xl" circle transparent dark
+                    <div class="w-full flex flex-col bg-white rounded-full shadow-lg">
+                        <vs-button size="xl" circle transparent color="#333" border
                             @click="link($event)" method="get" :url="route('dashboard.post.allPosts')"
                         >
-                            <i class="bx bx-trash"></i>&nbsp;&nbsp; {{counts.post}} Post
+                            <i class="text-2xl bx bxs-dock-top"></i>&nbsp;&nbsp; {{counts.post}} Post
                         </vs-button>
                     </div>
-                    <div class="w-full flex flex-col bg-white rounded-lg shadow-lg p-4 gap-4">
-                        <h2 class="w-full text-lg font-bold text-center">Page</h2>
-                        <vs-button size="xl" circle transparent dark
+                    <div class="w-full flex flex-col bg-white rounded-full shadow-lg">
+                        <vs-button size="xl" circle transparent color="#333" border
                             @click="link($event)" method="get" :url="route('dashboard.page.index')"
                         >
-                            <i class="bx bx-trash"></i>&nbsp;&nbsp; {{counts.page}} Page
+                            <i class="text-2xl bx bxs-copy-alt"></i>&nbsp;&nbsp; {{counts.page}} Page
                         </vs-button>
                     </div>
-                    <div class="w-full flex flex-col bg-white rounded-lg shadow-lg p-4 gap-4">
-                        <h2 class="w-full text-lg font-bold text-center">User</h2>
-                        <vs-button size="xl" circle transparent dark
+                    <div class="w-full flex flex-col bg-white rounded-full shadow-lg">
+                        <vs-button size="xl" circle transparent color="#333" border
                             @click="link($event)" method="get" :url="route('dashboard.user.index')"
                         >
-                            <i class="bx bx-trash"></i>&nbsp;&nbsp; {{counts.user}} User
+                            <i class="text-2xl bx bxs-user"></i>&nbsp;&nbsp; {{counts.user}} User
                         </vs-button>
                     </div>
-                    <div class="w-full flex flex-col bg-white rounded-lg shadow-lg p-4 gap-4">
-                        <h2 class="w-full text-lg font-bold text-center">Comment</h2>
-                        <vs-button size="xl" circle transparent dark
+                    <div class="w-full flex flex-col bg-white rounded-full shadow-lg">
+                        <vs-button size="xl" circle transparent color="#333" border
                             @click="link($event)" method="get" :url="route('dashboard.comment.index')"
                         >
-                            <i class="bx bx-trash"></i>&nbsp;&nbsp; {{counts.comment}} Comment
+                            <i class="text-2xl bx bxs-comment"></i>&nbsp;&nbsp; {{counts.comment}} Comment
                         </vs-button>
                     </div>
                 </div>
 
                 <div class="w-full flex flex-col bg-white rounded-lg shadow-lg p-4 gap-4">
                     <div class="flex flex-row">
-                        <h3 class="w-full text-center font-bold text-2xl text-gray-800">In 30 days ago</h3>
+                        <h3 class="w-full text-left font-bold text-2xl text-gray-800">In 30 days ago</h3>
+
+                        <div class="flex gap-4 flex-col lg:flex-row items-center ">
+                            <div class="flex gap-2 items-center">
+                                <span class="text-xs text-gray-700">From:</span>
+                                <vs-input color="#333"
+                                          v-model="fromDate"
+                                          type="date"
+                                />
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <span class="text-xs text-gray-700">To:</span>
+                                <vs-input color="#333"
+                                          v-model="toDate"
+                                          type="date"
+                                />
+                            </div>
+                            <vs-button dark @click="doFilter()">
+                                <i class="bx bxs-filter-alt"></i> Filter
+                            </vs-button>
+                        </div>
                     </div>
                     <div class="flex-1">
                         <div class="w-full grid grid-cols-1">
-                            <apexchart type="bar" height="350px" width="100%" :options="chartOptions" :series="series"></apexchart>
+                            <apexchart type="bar" height="350px" width="100%" :options="in_30_days_chartOptions" :series="in_30_days_series"></apexchart>
                         </div>
                     </div>
                 </div>
@@ -123,8 +139,8 @@ export default {
     },
     data() {
         return {
-            series: [],
-            chartOptions: { },
+            in_30_days_series: [],
+            in_30_days_chartOptions: { },
 
             post_series: [],
             post_chartOptions: {},
@@ -138,12 +154,67 @@ export default {
             user_series: [],
             user_chartOptions: {},
 
-
+            fromDate: '',
+            toDate: '',
         }
     },
     methods: {
+        doFilter() {
+            let data = {};
+            if(this.fromDate)  data['fromDate'] = this.fromDate;
+            if(this.toDate)  data['toDate'] = this.toDate;
+            this.$inertia.get(route('dashboard'), data, {
+                preserveScroll: true,
+                preserveState: false
+            });
+        }
     },
     mounted(){
+        this.fromDate = this.in_30_days_chart.categories[0];
+        this.toDate = this.in_30_days_chart.categories[this.in_30_days_chart.categories.length-1];
+
+        this.in_30_days_series = this.in_30_days_chart.series;
+        this.in_30_days_chartOptions = {
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 12,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: this.in_30_days_chart.categories,
+            },
+            yaxis: {
+                title: {
+                    text: 'in 30 Days ago'
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return "" + val + " count"
+                    }
+                }
+            }
+        };
+
+
 
         this.post_series = this.post_chart.series;
         this.post_chartOptions = {
@@ -157,17 +228,6 @@ export default {
             fill: {
                 opacity: 0.8
             },
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
         };
 
         this.page_series = this.page_chart.series;
@@ -182,17 +242,6 @@ export default {
             fill: {
                 opacity: 0.8
             },
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
         };
 
         this.comment_series = this.comment_chart.series;
@@ -207,19 +256,7 @@ export default {
             fill: {
                 opacity: 0.8
             },
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
         };
-
 
         this.user_series = this.user_chart.series;
         this.user_chartOptions = {
@@ -233,17 +270,6 @@ export default {
             fill: {
                 opacity: 0.8
             },
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }]
         };
 
     },

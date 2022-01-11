@@ -373,19 +373,19 @@ export default {
                 'group': [
                     {
                         'title': 'All Users',
-                        'url': route('dashboard'),
+                        'url': route('dashboard.user.index'),
                         'icon': 'bx bx-user',
                         'can': 'read_users'
                     },
                     {
                         'title': 'Add New',
-                        'url': route('dashboard'),
+                        'url': route('dashboard.user.create'),
                         'icon': 'bx bx-user-plus',
                         'can': 'create_users'
                     },
                     {
                         'title': 'User Roles',
-                        'url': route('dashboard'),
+                        'url': route('dashboard.user.role'),
                         'icon': 'bx bx-block',
                         'can': 'create_role'
                     },

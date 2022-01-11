@@ -109,10 +109,20 @@ Route::middleware([])->group(function () {
 
             // Users Routes
             Route::prefix('/User')->group(function() {
-                Route::get('/', function (){
-                    dd("Users");
-                })->name('dashboard.user.index');
 
+                Route::get('/', [\App\Http\Controllers\Dashboard\UserController::class, 'index'])->name('dashboard.user.index');
+                Route::get('/Create', [\App\Http\Controllers\Dashboard\UserController::class, 'create'])->name('dashboard.user.create');
+
+                /* Roles */
+                Route::prefix('/Role')->group(function(){
+                    Route::get('/', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'index' ])->name('dashboard.user.role');
+                    Route::delete('/{role:id}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'delete' ])->name('dashboard.user.role.delete');
+                    Route::post('/multiDelete', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'multiDelete' ])->name('dashboard.user.role.multiDelete');
+                    Route::get('/Create', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'create' ])->name('dashboard.user.role.create');
+                    Route::post('/Create', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'store' ])->name('dashboard.user.role.store');
+                    Route::get('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'edit' ])->name('dashboard.user.role.edit');
+                    Route::put('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'update' ])->name('dashboard.user.role.update');
+                });
             });
 
 
