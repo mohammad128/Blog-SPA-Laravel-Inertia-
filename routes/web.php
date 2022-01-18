@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Jenssegers\Agent\Agent;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,11 +108,17 @@ Route::middleware([])->group(function () {
                 Route::post('/restoreComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'restoreComments'])->name('dashboard.comment.restoreComments');
             });
 
+
             // Users Routes
             Route::prefix('/User')->group(function() {
 
                 Route::get('/', [\App\Http\Controllers\Dashboard\UserController::class, 'index'])->name('dashboard.user.index');
+                Route::put('/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'update'])->name('dashboard.user.update');
+                Route::delete('/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'delete'])->name('dashboard.user.delete');
+                Route::delete('/removeImage/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'removeImage'])->name('dashboard.user.removeImage');
                 Route::get('/Create', [\App\Http\Controllers\Dashboard\UserController::class, 'create'])->name('dashboard.user.create');
+                Route::post('/', [\App\Http\Controllers\Dashboard\UserController::class, 'store'])->name('dashboard.user.store');
+                Route::post('/multiDelete', [\App\Http\Controllers\Dashboard\UserController::class, 'multiDelete'])->name('dashboard.user.multiDelete');
 
                 /* Roles */
                 Route::prefix('/Role')->group(function(){
@@ -123,10 +130,16 @@ Route::middleware([])->group(function () {
                     Route::get('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'edit' ])->name('dashboard.user.role.edit');
                     Route::put('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'update' ])->name('dashboard.user.role.update');
                 });
+
+
+                Route::prefix('/Profile')->group(function (){
+                    Route::get('/', [\App\Http\Controllers\Dashboard\ProfileController::class, 'index'])->name('dashboard.user.profile');
+
+                });
             });
 
 
-            });
+        });
 
         /*
          * Other Routes
@@ -151,7 +164,15 @@ Route::middleware([])->group(function () {
 });
 
 
-Route::get('test', function () {
+Route::get('test', function (\Illuminate\Http\Request $request) {
+    $agent = new Agent();
+    $agent->setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36');
+    dump($agent->isDesktop());
+    dump($agent->isMobile());
+    dump( $agent->platform() );
+    dump( $agent->browser() );
+
+
 //    for($i=0; $i<2; $i++)
 //        \App\Models\Post::find(867)->comments()->create([
 //            'content' => "This is Test Comemnt ".$i,
@@ -159,11 +180,11 @@ Route::get('test', function () {
 //            'parent_id' => 2
 //        ]);
 
-    $comment = \App\Models\Post::find(867)->comments()->rootComments()->paginate(null, ['*'], 'page', 2);//->offset(10)->limit(10)->get();
-
-    return Inertia::render('test', [
-        'comments' => $comment
-    ]);
+//    $comment = \App\Models\Post::find(867)->comments()->rootComments()->paginate(null, ['*'], 'page', 2);//->offset(10)->limit(10)->get();
+//
+//    return Inertia::render('test', [
+//        'comments' => $comment
+//    ]);
 });
 
 

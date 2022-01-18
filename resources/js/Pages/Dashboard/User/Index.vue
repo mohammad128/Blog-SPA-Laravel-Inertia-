@@ -276,6 +276,8 @@
                               @click="selectImage()"
                         >
                         </span>
+                        <span class="text-xs text-rose-600 p-2" v-show="errors['photo']">{{ errors['photo'] }}</span>
+
                         <div class="flex flex-row gap-2 -mt-6 pb-6">
                             <span class="text-lg text-rose-700 font-bold" v-if="editData.profile_photo_path" >
                                 <vs-button danger size="mini" @click="link($event)" method="delete" :url="route('dashboard.user.removeImage', {'user': editData.id})">
@@ -309,11 +311,19 @@
                     <template #icon>
                         <i class='bx bx-user'></i>
                     </template>
+                    <template v-if="errors['name']" #message-danger>
+                        {{ errors['name'] }}
+                    </template>
+                    <template v-else #message-danger>&nbsp;</template>
                 </vs-input>
                 <vs-input type="email" v-model="editData.email" placeholder="Email" block state="primary">
                     <template #icon>
                         @
                     </template>
+                    <template v-if="errors['email']" #message-danger>
+                        {{ errors['email'] }}
+                    </template>
+                    <template v-else #message-danger>&nbsp;</template>
                 </vs-input>
             </div>
 
@@ -370,6 +380,7 @@ export default {
 
             editActive: false,
             editData: this.$inertia.form({
+                _method: 'put',
                 id: 0,
                 email: '',
                 name: '',
@@ -536,19 +547,10 @@ export default {
             this.editActive=true;
         },
         doEdit() {
-            this.editData.put(route('dashboard.user.update', {'user': this.editData.id}));
-
-            // this.$inertia.put(
-            //     route('dashboard.user.update', {'user': this.editData.id}),
-            //     {
-            //         name: this.editData.name,
-            //         email: this.editData.email,
-            //         roles: this.editData.roles,
-            //         photo: this.editData.photo
-            //     }, {
-            //         forceFormData: true,
-            //     }
-            // );
+            this.editData.post( route('dashboard.user.update', {'user': this.editData.id}), {
+                preserveState: true,
+                preserveScroll: true
+            });
         }
     },
     watch: {

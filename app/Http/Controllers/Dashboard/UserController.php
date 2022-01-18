@@ -8,7 +8,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as RequestFacade;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Laravel\Jetstream\Http\Livewire\UpdateProfileInformationForm;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -103,8 +105,26 @@ class UserController extends Controller
     }
 
     public function update(User $user, Request $request) {
-        dump($request->hasFile('photo'));
-        dd($user);
+        $request->validate([
+            'photo'=>[ 'nullable', 'image','mimes:jpg,jpeg,png,bmp,gif', 'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
+            'name'=>['required', Rule::unique('users')->ignore($user)],
+            'email'=>['required', 'email', Rule::unique('users')->ignore($user)],
+            'roles'=>['nullable', 'array']
+        ]);
+
+        $user->name = $request->get('name');
+        $user->email = $request->get('email');
+
+        if($request->exists('roles'))
+            $user->syncRoles($request->get('roles'));
+
+        if($request->hasFile('photo')) {
+            $profile_photo_path = $request->file('photo')->store('profile-photos', 'public');
+            $user->profile_photo_path = $profile_photo_path;
+        }
+
+        $user->save();
+        return redirect()->back();
     }
 
     public function delete( User $user) {

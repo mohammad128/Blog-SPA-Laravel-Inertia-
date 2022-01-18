@@ -160,7 +160,7 @@
                                     </vs-avatar>
 
                                     <vs-button-group class="sideBarUserActions mt-2">
-                                        <vs-button color="#000" >
+                                        <vs-button color="#000" @click="link($event)" method="get" :url="route('dashboard.user.profile')">
                                             <i class="bx bx-user"></i>
                                         </vs-button>
                                         <vs-button color="#000" >
@@ -391,7 +391,7 @@ export default {
                     },
                     {
                         'title': 'Profile',
-                        'url': route('dashboard'),
+                        'url': route('dashboard.user.profile'),
                         'icon': 'bx bxs-user-detail',
                         'can': ''
                     },

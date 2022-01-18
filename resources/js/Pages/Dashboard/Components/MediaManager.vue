@@ -106,7 +106,8 @@
                                 <h3 :style="{ 'font-size': media.title.length<50 ? '14px' : '10px' }" >{{media.title}}</h3>
                             </template>
                             <template #img >
-                                <img @click="showMedia(media)" v-if="media.type =='image'" :src="media.media_url" alt="">
+                                <img @click="showMedia(media)" v-if="media.type =='image'"
+                                     :src="media.media_url" class="min-h-24" style="min-height:14em" onerror="this.onerror=null; this.src='/uploads/images/notFoundImage.png'">
                                 <img @click="showMedia(media)" style="transform: scale(1.3)" v-else :src="'/uploads/icons/'+media.type+'.png'" alt="">
 
                                 <vs-checkbox danger v-model="selectedItems" :val="media" class="selectItemCheckbox">
@@ -188,7 +189,7 @@
                                 />
                             </video>
                         </vue-plyr>
-                        <img v-else  :src="'/uploads/icons/'+imageDialogData.type+'.png'" alt="">
+                        <img v-else  :src="'/uploads/icons/'+imageDialogData.type+'.png'" alt="" >
                     </div>
                     <div class="flex-1">
                         <div class="grid grid-cols-1 py-8 text-center">
