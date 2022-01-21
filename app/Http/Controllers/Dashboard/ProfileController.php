@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\Actions\Fortify\UpdateUserPassword;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -20,6 +21,11 @@ class ProfileController extends Controller
         ]);
     }
 
+
+    public function updatePassword() {
+//        UpdateUserPassword::
+        
+    }
 
     /**
      * Get the current sessions.

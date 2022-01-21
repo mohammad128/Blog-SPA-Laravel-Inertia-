@@ -24,6 +24,11 @@ class MediaController extends Controller
     }
 
     public function store(Request $request) {
+        $request->validate([
+            'file' => 'max:51200', //5MB
+        ]);
+
+
 //        dd($request->file('file') );
 //        $path = Storage::putFile('medias', $request->file('file'));
         $originalName = $request->file('file')->getClientOriginalName();

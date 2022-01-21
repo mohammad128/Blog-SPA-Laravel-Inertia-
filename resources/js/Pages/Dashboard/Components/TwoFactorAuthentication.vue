@@ -40,9 +40,11 @@
                 </div>
             </div>
             <div class="flex flex-row gap-4">
-                <vs-button v-if="user.two_factor_enabled" @click="regenerateRecoveryCodes" transparent dark>
-                    Regenerate Recovery Codes
-                </vs-button>
+                <ConfirmPasswordDialog v-if="user.two_factor_enabled" @confirmed="regenerateRecoveryCodes">
+                    <vs-button transparent dark>
+                        Regenerate Recovery Codes
+                    </vs-button>
+                </ConfirmPasswordDialog>
                 <ConfirmPasswordDialog @confirmed="disableTwoFactorAuthentication">
                     <vs-button danger :loading="disabling">
                         Disabled

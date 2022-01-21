@@ -217,7 +217,7 @@
                             </div>
                             <div class="flex flex-col">
                                 <div>
-                                    <b>Image Name: </b>
+                                    <b>File Name: </b>
                                 </div>
                                 <div class="px-4 md:pl-16">
                                     <vs-input disabled v-model="imageDialogData.path.substr(6)">

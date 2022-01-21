@@ -104,6 +104,7 @@ class UserController extends Controller
         return redirect()->route('dashboard.user.index');
     }
 
+
     public function update(User $user, Request $request) {
         $request->validate([
             'photo'=>[ 'nullable', 'image','mimes:jpg,jpeg,png,bmp,gif', 'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
@@ -119,6 +120,7 @@ class UserController extends Controller
             $user->syncRoles($request->get('roles'));
 
         if($request->hasFile('photo')) {
+            Storage::delete('public/'.$user->profile_photo_path);
             $profile_photo_path = $request->file('photo')->store('profile-photos', 'public');
             $user->profile_photo_path = $profile_photo_path;
         }
