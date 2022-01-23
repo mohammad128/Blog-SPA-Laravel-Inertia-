@@ -47,6 +47,18 @@ class PostController extends Controller
                     $query->whereDate('updated_at', '<=', RequestFacade::input('toDate'));
                 })
                 ->select(['id', 'title', 'user_id','updated_at', 'created_at', 'slug', 'draft'])
+                ->withCount(['comments as approvedComments'=> function ($q) {
+                    $q->approved();
+                }])
+                ->withCount(['comments as pendingComments'=> function ($q) {
+                    $q->pending();
+                }])
+                ->withCount(['comments as sapmComments'=> function ($q) {
+                    $q->spam();
+                }])
+                ->withCount(['comments as trashComments'=> function ($q) {
+                    $q->onlyTrashed();
+                }])
                 ->orderBy('id', 'desc')
                 ->paginate($pre_page)->withQueryString();
 

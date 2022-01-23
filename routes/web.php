@@ -154,7 +154,9 @@ Route::middleware([])->group(function () {
 
 
         Route::prefix('/Appearance')->group(function () {
-            Route::get('/Menu', [\App\Http\Controllers\Dashboard\MenuCatController::class, 'index'])->name('dashboard.appearance.menu');
+            Route::get('/Menu', [\App\Http\Controllers\Dashboard\MenuController::class, 'index'])->name('dashboard.appearance.menu');
+            Route::get('/Menu/Edit_{menu:name}', [\App\Http\Controllers\Dashboard\MenuController::class, 'edit'])->name('dashboard.appearance.menu.edit');
+            Route::delete('/Menu/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'delete'])->name('dashboard.appearance.menu.delete');
         });
     });
 
@@ -171,7 +173,12 @@ Route::middleware([])->group(function () {
 
 Route::get('test', function (\Illuminate\Http\Request $request) {
 
-    dd( Menu::query()->find(1)->with(['items:id,title,slug,menu_id,parent_id'])->get()->toArray() );
+//    for($i=13; $i<=14; $i++)
+//        \App\Models\MenuItem::find(12)->appendNode( \App\Models\MenuItem::find($i) );
+//
+//    dd( $tree = \App\Models\MenuItem::withDepth()->having('depth', '<=', 1)->get()->toTree()->toArray() );
+return Inertia::render('test');
+
 //    for($i=0; $i<2; $i++)
 //        \App\Models\Post::find(867)->comments()->create([
 //            'content' => "This is Test Comemnt ".$i,

@@ -9,10 +9,16 @@ use Kalnoy\Nestedset\NodeTrait;
 class Menu extends Model
 {
     use HasFactory;
-    use NodeTrait;
 
     protected $fillable = ['name'];
+    protected $appends = ['diff_for_human'];
+
     public function items() {
         return $this->hasMany(MenuItem::class);
     }
+
+    public function getDiffForHumanAttribute() {
+        return $this->created_at->diffForHumans();
+    }
+
 }

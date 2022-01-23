@@ -12,6 +12,7 @@
         "laravel/framework": "^8.54",
         "laravel/jetstream": "2.1.4",
         "laravel/sanctum": "^2.6",
+        "laravel/socialite": "^5.3",
         "laravel/tinker": "^2.5",
         "rinvex/laravel-categories": "^5.0",
         "spatie/laravel-permission": "^5.4",

@@ -38,7 +38,7 @@
                                       class="absolute z-10 pb-6 bt-4 bottom-0 left-0 right-0 w-full text-center text-sm font-bold text-gray-800 opacity-100 group-hover:opacity-0  transition-all duration-300">
                                     Feature Image
                                 </span>
-                                <img class="p-4 w-80 cursor-pointer opacity-90 hover:opacity-100 transition-all duration-300"
+                                <img style="min-height: 10em;border: 1px solid #333;" class="p-4 w-80 cursor-pointer opacity-90 hover:opacity-100 transition-all duration-300"
                                      :src="form.feature_image" alt="" @click="mediaMangerActive = true">
                             </div>
                         </div>

@@ -16,12 +16,15 @@ class CreateMenuItemsTable extends Migration
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('slug')->unique();
-            $table->unsignedBigInteger('parent_id')->nullable()->default(null);
-            $table->foreign('parent_id')->references('id')->on('menu_items')->onDelete('cascade');
+            $table->string('url');
+            $table->string('icon')->nullable();
+            $table->boolean('external_link')->default(false);
+//            $table->unsignedBigInteger('parent_id')->nullable()->default(null);
+//            $table->foreign('parent_id')->references('id')->on('menu_items')->onDelete('cascade');
             $table->unsignedBigInteger('menu_id');
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
             $table->timestamps();
+            $table->nestedSet();
         });
     }
 

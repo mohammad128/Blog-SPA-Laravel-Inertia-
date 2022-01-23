@@ -184,11 +184,28 @@
                             {{ tr.tags.map( function(item){return item.name.en } ).join(', ') }}
                         </vs-td>
                         <vs-td>
-                            <span>
+                            <vs-tooltip left>
                                 <i class="relative bx bxs-comment text-4xl text-gray-900">
-                                    <b class="absolute top-1.5 left-2.5 text-white text-xs">30</b>
+                                    <b class="absolute top-1.5 left-2.5 text-white text-xs">{{ tr.approvedComments }}</b>
+                                    <spam class="blink absolute -top-1 -left-1" v-if="tr.pendingComments"></spam>
                                 </i>
-                            </span>
+                                <template #tooltip>
+                                    <div class="content-tooltip text-left">
+                                        <p class="text-xs text-lime-300">
+                                            Approved: {{ tr.approvedComments }}
+                                        </p>
+                                        <p class="text-xs text-yellow-300">
+                                            Pending: {{ tr.pendingComments }}
+                                        </p>
+                                        <p class="text-xs text-red-300">
+                                            Spam: {{ tr.sapmComments }}
+                                        </p>
+                                        <p class="text-xs text-red-400">
+                                            Trash: {{ tr.trashComments }}
+                                        </p>
+                                    </div>
+                                </template>
+                            </vs-tooltip>
                         </vs-td>
                         <vs-td>
                             {{tr.updated_at.substring(0,10)}}<br><span class="text-xs text-gray-600">{{tr.updated_at_for_human}}</span>
@@ -376,6 +393,25 @@ export default {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+@keyframes blinkAnimation {
+    0% {
+        background-color: transparent;
+    }
+    100% {
+        background-color: #fde047;
+    }
+}
+.blink {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    animation-name: blinkAnimation;
+    animation-duration: .5s;
+    animation-direction: alternate-reverse;
+    animation-iteration-count: infinite;
 }
 </style>
 

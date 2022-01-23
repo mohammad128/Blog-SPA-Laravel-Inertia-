@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Menu;
+use http\Url;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,7 +19,7 @@ class MenuItemFactory extends Factory
         $title = $this->faker->unique()->word;
         return [
             'title' => $title,
-            'slug' => Str::slug($title, '-'),
+            'url' => url('/'),
             'menu_id' => Menu::all()->random(1)->first()->id,
         ];
     }

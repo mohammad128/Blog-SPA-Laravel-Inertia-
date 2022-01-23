@@ -417,6 +417,18 @@ export default {
                 ]
             },
             {
+                'title': 'Appearance',
+                'icon': 'bx bxs-image',
+                'group': [
+                    {
+                        'title': 'Menu',
+                        'url': route('dashboard.appearance.menu'),
+                        'icon': 'bx bx-menu',
+                        'can': 'read_media'
+                    },
+                ]
+            },
+            {
                 'title': 'Settings',
                 'url': route('dashboard'),
                 'icon': 'bx bxs-dashboard',
