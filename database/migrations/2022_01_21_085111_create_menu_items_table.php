@@ -15,8 +15,8 @@ class CreateMenuItemsTable extends Migration
     {
         Schema::create('menu_items', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('url');
+            $table->string('text');
+            $table->string('href');
             $table->string('icon')->nullable();
             $table->boolean('external_link')->default(false);
 //            $table->unsignedBigInteger('parent_id')->nullable()->default(null);

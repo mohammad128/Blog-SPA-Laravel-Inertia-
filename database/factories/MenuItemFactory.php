@@ -18,8 +18,8 @@ class MenuItemFactory extends Factory
     {
         $title = $this->faker->unique()->word;
         return [
-            'title' => $title,
-            'url' => url('/'),
+            'text' => $title,
+            'href' => url('/'),
             'menu_id' => Menu::all()->random(1)->first()->id,
         ];
     }

@@ -3,123 +3,95 @@
     <DashboardLayout>
 
         <div class="flex flex-row justify-between gap-4">
-            <div class="bg-white rounded-lg shadow-lg w-full">
-
-                <DraggableTree ref="tree1" @change="tree1Change" :data="data" draggable="draggable" cross-tree="cross-tree" class="w-full">
-                    <div slot-scope="{data, store}">
-                        <template v-if="!data.isDragPlaceHolder">
-                            <div class="flex flex-row justify-between">
-                                <div class="flex flex-row items-center">
-                                    <div>
-                                        <vs-button size="mini" icon transparent dark v-if="data.children && data.children.length" @click="store.toggleOpen(data)">
-                                            <i class="bx" :class="{'bx-minus': data.open, 'bx-plus': !data.open}"></i>
-                                        </vs-button>
-                                    </div>
-                                    <span class="pl-2 font-bold text-gray-700 text-md">{{ data.text }}</span>
-                                </div>
-                                <vs-button icon transparent danger @click="addItem(data)">
+            <div class="w-full">
+                <div class="bg-white rounded-lg shadow-lg w-full">
+                    <tree
+                        :data="treeData"
+                        :options="treeOptions"
+                        @node:dragging:start="logDragStart"
+                        @node:dragging:finish="logDragFinish"
+                    >
+                        <div class="flex justify-between items-center w-full" slot-scope="{ node }">
+                            <div>
+                                <i class="bx bx-trash"></i>
+                                {{ node.text }}
+                            </div>
+                            <div class="flex flex-row">
+                                <vs-button icon size="mini" circle @click.stop="editNode(node)">
+                                    <i class="bx bx-edit"></i>
+                                </vs-button>
+                                <vs-button icon danger size="mini" circle>
                                     <i class="bx bx-trash"></i>
                                 </vs-button>
                             </div>
-                        </template>
-                    </div>
-                </DraggableTree>
+                        </div>
+                    </tree>
 
+                </div>
             </div>
-
-            <div class="bg-white rounded-lg shadow-lg w-full">
-            </div>
-
         </div>
-<!--        <json-viewer-->
-<!--            :expand-depth=5-->
-<!--            copyable-->
-<!--            boxed :value="data"></json-viewer>-->
+
+        <json-viewer
+            :expand-depth=5
+            copyable
+            boxed :value="treeData"></json-viewer>
 
     </DashboardLayout>
 
 </template>
 <script>
 import JsonViewer from 'vue-json-viewer'
-import {DraggableTree, Tree} from 'vue-draggable-nested-tree'
+import LiquorTree from 'liquor-tree'
 
 export default {
     components: {
         JsonViewer,
-        DraggableTree,
-        Tree
+        tree: LiquorTree
+    },
+    props: {
+        menus: Array,
+        menu: Object
     },
     data() {
         return {
-            data: [ { "id": 1, "text": "dolor", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": null, "children": [ { "id": 2, "text": "quaerat", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 1, "children": [] }, { "id": 3, "text": "est", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 1, "children": [] }, { "id": 4, "text": "eveniet", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 1, "children": [] }, { "id": 5, "text": "recusandae", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 1, "children": [] } ] }, { "id": 6, "text": "explicabo", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": null, "children": [ { "id": 7, "text": "sapiente", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 6, "children": [] }, { "id": 8, "text": "accusamus", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 6, "children": [] }, { "id": 9, "text": "optio", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 6, "children": [] }, { "id": 10, "text": "at", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 6, "children": [] }, { "id": 11, "text": "possimus", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 6, "children": [] } ] }, { "id": 12, "text": "deserunt", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": null, "children": [ { "id": 13, "text": "voluptatum", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 12, "children": [] }, { "id": 14, "text": "reprehenderit", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": 12, "children": [] } ] }, { "id": 15, "text": "placeat", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": null, "children": [] }, { "id": 17, "text": "nihil", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": null, "children": [] }, { "id": 19, "text": "dignissimos", "href": "http://127.0.0.1:8000", "menu_id": 1, "parent_id": null, "children": [] } ]
+            treeOptions: {
+                // propertyNames: {
+                //     text: 'text',
+                //     children: 'children',
+                //     state: 'OPTIONS'
+                // },
+                expanded: true,
+                dnd: true,
+                checkbox: false
+            },
+            treeData: null
         }
     },
-    computed: {
-    },
     methods: {
-        tree1Change(node, targetTree) {
-            // this.data = targetTree.getPureData()
-            // console.log(targetTree.getPureData());
+        editNode(node){
+            console.log(node);
         },
-        addItem(item) {
-            console.log(item);
+        logDragStart(node) {
+            console.log('Start dragging: ' + node.text)
+        },
+
+        logDragFinish(targetNode, distinationNode) {
+            console.log(`Stop dragging: [TARGET]${targetNode.text}`, distinationNode.text)
         }
     },
     watch: {
-        data: function (val) {
-            console.log( this.$refs.tree1.getPureData() );
-        }
+    },
+    created() {
+        this.treeData = this.menu.items.map(item=>item);
+        setTimeout(function (){
+
+            this.treeData = [];
+        },3000);
     },
     mounted() {
-
-
     }
 }
 </script>
 <style >
-.fr-floating-btn {
-    padding-top: 1px;
-}
-
-.he-tree {
-    border: 1px solid #ccc;
-    padding: 20px;
-}
-
-.tree-node-inner {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 1em;
-    cursor: pointer;
-}
-
-.draggable-placeholder-inner {
-    border: 1px dashed #0088F8;
-    box-sizing: border-box;
-    background: rgba(0, 136, 249, 0.09);
-    color: #0088f9;
-    text-align: center;
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
-
-.tree3 .tree-node-inner {
-    border: none;
-    padding: 0px;
-}
-.tree3 .tree-node-inner-back:hover {
-    background: #ddd;
-}
-
-.tree4 .tree-node-inner {
-    border: none;
-    border-bottom: 1px solid #ccc;
-    padding: 5px 10px;
-    backgroud: #ccc;
-}
-.tree4 .draggable-placeholder-inner {
-    background-color: orangered;
-}
 </style>
 

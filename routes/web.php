@@ -155,8 +155,14 @@ Route::middleware([])->group(function () {
 
         Route::prefix('/Appearance')->group(function () {
             Route::get('/Menu', [\App\Http\Controllers\Dashboard\MenuController::class, 'index'])->name('dashboard.appearance.menu');
-            Route::get('/Menu/Edit_{menu:name}', [\App\Http\Controllers\Dashboard\MenuController::class, 'edit'])->name('dashboard.appearance.menu.edit');
+            Route::get('/Menu/Edit/{menu:name}', [\App\Http\Controllers\Dashboard\MenuController::class, 'edit'])->name('dashboard.appearance.menu.edit');
             Route::delete('/Menu/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'delete'])->name('dashboard.appearance.menu.delete');
+
+            // Menu Items
+            Route::delete('/MenuItem/{id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'deleteMenuItem'])->name('dashboard.appearance.menuitem.delete');
+            Route::post('/MenuItem/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'storeMenuItem'])->name('dashboard.appearance.menuitem.store');
+            Route::post('/MenuItem/MoveNode/{id}/{parent_id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'moveNode'])->name('dashboard.appearance.menuitem.moveNode');
+            Route::post('/MenuItem/RebuildMenuItems/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'rebuildMenuItems'])->name('dashboard.appearance.menuitem.rebuildMenuItems');
         });
     });
 
@@ -177,7 +183,29 @@ Route::get('test', function (\Illuminate\Http\Request $request) {
 //        \App\Models\MenuItem::find(12)->appendNode( \App\Models\MenuItem::find($i) );
 //
 //    dd( $tree = \App\Models\MenuItem::withDepth()->having('depth', '<=', 1)->get()->toTree()->toArray() );
-return Inertia::render('test');
+
+//    dd( \App\Models\MenuItem::find(21)->delete() );
+
+    $menu = Menu::query()->find(1);
+//    dd($menu->items()->where('id', '=', 27)->delete());
+
+//    $node = new \App\Models\MenuItem([
+//        'text'=> 'TEST',
+//        'href'=> 'TEST',
+//    ]);
+//    $node->makeRoot(); // Saved as root
+//    $menu->items()->save( $node );
+
+    dd($menu->items()->defaultOrder()->get()->toTree()->toArray());
+//    $menus = Menu::query()->select(['id', 'name', 'created_at'])->orderBy('id', 'asc')->get();
+//    $menuItems = $menu->items()->select('id','text', 'href', 'menu_id', 'parent_id')->get()->toTree()->toArray();
+//    $menu = $menu->toArray();
+//    $menu['items']=$menuItems;
+//
+//    return Inertia::render('test', [
+//        'menus'=> $menus,
+//        'menu'=> $menu
+//    ]);
 
 //    for($i=0; $i<2; $i++)
 //        \App\Models\Post::find(867)->comments()->create([
