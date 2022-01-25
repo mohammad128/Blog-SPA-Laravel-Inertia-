@@ -43,6 +43,9 @@ Route::middleware([])->group(function () {
 
                 Route::post('/MultiDelete', [\App\Http\Controllers\Dashboard\PostController::class, 'destroy'])->name('dashboard.post.multiDelte');
                 Route::delete('/{post:id}', [\App\Http\Controllers\Dashboard\PostController::class, 'delete'])->name('dashboard.post.delete');
+
+                //Web Services
+                Route::post("/PublishedPost", [ \App\Http\Controllers\Dashboard\PostController ::class, 'publishedPost' ] )->name('dashboard.post.service.published_posts');
             });
 
             // Post Routes
@@ -60,6 +63,9 @@ Route::middleware([])->group(function () {
 
                 Route::get('/restore/{id}', [\App\Http\Controllers\Dashboard\PageController::class, 'restore'])->name('dashboard.page.restore');
                 Route::post('/restore', [\App\Http\Controllers\Dashboard\PageController::class, 'multiRestore'])->name('dashboard.page.multiRestore');
+
+                //Web Services
+                Route::post("/PublishedPage", [ \App\Http\Controllers\Dashboard\PageController ::class, 'publishedPage' ] )->name('dashboard.page.service.published_pages');
             });
 
             // Tag Routes
@@ -77,6 +83,9 @@ Route::middleware([])->group(function () {
                 Route::put("/{id}", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'update' ] )->name('dashboard.category.update');
                 Route::delete("/{id}", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'delete' ] )->name('dashboard.category.delete');
                 Route::post("/multiDelete", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'multiDelete' ] )->name('dashboard.category.multiDelete');
+
+                //Service
+                Route::post("/Service/getAllCategories", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'getAllCategories' ] )->name('dashboard.category.all_categories');
             });
 
             // Media Routes
@@ -155,12 +164,14 @@ Route::middleware([])->group(function () {
 
         Route::prefix('/Appearance')->group(function () {
             Route::get('/Menu', [\App\Http\Controllers\Dashboard\MenuController::class, 'index'])->name('dashboard.appearance.menu');
+            Route::post('/Menu', [\App\Http\Controllers\Dashboard\MenuController::class, 'store'])->name('dashboard.appearance.store');
             Route::get('/Menu/Edit/{menu:name}', [\App\Http\Controllers\Dashboard\MenuController::class, 'edit'])->name('dashboard.appearance.menu.edit');
             Route::delete('/Menu/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'delete'])->name('dashboard.appearance.menu.delete');
 
             // Menu Items
             Route::delete('/MenuItem/{id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'deleteMenuItem'])->name('dashboard.appearance.menuitem.delete');
             Route::post('/MenuItem/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'storeMenuItem'])->name('dashboard.appearance.menuitem.store');
+            Route::put('/MenuItem/{menuItem:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'updateMenuItem'])->name('dashboard.appearance.menuitem.update');
             Route::post('/MenuItem/MoveNode/{id}/{parent_id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'moveNode'])->name('dashboard.appearance.menuitem.moveNode');
             Route::post('/MenuItem/RebuildMenuItems/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'rebuildMenuItems'])->name('dashboard.appearance.menuitem.rebuildMenuItems');
         });

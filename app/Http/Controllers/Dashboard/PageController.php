@@ -129,4 +129,18 @@ class PageController extends Controller
         return redirect()->back();
     }
 
+
+
+
+    public function publishedPage() {
+        $posts = Page::query()
+            ->select('title', 'id', 'updated_at', 'created_at', 'slug')
+            ->when(RequestFacade::input('search'), function ($query) {
+                return $query->where('title', 'LIKE', '%'.RequestFacade::input('search').'%');
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(RequestFacade::input('pre_page')? RequestFacade::input('pre_page'): 15, ['*'], 'page', RequestFacade::input('page') )
+            ->withQueryString();
+        return $posts;
+    }
 }

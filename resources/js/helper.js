@@ -1,6 +1,11 @@
 import Vue from 'vue';
 
 Vue.mixin({
+    computed: {
+        errors() {
+            return this.$page.props.errors;
+        },
+    },
     methods: {
         link(e) {
             let url = e.currentTarget.getAttribute('url');
@@ -23,6 +28,7 @@ Vue.mixin({
             return Text.toLowerCase()
                 .replace(/ /g, '-');
                 // .replace(/[^\w-]+/g, '');
-        }
+        },
+
     }
 });

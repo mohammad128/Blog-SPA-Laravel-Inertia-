@@ -22,17 +22,7 @@ class MenuController extends Controller
     public function edit(Menu $menu) {
         $menus = Menu::query()->select(['id', 'name', 'created_at'])->orderBy('id', 'asc')->get();
 
-//        $menu = $_menu->toArray();
-        $menu['items'] = $menu->items()->defaultOrder()->get()->toTree()->toArray();//$menu->items()->select('id','text', 'href', 'menu_id', 'parent_id')->get()->toTree()->toArray();
-        $menu['flatItems'] = $menu->items()->defaultOrder()->get()->toFlatTree()->map(function ($item){
-            $tmp = [];
-            $tmp[$item['text']] = [
-                'id'=> $item['id'],
-                'text'=> $item['text'],
-                'href'=> $item['href'],
-            ];
-            return $tmp;
-        });
+        $menu['items'] = $menu->items()->defaultOrder()->get()->toTree()->toArray();
         $menu = $menu->toArray();
 
         return Inertia::render('Dashboard/Appearance/Menu/edit', [
@@ -43,12 +33,22 @@ class MenuController extends Controller
 
     public function delete(Menu $menu) {
         $menu->delete();
+        return redirect()->route('dashboard.appearance.menu');
+    }
+
+    public function store(Request $request) {
+        $request->validate([
+            'name'=> ['required', 'unique:menus']
+        ]);
+        Menu::create(
+            $request->only('name')
+        );
         return redirect()->back();
     }
 
 
 
-    public function deleteMenuItem( $id) {
+    public function deleteMenuItem( $id ) {
         MenuItem::query()->where('id', '=', $id)->delete();
         return redirect()->back();
     }
@@ -71,6 +71,15 @@ class MenuController extends Controller
         $menu->items()->rebuildTree($request->get('items'), true);
 //        MenuItem::fixTree();
         $menu->items()->fixTree();
+        return redirect()->back();
+    }
+
+    public function updateMenuItem(MenuItem $menuItem, Request $request) {
+        $request->validate([
+            'text'=> ['required'],
+            'href'=> ['required'],
+        ]);
+        $menuItem->update($request->only('text','href'));
         return redirect()->back();
     }
 }

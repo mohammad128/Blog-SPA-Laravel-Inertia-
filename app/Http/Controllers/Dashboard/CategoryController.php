@@ -79,5 +79,11 @@ class CategoryController extends Controller
         return redirect($redirect);
     }
 
+    public function getAllCategories() {
+        return app('rinvex.categories.category')->get()->map(function ($item){
+            $item['post_count'] = app('rinvex.categories.category')->find($item['id'])->entries(\App\Models\Post::class)->count();
+            return $item;
+        })->toTree();
+    }
 
 }
