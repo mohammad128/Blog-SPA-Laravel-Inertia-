@@ -27,9 +27,9 @@
 
             <div>
                 <div class="bg-white p-4 rounded-lg shadow-lg flex flex-col gap-4">
-                    <div class="flex flex-row gap-6 overflow-hidden overflow-x-auto">
-                        <div v-for="(item, index) in menus" :key="index"  class="flex bg-gray-100 cursor-pointer rounded-lg gap-3 justify-between items-center pl-2 "
-                             :class="{'transform scale-110 border-t-gray-300 border-t-2 bg-white border-l-gray-300 border-r-gray-300 border-l-4 border-r-4 ': item.id==menu.id, 'border-l-white': item.id!=menu.id, }"
+                    <div class="flex flex-row gap-6 overflow-hidden overflow-x-auto px-4">
+                        <div v-for="(item, index) in menus" :key="index"  class="flex  cursor-pointer rounded-lg gap-3 justify-between items-center pl-2 "
+                             :class="{'transform bg-gray-200 scale-110 border-t-gray-300 border-t-2 bg-white border-l-gray-300 border-r-gray-300 border-l-4 border-r-4 ': item.id==menu.id, 'border-l-white': item.id!=menu.id, }"
                              @click="link($event)" method="get" :url="route('dashboard.appearance.menu.edit', {'name': item.name})">
                             <span  class="text-lg text-gray-900" :class="{'font-bold': item.id==menu.id}">{{ item.name }}</span>
                             <div class="flex flex-row">
@@ -46,7 +46,6 @@
                     <div class="bg-white p-4 flex-1 flex flex-row divide-x divide-x-2 divide-gray-200">
                         <div class="w-1/2">
                             <h2 class="text-2xl text-center text-gray-700 py-4 font-bold">Add item</h2>
-
                             <collapse :selected="false">
                                 <div slot="collapse-header">
                                     Custom Link
@@ -116,7 +115,7 @@
                                             <i class="bx bx-edit"></i>
                                         </vs-button>
                                         <vs-button icon danger size="mini" circle
-                                                   @click.stop="link($event)" method="delete" :url="route('dashboard.appearance.menuitem.delete',{'id': node.id})" >
+                                                   @click.stop="link($event)" method="delete" :url="route('dashboard.appearance.menuitem.delete',{'id': node.data.id})" >
                                             <i class="bx bx-trash"></i>
                                         </vs-button>
                                     </div>
@@ -236,13 +235,31 @@ export default {
             this.treeData = covnertToTreeData(this.menu.items);
         },
         addPostsToMenu(selected) {
-            console.log('selected:', selected);
+            let items = selected.map( function (item) {
+                return {'text': item.title, 'href': item.url};
+            });
+            this.$inertia.post( route('dashboard.appearance.menuitems.store', {'menu': this.menu.id}), {'items': items},{
+                preserveState: false,
+                preserveScroll: true,
+            });
         },
         addPageToMenu(selected) {
-            console.log('selected:', selected);
+            let items = selected.map( function (item) {
+                return {'text': item.title, 'href': item.url};
+            });
+            this.$inertia.post( route('dashboard.appearance.menuitems.store', {'menu': this.menu.id}), {'items': items},{
+                preserveState: false,
+                preserveScroll: true,
+            });
         },
         addCategoriesToMenu(selected) {
-            console.log('selected:', selected);
+            let items = selected.map( function (item) {
+                return {'text': item.name, 'href': '/'};
+            });
+            this.$inertia.post( route('dashboard.appearance.menuitems.store', {'menu': this.menu.id}), {'items': items},{
+                preserveState: false,
+                preserveScroll: true,
+            });
         }
 
     },

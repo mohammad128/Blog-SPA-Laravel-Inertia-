@@ -171,6 +171,7 @@ Route::middleware([])->group(function () {
             // Menu Items
             Route::delete('/MenuItem/{id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'deleteMenuItem'])->name('dashboard.appearance.menuitem.delete');
             Route::post('/MenuItem/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'storeMenuItem'])->name('dashboard.appearance.menuitem.store');
+            Route::post('/MenuItems/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'storeMenuItems'])->name('dashboard.appearance.menuitems.store');
             Route::put('/MenuItem/{menuItem:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'updateMenuItem'])->name('dashboard.appearance.menuitem.update');
             Route::post('/MenuItem/MoveNode/{id}/{parent_id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'moveNode'])->name('dashboard.appearance.menuitem.moveNode');
             Route::post('/MenuItem/RebuildMenuItems/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'rebuildMenuItems'])->name('dashboard.appearance.menuitem.rebuildMenuItems');
@@ -184,6 +185,14 @@ Route::middleware([])->group(function () {
         Route::post('/{id}', [\App\Http\Controllers\PostController::class, 'postPreview'])->name('Post.postPreview');
         Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
     });
+    // Gust Or Auth User
+    Route::prefix("/Post")->group(function () {
+        Route::get('/', [\App\Http\Controllers\PostController::class, 'index'])->name('Post.index');
+        Route::post('/{id}', [\App\Http\Controllers\PostController::class, 'postPreview'])->name('Post.postPreview');
+        Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
+    });
+
+    Route::get('/{page:slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('Page.show');
 
 });
 

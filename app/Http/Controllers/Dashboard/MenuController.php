@@ -63,6 +63,20 @@ class MenuController extends Controller
         $menu->items()->fixTree();
         return redirect()->back();
     }
+    public function storeMenuItems( Menu $menu, Request $request) {
+        $request->validate([
+            'items'=> ['array'],
+        ]);
+        foreach($request->get('items') as $item) {
+            if($item['text'] and $item['href']) {
+                $node = new \App\Models\MenuItem( $item );
+                $node->makeRoot(); // Saved as root
+                $menu->items()->save($node);
+            }
+        }
+        $menu->items()->fixTree();
+        return redirect()->back();
+    }
     public function moveNode($id, $parent_id) {
         dd($id, $parent_id);
     }
