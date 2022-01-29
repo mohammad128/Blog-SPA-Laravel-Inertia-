@@ -148,6 +148,11 @@ Route::middleware([])->group(function () {
                 });
             });
 
+            // Settings Routes
+            Route::name('settings.')->controller(\App\Http\Controllers\Dashboard\SettingsController::class)->prefix('/Settings')->group(function() {
+                Route::get('/', 'index')->name('index');
+            });
+
 
         });
 
@@ -165,6 +170,7 @@ Route::middleware([])->group(function () {
         Route::prefix('/Appearance')->group(function () {
             Route::get('/Menu', [\App\Http\Controllers\Dashboard\MenuController::class, 'index'])->name('dashboard.appearance.menu');
             Route::post('/Menu', [\App\Http\Controllers\Dashboard\MenuController::class, 'store'])->name('dashboard.appearance.store');
+            Route::put('/Menu/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'update'])->name('dashboard.appearance.menu.update');
             Route::get('/Menu/Edit/{menu:name}', [\App\Http\Controllers\Dashboard\MenuController::class, 'edit'])->name('dashboard.appearance.menu.edit');
             Route::delete('/Menu/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'delete'])->name('dashboard.appearance.menu.delete');
 

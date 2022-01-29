@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\MenuItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Request as RequestFacades;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class MenuController extends Controller
@@ -44,6 +45,15 @@ class MenuController extends Controller
             $request->only('name')
         );
         return redirect()->back();
+    }
+    public function update(Menu $menu, Request $request) {
+        $request->validate([
+            'name'=> ['required', Rule::unique('menus')->ignore($menu)]
+        ]);
+        $menu->update(
+            $request->only('name')
+        );
+        return redirect()->route('dashboard.appearance.menu');
     }
 
 

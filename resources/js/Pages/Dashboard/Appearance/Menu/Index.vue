@@ -32,7 +32,7 @@
                              @click="link($event)" method="get" :url="route('dashboard.appearance.menu.edit', {'name': item.name})">
                             <span  class="text-lg text-gray-900" >{{ item.name }}</span>
                             <div class="flex flex-row">
-                                <vs-button circle size="mini" icon >
+                                <vs-button circle size="mini" icon @click.stop="activeUpdateMenuDialog = true; editMenu=item" >
                                     <i class="bx bx-edit"></i>
                                 </vs-button>
                                 <vs-button circle size="mini" icon danger @click.stop="link($event)" method="delete" :url="route('dashboard.appearance.menu.delete', {'id': item.id})">
@@ -46,16 +46,19 @@
 
         </div>
         <CreateMenu v-model="activeCreateMenuDialog"/>
+        <EditMenu v-model="activeUpdateMenuDialog" :menu="editMenu"/>
     </DashboardLayout>
 </template>
 
 <script>
 import CreateMenu from "@/Pages/Dashboard/Appearance/Menu/Components/CreateMenu";
+import EditMenu from "@/Pages/Dashboard/Appearance/Menu/Components/EditMenu";
 
 export default {
     name: "MenuIndex",
     components: {
-        CreateMenu
+        CreateMenu,
+        EditMenu
     },
     props: {
         menus: Array,
@@ -64,6 +67,11 @@ export default {
     data() {
         return {
             activeCreateMenuDialog: false,
+            activeUpdateMenuDialog: false,
+            editMenu: {
+                name: '',
+                id: 0
+            }
         }
     },
     beforeMount() {

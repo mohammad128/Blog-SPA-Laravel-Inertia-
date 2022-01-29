@@ -430,7 +430,7 @@ export default {
             },
             {
                 'title': 'Settings',
-                'url': route('dashboard'),
+                'url': route('settings.index'),
                 'icon': 'bx bxs-dashboard',
                 'can': 'change_site_settings',
             },
