@@ -41,16 +41,17 @@
                             <img :src="post.feature_image" alt="">
                         </template>
                         <template #text style="width: 100%" class="bg-gray-800">
-                            <h3 class="line-clamp-2">{{post.title}}</h3> <inertia-link class="text-sm text-blue-700" :href="route('Post.index')">more...</inertia-link>
+                            <h3 class="line-clamp-2">{{post.title}}</h3>
+                            <inertia-link class="text-sm text-blue-700" :href="post.url">more...</inertia-link>
                         </template>
                         <template #interactions>
-                            <vs-button icon gradient @click="showPreviewPsot(post.id)">
+                            <vs-button icon gradient @click.stop="showPreviewPsot(post.id)">
                                 <i class='bx bx-show'></i>
                             </vs-button>
                             <vs-button class="btn-chat" shadow primary>
                                 <i class='bx bx-chat' ></i>
                                 <span class="span font-extrabold">
-                                  {{index}}
+                                  {{post.comments_count}}
                                 </span>
                             </vs-button>
                         </template>
@@ -113,7 +114,7 @@ export default {
                 data['page'] = this.page;
             Inertia.get(route('Post.index'), data, {
                 preserveState: true,
-                preserveScroll: true,
+                preserveScroll: false,
                 onStart:function() {
                     that.showLoading = true;
                 },

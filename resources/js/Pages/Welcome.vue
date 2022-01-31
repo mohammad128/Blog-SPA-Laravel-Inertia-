@@ -1,10 +1,9 @@
 <template>
     <Layout>
-        <carousel>
-            <img src="https://via.placeholder.com/700x700">
-            <img src="https://via.placeholder.com/700x700">
-            <img src="https://via.placeholder.com/700x700">
-            <img src="https://via.placeholder.com/700x700">
+        <carousel class="relative"  :autoplay="true" :nav="false" :autoplayTimeout="5000" :autoplayHoverPause="true">
+            <img v-for="(item, index) in home_slider" :src="item">
+            <template slot="prev"><span class="prev"><i class="bx bxs-left-arrow"></i></span></template>
+            <template slot="next"><span class="next"><i class="bx bxs-right-arrow"></i></span></template>
         </carousel>
 
         <div class="max-w-screen-xl mx-auto m-auto md:container md:mx-auto">
@@ -70,9 +69,6 @@
     </Layout>
 </template>
 
-<style scoped>
-</style>
-
 <script>
 import carousel from 'vue-owl-carousel'
 
@@ -83,7 +79,36 @@ export default {
         canRegister: Boolean,
         laravelVersion: String,
         phpVersion: String,
+        home_slider: Array
     },
 
 }
 </script>
+
+<style>
+span.prev{
+    position: absolute;
+    font-size: 5em;
+    top: 30%;
+    z-index: 5;
+    text-shadow: 0 0 8px #000;
+    transition: all 2s;
+    opacity: .7;
+    color: #dfdfdf;
+    left: 0;
+    cursor: pointer;
+}
+span.next{
+    position: absolute;
+    font-size: 5em;
+    top: 30%;
+    z-index: 5;
+    text-shadow: 0 0 8px #000;
+    transition: all 2s;
+    opacity: .7;
+    color: #dfdfdf;
+    right: 0;
+    cursor: pointer;
+}
+
+</style>

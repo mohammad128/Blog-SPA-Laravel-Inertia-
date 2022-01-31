@@ -12,6 +12,7 @@ class PostController extends Controller
     public function index() {
         Session()->flash('success', 'Test Message');
         $posts = Post::query()
+            ->withCount('comments')
             ->when(\Illuminate\Support\Facades\Request::input('search'), function ($query, $search){
                 $query->where('title', 'like', "%{$search}%");
             })
@@ -21,6 +22,8 @@ class PostController extends Controller
                 'id' =>$post->id,
                 'title' =>$post->title,
                 'feature_image' => $post->feature_image,
+                'url' => $post->url,
+                'comments_count' => $post->comments_count
             ]);
         return Inertia::render('Post/index', [
             'posts'=> $posts,
@@ -47,6 +50,6 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        dd($post);
+        dd($post->toArray());
     }
 }

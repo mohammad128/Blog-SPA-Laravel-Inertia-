@@ -426,11 +426,17 @@ export default {
                         'icon': 'bx bx-menu',
                         'can': 'read_media'
                     },
+                    {
+                        'title': 'Sliders',
+                        'url': route('dashboard.appearance.sliders.index'),
+                        'icon': 'bx bx-images',
+                        'can': 'read_media'
+                    },
                 ]
             },
             {
                 'title': 'Settings',
-                'url': route('settings.index'),
+                'url': route('dashboard.settings.index'),
                 'icon': 'bx bxs-dashboard',
                 'can': 'change_site_settings',
             },

@@ -15,6 +15,7 @@ class Post extends Model
     protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug' ];
 
     protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url'];
+    protected $hidden = ['password'];
 
     public function user() {
         return $this->belongsTo(User::class);

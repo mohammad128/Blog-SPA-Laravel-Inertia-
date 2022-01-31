@@ -18,7 +18,6 @@
                           @click="selectImage()"
                     >
                     </span>
-                    <span class="text-xs text-rose-600 p-2" v-show="errors['photo']">{{ errors['photo'] }}</span>
 
                     <div class="flex flex-row gap-2 -mt-6 pb-6">
                             <span class="text-lg text-rose-700 font-bold" v-if="editData.profile_photo_path" >

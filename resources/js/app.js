@@ -76,6 +76,10 @@ Vue.component('Layout', Layout);
 Vue.component('DashboardLayout', DashboardLayout);
 
 
+import VueStripeMenu from 'vue-stripe-menu'
+Vue.use(VueStripeMenu)
+import 'vue-stripe-menu/dist/vue-stripe-menu.css'
+
 const app = document.getElementById('app');
 
 new Vue({

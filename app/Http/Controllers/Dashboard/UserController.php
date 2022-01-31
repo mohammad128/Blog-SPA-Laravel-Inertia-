@@ -107,7 +107,7 @@ class UserController extends Controller
 
     public function update(User $user, Request $request) {
         $request->validate([
-            'photo'=>[ 'nullable', 'image','mimes:jpg,jpeg,png,bmp,gif', 'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000'],
+            'photo'=>[ 'nullable', 'image','mimes:jpg,jpeg,png,bmp,gif', 'dimensions:min_width=100,min_height=100,max_width=1500,max_height=1500'],
             'name'=>['required', Rule::unique('users')->ignore($user)],
             'email'=>['required', 'email', Rule::unique('users')->ignore($user)],
             'roles'=>['nullable', 'array']

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Menu;
+use App\Models\Meta;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Jenssegers\Agent\Agent;
@@ -19,7 +20,11 @@ use Jenssegers\Agent\Agent;
 Route::middleware([])->group(function () {
 
     Route::get('/', function () {
-        return Inertia::render('Welcome');
+        return Inertia::render('Welcome',
+            [
+                'home_slider'=>Meta::query()->getHomeSlider()
+            ]
+        );
     })->name('index');
 
     // Auth User
@@ -149,8 +154,9 @@ Route::middleware([])->group(function () {
             });
 
             // Settings Routes
-            Route::name('settings.')->controller(\App\Http\Controllers\Dashboard\SettingsController::class)->prefix('/Settings')->group(function() {
-                Route::get('/', 'index')->name('index');
+            Route::prefix('/Settings')->controller(\App\Http\Controllers\Dashboard\SettingsController::class)->group(function() {
+                Route::get('/', 'index')->name('dashboard.settings.index');
+                Route::post('/', 'update')->name('dashboard.settings.update');
             });
 
 
@@ -181,6 +187,11 @@ Route::middleware([])->group(function () {
             Route::put('/MenuItem/{menuItem:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'updateMenuItem'])->name('dashboard.appearance.menuitem.update');
             Route::post('/MenuItem/MoveNode/{id}/{parent_id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'moveNode'])->name('dashboard.appearance.menuitem.moveNode');
             Route::post('/MenuItem/RebuildMenuItems/{menu:id}', [\App\Http\Controllers\Dashboard\MenuController::class, 'rebuildMenuItems'])->name('dashboard.appearance.menuitem.rebuildMenuItems');
+
+            Route::prefix('/Sliders')->controller(\App\Http\Controllers\Dashboard\SliderControlelr::class)->group(function () {
+                Route::get('/', 'index')->name('dashboard.appearance.sliders.index');
+                Route::post('/', 'updateSlider')->name('dashboard.appearance.sliders.update');
+            });
         });
     });
 
@@ -198,12 +209,13 @@ Route::middleware([])->group(function () {
         Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
     });
 
-    Route::get('/{page:slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('Page.show');
+    Route::get('/Post/{page:slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('Page.show');
 
 });
 
 
 Route::get('test', function (\Illuminate\Http\Request $request) {
+
 
 //    for($i=13; $i<=14; $i++)
 //        \App\Models\MenuItem::find(12)->appendNode( \App\Models\MenuItem::find($i) );
@@ -212,7 +224,7 @@ Route::get('test', function (\Illuminate\Http\Request $request) {
 
 //    dd( \App\Models\MenuItem::find(21)->delete() );
 
-    $menu = Menu::query()->find(1);
+//    $menu = Menu::query()->find(1);
 //    dd($menu->items()->where('id', '=', 27)->delete());
 
 //    $node = new \App\Models\MenuItem([
@@ -222,16 +234,13 @@ Route::get('test', function (\Illuminate\Http\Request $request) {
 //    $node->makeRoot(); // Saved as root
 //    $menu->items()->save( $node );
 
-    dd($menu->items()->defaultOrder()->get()->toTree()->toArray());
+//    dd($menu->items()->defaultOrder()->get()->toTree()->toArray());
 //    $menus = Menu::query()->select(['id', 'name', 'created_at'])->orderBy('id', 'asc')->get();
 //    $menuItems = $menu->items()->select('id','text', 'href', 'menu_id', 'parent_id')->get()->toTree()->toArray();
 //    $menu = $menu->toArray();
 //    $menu['items']=$menuItems;
 //
-//    return Inertia::render('test', [
-//        'menus'=> $menus,
-//        'menu'=> $menu
-//    ]);
+    return Inertia::render('test');
 
 //    for($i=0; $i<2; $i++)
 //        \App\Models\Post::find(867)->comments()->create([

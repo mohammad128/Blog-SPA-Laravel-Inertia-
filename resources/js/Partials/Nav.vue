@@ -6,37 +6,36 @@
                     <i class='bx bx-menu'></i>
                 </vs-button>
             </template>
-            <vs-navbar-item :active="active == 'Home'" id="Home" @click="link($event)" :url="route('index')" method="get">
-                Home
-            </vs-navbar-item>
-            <vs-navbar-item :active="active == 'Post'" id="Posts" @click="link($event)" :url="route('Post.index')" method="get">
-                Posts
-            </vs-navbar-item>
-            <vs-navbar-item :active="active == 'Videos'" id="Videos">
-                Videos
-            </vs-navbar-item>
-            <vs-navbar-item :active="active == 'About'" id="About">
-                About
-            </vs-navbar-item>
-            <vs-navbar-item :active="active == 'Contact'" id="Contact">
-                Contact
-            </vs-navbar-item>
+
+
+            <vsm-menu
+                :menu="header_menu"
+                element="header"
+                handler="hover"
+                align="center"
+                :screen-offset="10"
+                :dropdown-offset="0"
+            >
+                <template #default="{ item }">
+                    <div style="width: 300px; padding: 30px">
+                        Header: {{ item }}
+                    </div>
+                    <div style="padding: 30px">
+                        Second element
+                    </div>
+                </template>
+                <template #title="data">
+                    <span v-if="data.item.href && data.item.href!='#'" @click.stop="link($event)" method="get" :url="data.item.href" class="text-gray-600 hover:text-gray-900 text-md cursor-pointer">
+                        {{ data.item.title }}<i class="bx bxs-down-arrow text-xs pl-2"></i>
+                    </span>
+                    <span v-else class="text-gray-600 hover:text-gray-900 text-md cursor-pointer">
+                        {{ data.item.title }}
+                    </span>
+                </template>
+            </vsm-menu>
+
+
             <template v-if="$page.props.canLogin" #right>
-<!--                        <div v-if="canLogin" class="hidden fixed top-0 right-0 px-6 py-4 sm:block">-->
-<!--                            <inertia-link v-if="$page.props.user" href="/dashboard" class="text-sm text-gray-700 underline">-->
-<!--                                Dashboard-->
-<!--                            </inertia-link>-->
-
-<!--                            <template v-else>-->
-<!--                                <inertia-link :href="route('login')" class="text-sm text-gray-700 underline">-->
-<!--                                    Login-->
-<!--                                </inertia-link>-->
-
-<!--                                <inertia-link v-if="canRegister" :href="route('register')" class="ml-4 text-sm text-gray-700 underline">-->
-<!--                                    Register-->
-<!--                                </inertia-link>-->
-<!--                            </template>-->
-<!--                        </div>-->
                 <template v-if="$page.props.user">
                     <vs-button @click="link($event)"
                                :url="route('dashboard')"
@@ -202,11 +201,33 @@
 </template>
 <script>
 export default {
+    props: {
+        site_menus: Object,
+        site_config: Object
+    },
     data:() => ({
         active: '',
-        activeSidebar: false
+        activeSidebar: false,
+        header_menu: [],
     }),
-    mounted() {
+    beforeMount() {
+        let convertMenu = function (obj) {
+            return obj.map(function (item) {
+                let tmp = {};
+                if(item.children && item.children.length) {
+                    tmp['dropdown'] = "item"+item.id;
+                    tmp['children'] = item.children;
+                    tmp['href'] = item.href;
+                    tmp['id'] = item.id;
+                    convertMenu(item.children);
+                }
+                tmp['title'] = item.text;
+                return tmp;
+            });
+        }
+        this.header_menu = convertMenu(this.$page.props.site_menus.header_menu);
+
+        console.log(this.header_menu);
     },
     setup() {
         alert()
@@ -215,3 +236,51 @@ export default {
 </script>
 
 
+
+<style lang="scss">
+.vsm-section_menu a{
+    display: flex;
+    align-items: center;
+}
+.vsm-menu {
+    ul {
+        max-width: 1024px;
+        margin: 0 auto;
+    }
+}
+.vsm-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo-section {
+    flex: 1 1 auto;
+    img {
+        user-select: none;
+        max-width: 40px;
+    }
+}
+
+.vsm-section_menu {
+    > * {
+        padding: 0 25px;
+        font-weight: 500;
+        font-family: inherit;
+    }
+}
+.wrap-content {
+    padding: 30px;
+    width: 100%;
+}
+.wrap-content__block {
+    font-weight: bold;
+}
+.wrap-content__item {
+    font-style: italic;
+    font-size: .8rem;
+}
+.vsm-background {
+    background: #ffffff82;
+    backdrop-filter: blur(30px);
+}
+</style>
