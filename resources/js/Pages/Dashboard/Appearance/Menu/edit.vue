@@ -199,6 +199,7 @@ export default {
     methods: {
         editNode(node){
             this.activeEditMenuItem = true;
+            console.log(node.data);
             this.editMenuItemData = node.data;
         },
         addCustomLink() {

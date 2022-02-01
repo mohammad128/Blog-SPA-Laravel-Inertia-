@@ -1,6 +1,7 @@
 <template>
     <div >
-        <vs-navbar shadow fixed  square center-collapsed paddingScroll  v-model="active">
+        <vs-navbar shadow fixed square center-collapsed paddingScroll>
+
             <template #left>
                 <vs-button @click="activeSidebar = !activeSidebar" flat icon>
                     <i class='bx bx-menu'></i>
@@ -10,26 +11,25 @@
 
             <vsm-menu
                 :menu="header_menu"
-                element="header"
+                element="div"
                 handler="hover"
                 align="center"
-                :screen-offset="10"
+                :screen-offset="100"
                 :dropdown-offset="0"
             >
                 <template #default="{ item }">
-                    <div style="width: 300px; padding: 30px">
-                        Header: {{ item }}
-                    </div>
-                    <div style="padding: 30px">
-                        Second element
+
+                    <div style="min-width: 300px" class="py-6 px-4">
+                        <VsmMenuContent :data="item.children"></VsmMenuContent>
                     </div>
                 </template>
                 <template #title="data">
-                    <span v-if="data.item.href && data.item.href!='#'" @click.stop="link($event)" method="get" :url="data.item.href" class="text-gray-600 hover:text-gray-900 text-md cursor-pointer">
-                        {{ data.item.title }}<i class="bx bxs-down-arrow text-xs pl-2"></i>
+                    <span v-if="data.item.href && data.item.href!='#'" @click.stop="link($event)" method="get" :url="data.item.href"
+                          class="text-gray-600 hover:text-gray-900 text-ssm font-bold cursor-pointer">
+                        <i v-if="data.item.icon" class="bx" :class="data.item.icon"></i>&nbsp;{{ data.item.title }}<i v-if="data.item.children" class="bx bxs-down-arrow text-gray-400 text-xs pl-2"></i>
                     </span>
-                    <span v-else class="text-gray-600 hover:text-gray-900 text-md cursor-pointer">
-                        {{ data.item.title }}
+                    <span v-else class="text-gray-500 hover:text-gray-900 text-ssm font-bold cursor-pointer">
+                        <i v-if="data.item.icon" class="bx" :class="data.item.icon"></i>&nbsp;{{ data.item.title }}<i v-if="data.item.children" class="bx bxs-down-arrow text-gray-400 text-xs pl-2"></i>
                     </span>
                 </template>
             </vsm-menu>
@@ -60,177 +60,47 @@
                 </template>
             </template>
         </vs-navbar>
-        <vs-sidebar
-            fixed
-            v-model="active"
-            :open.sync="activeSidebar"
-        >
-            <template #logo>
-                <!-- ...img logo -->
-            </template>
-            <vs-sidebar-item id="home">
-                <template #icon>
-                    <i class='bx bx-home'></i>
-                </template>
-                Home
-            </vs-sidebar-item>
-            <vs-sidebar-item id="market">
-                <template #icon>
-                    <i class='bx bx-grid-alt'></i>
-                </template>
-                Market Overview
-            </vs-sidebar-item>
-            <vs-sidebar-item id="Music">
-                <template #icon>
-                    <i class='bx bxs-music'></i>
-                </template>
-                Music
-            </vs-sidebar-item>
-            <vs-sidebar-group>
-                <template #header>
-                    <vs-sidebar-item arrow>
-                        <template #icon>
-                            <i class='bx bx-group'></i>
-                        </template>
-                        Social media
-                    </vs-sidebar-item>
-                </template>
 
-                <vs-sidebar-item id="Instagram">
-                    <template #icon>
-                        <i class='bx bxl-instagram'></i>
-                    </template>
-                    Instagram
-                </vs-sidebar-item>
-                <vs-sidebar-item id="twitter">
-                    <template #icon>
-                        <i class='bx bxl-twitter' ></i>
-                    </template>
-                    Twitter
-                </vs-sidebar-item>
-                <vs-sidebar-item id="Facebook">
-                    <template #icon>
-                        <i class='bx bxl-facebook' ></i>
-                    </template>
-                    Facebook
-                </vs-sidebar-item>
-            </vs-sidebar-group>
-            <vs-sidebar-group>
-                <template #header>
-                    <vs-sidebar-item arrow>
-                        <template #icon>
-                            <i class='bx bx-code-alt' ></i>
-                        </template>
-                        Coding
-                    </vs-sidebar-item>
-                </template>
-
-                <vs-sidebar-item id="github">
-                    <template #icon>
-                        <i class='bx bxl-github' ></i>
-                    </template>
-                    Github
-                </vs-sidebar-item>
-                <vs-sidebar-item id="codepen">
-                    <template #icon>
-                        <i class='bx bxl-codepen'></i>
-                    </template>
-                    Codepen
-                </vs-sidebar-item>
-                <vs-sidebar-item id="discord">
-                    <template #icon>
-                        <i class='bx bxl-discord'></i>
-                    </template>
-                    Discord
-                </vs-sidebar-item>
-                <vs-sidebar-item id="Javascript">
-                    <template #icon>
-                        <i class='bx bxl-javascript' ></i>
-                    </template>
-                    Javascript
-                </vs-sidebar-item>
-                <vs-sidebar-item id="git">
-                    <template #icon>
-                        <i class='bx bxl-git' ></i>
-                    </template>
-                    Git
-                </vs-sidebar-item>
-            </vs-sidebar-group>
-            <vs-sidebar-item id="donate">
-                <template #icon>
-                    <i class='bx bxs-donate-heart' ></i>
-                </template>
-                Donate
-            </vs-sidebar-item>
-            <vs-sidebar-item id="drink">
-                <template #icon>
-                    <i class='bx bx-drink'></i>
-                </template>
-                Drink
-            </vs-sidebar-item>
-            <vs-sidebar-item id="shopping">
-                <template #icon>
-                    <i class='bx bxs-shopping-bags'></i>
-                </template>
-                Shopping
-            </vs-sidebar-item>
-            <vs-sidebar-item id="chat">
-                <template #icon>
-                    <i class='bx bx-chat' ></i>
-                </template>
-                Chat
-            </vs-sidebar-item>
-            <template #footer>
-                <vs-row justify="space-between">
-                    <vs-avatar>
-                        <img src="/uploads/avatars/avatar-5.png" alt="">
-                    </vs-avatar>
-
-                    <vs-avatar badge-color="danger" badge-position="top-right">
-                        <i class='bx bx-bell' ></i>
-
-                        <template #badge>
-                            28
-                        </template>
-                    </vs-avatar>
-                </vs-row>
-            </template>
-        </vs-sidebar>
+        <Sidebar v-model="activeSidebar" :data="mobile_menu"></Sidebar>
 
     </div>
 </template>
 <script>
+import VsmMenuContent from "@/Partials/VsmMenuContent";
+import Sidebar from "@/Partials/Sidebar/Sidebar";
+
 export default {
+    components: {
+        VsmMenuContent,
+        Sidebar,
+    },
     props: {
         site_menus: Object,
         site_config: Object
     },
     data:() => ({
-        active: '',
         activeSidebar: false,
         header_menu: [],
+        mobile_menu: [],
     }),
     beforeMount() {
         let convertMenu = function (obj) {
             return obj.map(function (item) {
                 let tmp = {};
-                if(item.children && item.children.length) {
-                    tmp['dropdown'] = "item"+item.id;
-                    tmp['children'] = item.children;
-                    tmp['href'] = item.href;
-                    tmp['id'] = item.id;
-                    convertMenu(item.children);
+                if(item.children !== undefined && item.children.length ) {
+                    tmp['dropdown'] = "item" + item.id;
+                    tmp['children'] = convertMenu(item.children);
                 }
                 tmp['title'] = item.text;
+                tmp['href'] = item.href;
+                tmp['id'] = item.id;
+                tmp['icon'] = item.icon;
                 return tmp;
             });
         }
         this.header_menu = convertMenu(this.$page.props.site_menus.header_menu);
-
-        console.log(this.header_menu);
-    },
-    setup() {
-        alert()
+        this.mobile_menu = convertMenu(this.$page.props.site_menus.mobile_menu);
+        console.log('MobileMenu', this.mobile_menu);
     }
 }
 </script>
@@ -282,5 +152,6 @@ export default {
 .vsm-background {
     background: #ffffff82;
     backdrop-filter: blur(30px);
+    border-radius: 1em !important;
 }
 </style>

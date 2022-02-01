@@ -19,6 +19,10 @@
                     {{ errors['href'] }}
                 </template>
             </vs-input>
+            <div class="flex flex-row">
+                <vs-input v-model="icon" label-placeholder="Icon" block/>
+                <IconPicker v-model="icon"/>
+            </div>
         </div>
 
         <template #footer>
@@ -35,27 +39,35 @@
 
 </template>
 
-<script>
+<script>import IconPicker from "@/Pages/Dashboard/Appearance/Menu/Components/IconPicker";
+
 export default {
     name: "CreateMenu",
     props: ['value', 'data'],
+    components: {
+        IconPicker
+    },
     data() {
         return {
             active: false,
+            icon: '',
             form: this.$inertia.form({
                 text: '',
+                icon: '',
                 href: ''
             })
         }
     },
     methods: {
         submit() {
+            this.form.icon = this.icon;
             this.form.put( route('dashboard.appearance.menuitem.update', {'menuItem': this.data.id}),{
                 preserveState: false,
                 preserveScroll: true,
                 onSuccess: () => {
                     this.active = false;
                     this.form.text = '';
+                    this.form.icon = '';
                     this.form.href = '';
                 }
             } )
@@ -66,6 +78,7 @@ export default {
         if( this.data ) {
             this.form.text = this.data.text;
             this.form.href = this.data.href;
+            this.icon = this.data.icon;
         }
     },
     watch: {
@@ -78,6 +91,7 @@ export default {
         data: function (){
             this.form.text = this.data.text;
             this.form.href = this.data.href;
+            this.icon = this.data.icon;
         }
     }
 }

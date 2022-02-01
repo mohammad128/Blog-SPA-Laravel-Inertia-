@@ -103,7 +103,7 @@ class MenuController extends Controller
             'text'=> ['required'],
             'href'=> ['required'],
         ]);
-        $menuItem->update($request->only('text','href'));
+        $menuItem->update($request->only('text','href','icon'));
         return redirect()->back();
     }
 }
