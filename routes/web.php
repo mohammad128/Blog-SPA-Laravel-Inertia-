@@ -202,20 +202,13 @@ Route::middleware([])->group(function () {
         Route::post('/{id}', [\App\Http\Controllers\PostController::class, 'postPreview'])->name('Post.postPreview');
         Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
     });
-    // Gust Or Auth User
-    Route::prefix("/Post")->group(function () {
-        Route::get('/', [\App\Http\Controllers\PostController::class, 'index'])->name('Post.index');
-        Route::post('/{id}', [\App\Http\Controllers\PostController::class, 'postPreview'])->name('Post.postPreview');
-        Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
-    });
 
-    Route::get('/Post/{page:slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('Page.show');
 
 });
 
 
 Route::get('test', function (\Illuminate\Http\Request $request) {
-
+    dd( Meta::getMeta('socials') );
 
 //    for($i=13; $i<=14; $i++)
 //        \App\Models\MenuItem::find(12)->appendNode( \App\Models\MenuItem::find($i) );

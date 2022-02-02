@@ -18,6 +18,9 @@ class Meta extends Model
             [ 'meta_value' => $meta_value ]
         );
     }
+    public function scopeGetMeta($query, $meta_key) {
+        return json_decode(  $query->where('meta_key', $meta_key)->first()->meta_value, true );
+    }
 
     public function scopeSiteConfig($query) {
         return $query->where('meta_key', 'site_config');

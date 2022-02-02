@@ -100,7 +100,6 @@ export default {
         }
         this.header_menu = convertMenu(this.$page.props.site_menus.header_menu);
         this.mobile_menu = convertMenu(this.$page.props.site_menus.mobile_menu);
-        console.log('MobileMenu', this.mobile_menu);
     }
 }
 </script>

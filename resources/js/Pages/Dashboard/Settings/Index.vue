@@ -92,6 +92,32 @@
                 </div>
             </div>
 
+            <div class="flex flex-row justify-start items-center gap-4 border border-l-2 border-l-amber-600 pl-4">
+                <span class="md:basis-1/4 text-gray-900 font-bold text-lg">Social Link Address:</span>
+
+                <collapse :selected="false" class="w-full bg-white">
+                    <div slot="collapse-header">
+                        All Socials
+                    </div>
+                    <div slot="collapse-body">
+                        <transition name="fade">
+                            <div class="gap-x-4 gap-y-8 w-full">
+                                <div v-for="(item, index) in allSocials" :key="index" class="p-4 relative inline-block">
+                                    <vs-input type="text"
+                                              :color="item.color"
+                                              state="dark"
+                                              v-model="item.value"
+                                              :label-placeholder="item.name">
+                                        <template #icon>
+                                            <i :class='item.icon'></i>
+                                        </template>
+                                    </vs-input>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+                </collapse>
+            </div>
             <div></div>
             <div>
                 <vs-button flat @click="submit" :loading="form.processing">
@@ -103,16 +129,19 @@
 </template>
 
 <script>
+import Collapse from 'vue-collapse'
 export default {
     name: "Settings",
     components: {
+        Collapse,
     },
     props:{
         menus: Array,
         _roles: Array,
         APP_NAME: String,
         APP_URL: String,
-        site_config: Object
+        site_config: Object,
+        socials: Array
     },
     data() {
         return {
@@ -127,7 +156,28 @@ export default {
                     mobile_menu: '',
                     footer_menu: '',
                 }
-            })
+            }),
+            allSocials: [
+                {value: '', name: 'facebook', color: 'facebook', icon:'bx bxl-facebook-square'},
+                {value: '', name: 'twitter', color: 'twitter', icon:'bx bxl-twitter'},
+                {value: '', name: 'youtube', color: 'youtube', icon:'bx bxl-youtube'},
+                {value: '', name: 'linkedin', color: 'linkedin', icon:'bx bxl-linkedin'},
+                {value: '', name: 'whatsapp', color: 'whatsapp', icon:'bx bxl-whatsapp'},
+                {value: '', name: 'twitch', color: 'twitch', icon:'bx bxl-twitch'},
+                {value: '', name: 'medium', color: 'medium', icon:'bx bxl-medium'},
+                {value: '', name: 'skype', color: 'skype', icon:'bx bxl-skype'},
+                {value: '', name: 'slack', color: 'slack', icon:'bx bxl-slack-old'},
+                {value: '', name: 'messenger', color: 'messenger', icon:'bx bxl-messenger'},
+                {value: '', name: 'tumblr', color: 'tumblr', icon:'bx bxl-tumblr'},
+                {value: '', name: 'dribbble', color: 'dribbble', icon:'bx bxl-dribbble'},
+                {value: '', name: 'google-plus', color: 'google-plus', icon:'bx bxl-google-plus'},
+                {value: '', name: 'vimeo', color: 'vimeo', icon:'bx bxl-vimeo'},
+                {value: '', name: 'pinterest', color: 'pinterest', icon:'bx bxl-pinterest'},
+                {value: '', name: 'spotify', color: 'spotify', icon:'bx bxl-spotify'},
+                {value: '', name: 'discord', color: 'discord', icon:'bx bxl-discord'},
+                {value: '', name: 'amazon', color: 'amazon', icon:'bx bxl-amazon'},
+                {value: '', name: 'reddit', color: 'reddit', icon:'bx bxl-reddit'},
+            ]
         }
     },
     methods: {
@@ -135,6 +185,7 @@ export default {
             this.form
                 .transform(data => ({
                     ... data,
+                    socials: this.allSocials
                     // new_user_default_role: this.form.new_user_default_role.join(',')
                 }))
                 .post(this.route('dashboard.settings.update'), {
@@ -147,6 +198,13 @@ export default {
         }
     },
     mounted() {
+        for(let i=0;i<this.socials.length; i++) {
+            for (let j=0; j<this.allSocials.length; j++) {
+                if( this.socials[i].name == this.allSocials[j].name )
+                    this.allSocials[j].value = this.socials[i].value;
+            }
+        }
+
         this.form.app_name = this.APP_NAME;
         this.form.app_url = this.APP_URL;
         this.form.tag_line = this.site_config.tag_line;

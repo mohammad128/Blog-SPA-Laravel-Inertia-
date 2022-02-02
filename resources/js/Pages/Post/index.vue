@@ -2,8 +2,8 @@
     <Layout>
 
         <Head>
-            <title>My App - Posts</title>
-            <meta name="description" head-key="description" content="My App Posts Page">
+            <title>{{siteTitle}} - Posts</title>
+            <meta name="description" head-key="description" content="Posts">
         </Head>
 
         <div id="postsContainer" >

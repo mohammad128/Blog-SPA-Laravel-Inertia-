@@ -91,10 +91,10 @@ span.prev{
     font-size: 5em;
     top: 30%;
     z-index: 5;
-    text-shadow: 0 0 8px #000;
+    text-shadow: 0 0 8px #9f9f9f;
     transition: all 2s;
-    opacity: .7;
-    color: #dfdfdf;
+    opacity: .3;
+    color: #ffffff;
     left: 0;
     cursor: pointer;
 }
@@ -103,10 +103,10 @@ span.next{
     font-size: 5em;
     top: 30%;
     z-index: 5;
-    text-shadow: 0 0 8px #000;
+    text-shadow: 0 0 8px #9f9f9f;
     transition: all 2s;
-    opacity: .7;
-    color: #dfdfdf;
+    opacity: .3;
+    color: #ffffff;
     right: 0;
     cursor: pointer;
 }

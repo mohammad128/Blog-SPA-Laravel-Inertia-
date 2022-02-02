@@ -1,8 +1,8 @@
 <template>
     <div>
         <Head>
-            <title>My App</title>
-            <meta name="description" head-key="description" content="My App Page">
+            <title>{{siteTitle}}</title>
+            <meta name="description" head-key="description" :content="tagLine">
         </Head>
 
         <slot/>

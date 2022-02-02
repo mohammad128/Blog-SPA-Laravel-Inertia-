@@ -50,6 +50,8 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        dd($post->toArray());
+        return Inertia::render('Post/Show/Index', [
+            "post" => $post
+        ]);
     }
 }

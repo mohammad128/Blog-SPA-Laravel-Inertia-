@@ -45,6 +45,14 @@ class HandleInertiaRequests extends Middleware
     {
         $siteConfig = Meta::getSiteConfig();
 
+//        $socials = (collect(Meta::getMeta('socials'))->filter(fn($item)=>$item['value']))->toArray()
+        $_socials = collect(Meta::getMeta('socials'))->where('value', '!=', '');//filter(fn($item)=>$item['value'])->toArray();
+        $socials = [];
+        foreach($_socials as $object)
+        {
+            $socials[] = $object;
+        }
+
         return array_merge(parent::share($request), [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
@@ -74,8 +82,10 @@ class HandleInertiaRequests extends Middleware
                 'mobile_menu' => !$siteConfig['menu']['mobile_menu'] ? [] : Menu::query()->firstWhere('id',$siteConfig['menu']['mobile_menu'])->items()->defaultOrder()->get()->toTree()->toArray(),
                 'footer_menu' => !$siteConfig['menu']['footer_menu'] ? [] : Menu::query()->firstWhere('id',$siteConfig['menu']['footer_menu'])->items()->defaultOrder()->get()->toTree()->toArray()
             ],
+            'socials'=> $socials,
             'site_config' => [
-                'site_title' => ''
+                'site_title' => $siteConfig['site_title'],
+                'tag_line' => $siteConfig['tag_line'],
             ]
         ]);
     }

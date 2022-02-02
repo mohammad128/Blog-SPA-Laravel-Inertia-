@@ -5,6 +5,12 @@ Vue.mixin({
         errors() {
             return this.$page.props.errors;
         },
+        siteTitle() {
+            return this.$page.props.site_config.site_title;
+        },
+        tagLine() {
+            return this.$page.props.site_config.tag_line;
+        }
     },
     methods: {
         link(e) {

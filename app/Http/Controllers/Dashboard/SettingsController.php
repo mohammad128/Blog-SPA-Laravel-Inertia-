@@ -51,6 +51,8 @@ class SettingsController extends Controller
             'menu',
         ]) );
 
+        Meta::updateMeta('socials', $request->get('socials'));
+
         return redirect()->back();
     }
 
