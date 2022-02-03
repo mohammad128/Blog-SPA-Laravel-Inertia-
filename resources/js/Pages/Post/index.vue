@@ -7,14 +7,7 @@
         </Head>
 
         <div id="postsContainer" >
-<!--            <div class="grid grid-cols-3 gap-4">-->
-<!--                <div class=" h-full col-span-2 row-span-2">-->
-<!--                </div>-->
-<!--                <div class="bg-green-300 h-24"></div>-->
-<!--                <div class="bg-blue-300 h-24"></div>-->
-<!--            </div>-->
             <div class="md:max-w-screen-xl m-auto md:m-auto py-10 flex">
-
                 <vs-input
                     label-placeholder="Search"
                     v-model="search"
@@ -48,11 +41,12 @@
                             <vs-button icon gradient @click.stop="showPreviewPsot(post.id)">
                                 <i class='bx bx-show'></i>
                             </vs-button>
-                            <vs-button class="btn-chat" shadow primary>
-                                <i class='bx bx-chat' ></i>
-                                <span class="span font-extrabold">
-                                  {{post.comments_count}}
-                                </span>
+                            <vs-button class="btn-chat" v-if="post.comments_count" active icon gradient color="#65a30d">
+                                <i class='bx bxs-comment' ></i>
+                                <span class="span font-extrabold pl-1">{{post.comments_count}}</span>
+                            </vs-button>
+                            <vs-button active v-if="post.rate" icon gradient color="#eab308">
+                                <span class="flex flex-row items-center justify-center"><i class='bx bxs-star'></i> {{post.rate.rate}}</span>
                             </vs-button>
                         </template>
                     </vs-card>

@@ -19,13 +19,7 @@ use Jenssegers\Agent\Agent;
 
 Route::middleware([])->group(function () {
 
-    Route::get('/', function () {
-        return Inertia::render('Welcome',
-            [
-                'home_slider'=>Meta::query()->getHomeSlider()
-            ]
-        );
-    })->name('index');
+    Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
     // Auth User
     Route::middleware(['auth:sanctum', 'verified', 'inertia_dashboard'])->group(function () {
@@ -200,7 +194,14 @@ Route::middleware([])->group(function () {
     Route::prefix("/Post")->group(function () {
         Route::get('/', [\App\Http\Controllers\PostController::class, 'index'])->name('Post.index');
         Route::post('/{id}', [\App\Http\Controllers\PostController::class, 'postPreview'])->name('Post.postPreview');
+        Route::post('/SetPostRate/{post:id}', [\App\Http\Controllers\PostController::class, 'setPostRate'])->name('Post.setPostRate');
         Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
+    });
+    // Gust Or Auth User
+    Route::prefix("/Page")->group(function () {
+//        Route::get('/', [\App\Http\Controllers\PageController::class, 'index'])->name('Page.index');
+//        Route::post('/{id}', [\App\Http\Controllers\PageController::class, 'postPreview'])->name('Page.postPreview');
+        Route::get('/{page:slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('Page.show');
     });
 
 
@@ -208,7 +209,14 @@ Route::middleware([])->group(function () {
 
 
 Route::get('test', function (\Illuminate\Http\Request $request) {
-    dd( Meta::getMeta('socials') );
+//    $post = \App\Models\Post::query()->firstWhere('id',758);
+
+//    dd( \App\Models\Post::orderByRate()->published()->limit(10)->get()->toArray() );
+//    dd(\App\Models\Post::orderByRate()->limit(10)->get()->toArray());
+//    dd($post->setUserRate(10));
+//    dd($post->onChangeRate());
+//    dd($post->toArray());
+//    dd($post->rate());
 
 //    for($i=13; $i<=14; $i++)
 //        \App\Models\MenuItem::find(12)->appendNode( \App\Models\MenuItem::find($i) );

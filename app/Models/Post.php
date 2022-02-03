@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasRate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,11 +11,11 @@ use Spatie\Tags\HasTags;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes, Categorizable, HasTags;
+    use HasFactory, SoftDeletes, Categorizable, HasTags, HasRate;
 
     protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug' ];
 
-    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url'];
+    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url', 'rate','user_rate'];
     protected $hidden = ['password'];
 
     public function user() {
@@ -48,5 +49,6 @@ class Post extends Model
     public function scopePublished( $query ) {
         return $query->where('draft', false);
     }
+
 
 }

@@ -16,15 +16,13 @@ class MetaSeeder extends Seeder
     {
         Meta::query()->updateSiteConfig(
             [
-                'meta_value' => [
-                    'site_title' => 'Laravel inertia',
-                    'tag_line' => 'laravel inertia blog',
-                    'new_user_default_role' => [],
-                    'menus' => [
-                        'header_menu' => 0,
-                        'mobile_menu' => 0,
-                        'footer_menu' => 0,
-                    ]
+                'site_title' => 'Laravel inertia',
+                'tag_line' => 'laravel inertia blog',
+                'new_user_default_role' => [],
+                'menu' => [
+                    'header_menu' => 0,
+                    'mobile_menu' => 0,
+                    'footer_menu' => 0,
                 ]
             ]
         );

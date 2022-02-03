@@ -1,23 +1,28 @@
 <template>
-    <div class="flex flex-row">
-        <vs-input v-model="icon"></vs-input>
-        <IconPicker v-model="icon"/>
+    <div class="flex flex-row min-h-screen w-full items-center justify-center gap-6">
+        <LikeButton @handleClick="handleLike($event)"/>
+        <LikeButton @handleClick="handleDislike($event)" button-type="dislike"/>
     </div>
 </template>
 <script>
-import IconPicker from "@/Pages/Dashboard/Appearance/Menu/Components/IconPicker";
+import LikeButton from "@/Components/LikeButton";
 export default {
     components: {
-        IconPicker
+        LikeButton
     },
     props: {
     },
     data() {
         return {
-            icon: 'bx-user',
         }
     },
     methods: {
+        handleLike(active) {
+            console.log('Like', active);
+        },
+        handleDislike(active) {
+            console.log('DisLike', active);
+        },
     },
     watch: {
     },

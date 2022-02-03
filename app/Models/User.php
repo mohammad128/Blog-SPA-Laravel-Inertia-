@@ -76,5 +76,8 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+    public function rates() {
+        return $this->hasMany(UserRate::class);
+    }
 
 }

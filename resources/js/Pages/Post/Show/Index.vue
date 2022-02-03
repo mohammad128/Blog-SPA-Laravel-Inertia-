@@ -22,17 +22,19 @@
                 </div>
                 <div class="post-content prose prose-h1:text-2xl prose-stone prose-sm lg:prose-lg w-full lg:prose-h1:text-3xl max-w-none bg-white p-4" v-html="post.content">
                 </div>
-                <div class="w-full bg-white rounded-bl-2xl rounded-br-2xl p-4">
-                    <star-rating :star-size="24"
+                <div class="w-full flex flex-row justify-start items-center gap-4 bg-white rounded-bl-2xl rounded-br-2xl p-4">
+                    <star-rating v-if="$page.props.user"
+                                 :star-size="24"
                                  :increment="0.5"
                                  :max-rating="10"
                                  inactive-color="#d6d3d1"
                                  text-class="text-xs text-gray-500"
                                  :animate="true"
                                  active-color="#eab308"
+                                 :rating="post.user_rate"
                                  @rating-selected ="setRating"
                     />
-
+                    <i v-if="post.rate" class="text-xs text-gray-700 font-bold">{{ post.rate.rate }} / 10  ({{post.rate.rate_count}} Vote)</i>
                 </div>
             </div>
         </div>
@@ -57,9 +59,14 @@ export default {
     methods: {
         setRating: function(rating){
             console.log(rating);
+            this.$inertia.post(route('Post.setPostRate', {post: this.post.id}),{
+                rate: rating
+            }, {
+                preserveScroll: true,
+                preserveState: false
+            });
         },
         likePost( ) {
-            alert('likePost')
         }
     },
 }
