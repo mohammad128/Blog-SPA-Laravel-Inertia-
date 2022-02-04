@@ -57,6 +57,27 @@ class PostController extends Controller
         $post->setUserRate($request->get('rate'));
         return redirect()->back();
     }
+    public function like( Post $post, Request $request) {
+        $request->validate([
+            'type' => ['required', 'in:like,dislike'],
+            'active' => ['required', 'boolean']
+        ]);
+        switch ($request->get('type')) {
+            case 'like':
+                if ($request->get('active'))
+                    $post->likeThis();
+                else
+                    $post->removeLikeThis();
+                break;
+            case 'dislike':
+                if ($request->get('active'))
+                    $post->dislikeThis();
+                else
+                    $post->removeDislikeThis();
+                break;
+        }
+        return redirect()->back();
+    }
 
     public function show(Post $post)
     {

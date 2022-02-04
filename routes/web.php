@@ -195,6 +195,7 @@ Route::middleware([])->group(function () {
         Route::get('/', [\App\Http\Controllers\PostController::class, 'index'])->name('Post.index');
         Route::post('/{id}', [\App\Http\Controllers\PostController::class, 'postPreview'])->name('Post.postPreview');
         Route::post('/SetPostRate/{post:id}', [\App\Http\Controllers\PostController::class, 'setPostRate'])->name('Post.setPostRate');
+        Route::post('/like/{post:id}', [\App\Http\Controllers\PostController::class, 'like'])->name('Post.like');
         Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
     });
     // Gust Or Auth User
@@ -209,7 +210,9 @@ Route::middleware([])->group(function () {
 
 
 Route::get('test', function (\Illuminate\Http\Request $request) {
-//    $post = \App\Models\Post::query()->firstWhere('id',758);
+    $post = \App\Models\Post::query()->firstWhere('id',2);
+//    $post->dislikeThis();
+    dd($post->toArray());
 
 //    dd( \App\Models\Post::orderByRate()->published()->limit(10)->get()->toArray() );
 //    dd(\App\Models\Post::orderByRate()->limit(10)->get()->toArray());

@@ -8,17 +8,26 @@
         </Head>
 
         <div id="postsContainer" >
-            <div class="banner h-64 bg-cover bg-fixed bg-center" :style="`background-image: url('${post.feature_image}')`"></div>
+            <div class="relative banner h-64 md:h-96 bg-cover bg-fixed bg-center filter flex flex-row justify-center" :style="`background-image: url('${post.feature_image}')`">
+                <div class="w-1/3 transform backdrop-grayscale"></div>
+                <div class="w-1/3 "></div>
+                <div class="w-1/3 transform backdrop-hue-rotate-180"></div>
+            </div>
             <div class="post w-full mb-8 max-w-screen-xl mx-auto divide-y-2">
-                <div class="relative flex flex-row justify-between w-full bg-white rounded-tl-2xl rounded-tr-2xl p-4 ">
+                <div class="relative flex flex-row justify-between w-full bg-white rounded-tl-2xl rounded-tr-2xl p-4">
                     <h2 class="text-center font-bold text-lg lg:text-4xl text-gray-800">{{post.title}}</h2>
-                    <span class="inline-block relative">
-                        <span class="relative -mt-8  mr-16">
-                            <vue-star animate="animated bounceIn" color="#b91c1c" class="-top-6 cursor-pointer" >
-                                <i slot="icon" class="bx bxs-like text-4xl"  @click="likePost"></i>
-                            </vue-star>
-                        </span>
+
+                    <span class="inline-block relative flex flex-row gap-4 items-center justify-center shrink-0">
+                        <div class="flex flex-col justify-center">
+                            <LikeButton :read-only="$page.props.user ? false : true" @handleClick="handleLike($event)" :active="(post.user_like_status && post.user_like_status.like) ? true : false"/>
+                            <span class="text-xs text-gray-700">{{ post.like_status ? post.like_status.like_count : '0' }}</span>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <LikeButton :read-only="$page.props.user ? false : true" @handleClick="handleDislike($event)" button-type="dislike" :active="(post.user_like_status && post.user_like_status.dislike) ? true : false"/>
+                            <span class="text-xs text-gray-700">{{ post.like_status ? post.like_status.dislike_count : '0' }}</span>
+                        </div>
                     </span>
+
                 </div>
                 <div class="post-content prose prose-h1:text-2xl prose-stone prose-sm lg:prose-lg w-full lg:prose-h1:text-3xl max-w-none bg-white p-4" v-html="post.content">
                 </div>
@@ -44,14 +53,13 @@
 
 <script>
 import StarRating from 'vue-star-rating'
-import VueStar from 'vue-star'
-
+import LikeButton from "@/Components/LikeButton";
 
 export default {
     name: "Index",
     components: {
         StarRating,
-        VueStar
+        LikeButton
     },
     props: {
         post: Object
@@ -66,8 +74,25 @@ export default {
                 preserveState: false
             });
         },
-        likePost( ) {
-        }
+
+        handleLike(active) {
+            this.$inertia.post(route('Post.like', {post: this.post.id}),{
+                type: 'like',
+                active: active
+            }, {
+                preserveScroll: true,
+                preserveState: false
+            });
+        },
+        handleDislike(active) {
+            this.$inertia.post(route('Post.like', {post: this.post.id}),{
+                type: 'dislike',
+                active: active
+            }, {
+                preserveScroll: true,
+                preserveState: false
+            });
+        },
     },
 }
 </script>
@@ -75,5 +100,10 @@ export default {
 <style scoped>
 .post-content{
     width: 100% !important;
+}
+</style>
+<style>
+body{
+    overflow-x: hidden;
 }
 </style>

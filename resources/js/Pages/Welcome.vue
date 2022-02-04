@@ -1,6 +1,7 @@
 <template>
     <Layout>
-        <carousel class="relative"  :autoplay="true" :nav="false" :autoplayTimeout="5000" :autoplayHoverPause="true">
+        <carousel class="relative"  :autoplay="true" :nav="false" :autoplayTimeout="5000" :autoplayHoverPause="true"
+                  :responsive="{0:{items:1,nav:false},600:{items:2,nav:false},900:{items:3,nav:false}}">
             <img v-for="(item, index) in home_slider" :src="item">
             <template slot="prev"><span class="prev"><i class="bx bxs-left-arrow"></i></span></template>
             <template slot="next"><span class="next"><i class="bx bxs-right-arrow"></i></span></template>

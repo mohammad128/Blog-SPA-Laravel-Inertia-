@@ -19,10 +19,16 @@ export default {
         active: {
             type: Boolean,
             default: false
+        },
+        readOnly: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
         handleClick() {
+            if( this.readOnly )
+                return;
             this.$refs.btn.classList.toggle("active");
             this.$refs.btn.classList.add("animated");
             this.generateClones(this.$refs.btn);
@@ -91,7 +97,10 @@ export default {
     transition: fill .4s ease-out;
 }
 .like-button.active svg path {
-    fill: #2196f3;
+    fill: #65a30d;
+}
+.dislike .like-button.active svg path {
+    fill: #be123c;
 }
 
 @-webkit-keyframes pop {

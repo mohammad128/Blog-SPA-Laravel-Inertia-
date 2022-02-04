@@ -88,4 +88,6 @@ trait HasRate {
             ->select([$this->getTable().'.*']);
     }
 
+
+
 }

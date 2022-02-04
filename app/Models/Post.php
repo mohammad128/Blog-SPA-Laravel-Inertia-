@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasLike;
 use App\Traits\HasRate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,11 +12,11 @@ use Spatie\Tags\HasTags;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes, Categorizable, HasTags, HasRate;
+    use HasFactory, SoftDeletes, Categorizable, HasTags, HasRate, HasLike;
 
     protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug' ];
 
-    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url', 'rate','user_rate'];
+    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url', 'rate','user_rate', 'user_like_status', 'like_status'];
     protected $hidden = ['password'];
 
     public function user() {
