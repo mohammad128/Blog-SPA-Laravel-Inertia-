@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasComment;
 use App\Traits\HasLike;
 use App\Traits\HasRate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Spatie\Tags\HasTags;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes, Categorizable, HasTags, HasRate, HasLike;
+    use HasFactory, SoftDeletes, Categorizable, HasTags, HasRate, HasLike, HasComment;
 
     protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug' ];
 
@@ -23,9 +24,6 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments() {
-        return $this->morphMany(Comment::class, 'commentable');
-    }
 
     /*
      * Mutator And Accessor

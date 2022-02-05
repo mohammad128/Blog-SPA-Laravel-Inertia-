@@ -179,8 +179,7 @@
                             <vs-td class="text-xs font-bold text-gray-800">
                                 {{ tr.user.name }}
                             </vs-td>
-                            <vs-td class="flex items-center no-underline text-xs font-bold" >
-                                {{ tr.content }}
+                            <vs-td class="flex items-center no-underline text-xs font-bold" v-html="tr.content">
                             </vs-td>
                             <vs-td>
                                 {{ tr.created_at.substring(0,10) }} &#8626;
@@ -196,7 +195,7 @@
                             <template #expand>
                                 <div class="con-content flex flex-row justify-between bg-gray-200 p-4 divide-x">
                                     <div class="flex flex-row items-center gap-4">
-                                        <vs-avatar>
+                                        <vs-avatar circle>
                                             <img :src="tr.user.profile_photo_url" alt="">
                                         </vs-avatar>
                                         <div class="flex flex-col">
@@ -217,7 +216,7 @@
                                                 <div class="text-gray-800 line-clamp-1">[{{tr.parent.content}}]</div>
                                             </div>
                                             <div class="bg-white p-4 mb-2" @click="edit = tr, editActive = true">
-                                                {{ tr.content }}
+                                                <div v-html="tr.content"></div>
                                                 <br><span class="text-xs font-bold">{{ tr.created_at.substring(0,10) }}</span>
                                                 <span class="text-xs text-gray-500">({{tr.created_at_for_human}})</span>
                                             </div>

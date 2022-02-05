@@ -19,11 +19,13 @@
 
                     <span class="inline-block relative flex flex-row gap-4 items-center justify-center shrink-0">
                         <div class="flex flex-col justify-center">
-                            <LikeButton :read-only="$page.props.user ? false : true" @handleClick="handleLike($event)" :active="(post.user_like_status && post.user_like_status.like) ? true : false"/>
+<!--                            :read-only="$page.props.user ? false : true"-->
+                            <LikeButton  @handleClick="handleLike($event)" :active="(post.user_like_status && post.user_like_status.like) ? true : false"/>
                             <span class="text-xs text-gray-700">{{ post.like_status ? post.like_status.like_count : '0' }}</span>
                         </div>
                         <div class="flex flex-col justify-center">
-                            <LikeButton :read-only="$page.props.user ? false : true" @handleClick="handleDislike($event)" button-type="dislike" :active="(post.user_like_status && post.user_like_status.dislike) ? true : false"/>
+<!--                            :read-only="$page.props.user ? false : true"-->
+                            <LikeButton  @handleClick="handleDislike($event)" button-type="dislike" :active="(post.user_like_status && post.user_like_status.dislike) ? true : false"/>
                             <span class="text-xs text-gray-700">{{ post.like_status ? post.like_status.dislike_count : '0' }}</span>
                         </div>
                     </span>
@@ -32,7 +34,8 @@
                 <div class="post-content prose prose-h1:text-2xl prose-stone prose-sm lg:prose-lg w-full lg:prose-h1:text-3xl max-w-none bg-white p-4" v-html="post.content">
                 </div>
                 <div class="w-full flex flex-row justify-start items-center gap-4 bg-white rounded-bl-2xl rounded-br-2xl p-4">
-                    <star-rating v-if="$page.props.user"
+<!--                    v-if="$page.props.user"-->
+                    <star-rating
                                  :star-size="24"
                                  :increment="0.5"
                                  :max-rating="10"
@@ -48,21 +51,33 @@
             </div>
         </div>
 
+        <div class="bg-white rounded-lg shadow-lg w-full mb-8 max-w-screen-xl mx-auto divide-y-2">
+            <div class="w-full p-4">
+                <h3 class="text-3xl text-gray-800 font-bold">Comments</h3>
+            </div>
+            <div class="comment-content w-full p-6">
+                <Comments :comments="comments" :post-id="post.id"/>
+            </div>
+        </div>
+
     </Layout>
 </template>
 
 <script>
 import StarRating from 'vue-star-rating'
 import LikeButton from "@/Components/LikeButton";
+import Comments from "@/Pages/Post/Show/Components/Comment/Comments";
 
 export default {
     name: "Index",
     components: {
         StarRating,
-        LikeButton
+        LikeButton,
+        Comments
     },
     props: {
-        post: Object
+        post: Object,
+        comments: Object
     },
     methods: {
         setRating: function(rating){

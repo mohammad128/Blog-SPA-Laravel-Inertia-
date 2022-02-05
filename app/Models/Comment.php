@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
+use App\Traits\HasLike;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Comment extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasLike;
     /*
      * Status: ['pending', 'approve', 'spam']
      * parent_id default 0
      * */
     protected $fillable = ['content', 'user_id', 'status', 'parent_id' ];
-    protected $appends = ['created_at_for_human'];
+    protected $appends = ['created_at_for_human','child_count', 'user_like_status', 'like_status'];
 
     public function commentable() {
         return $this->morphTo();
@@ -41,7 +42,7 @@ class Comment extends Model
     public function scopeRootComments($query) {
         $query->where('parent_id', 0);
     }
-    public function scopeParentComments($query, $parent_id) {
+    public function scopeChildComments($query, $parent_id) {
         $query->where('parent_id', $parent_id);
     }
 
@@ -53,6 +54,10 @@ class Comment extends Model
     }
     public function getCreatedAtForHumanAttribute() {
         return $this->created_at->diffForHumans();
+    }
+
+    public function getChildCountAttribute() {
+        return $this->approved()->childComments($this->id)->count();
     }
 }
 

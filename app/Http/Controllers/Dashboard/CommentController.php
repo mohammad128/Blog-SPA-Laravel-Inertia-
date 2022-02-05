@@ -18,7 +18,7 @@ class CommentController extends Controller
     {
         $pre_page = RequestFacade::input('prePage') ? RequestFacade::input('prePage') : 15;
 
-        $comments = Comment::query()->with(['user:id,email,name', 'commentable:id,created_at,updated_at,title,slug'])
+        $comments = Comment::query()->with(['user:id,email,name,profile_photo_path', 'commentable:id,created_at,updated_at,title,slug'])
             ->when(RequestFacade::input('comment_type'), function ($query) {
                 switch ( RequestFacade::input('comment_type') ) {
                     case 'all':

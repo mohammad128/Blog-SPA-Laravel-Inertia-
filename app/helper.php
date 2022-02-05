@@ -12,10 +12,12 @@ if (!function_exists("get_json_permissions")) {
                     [ 'name' => 'delete_post', 'desc' => "Delete Post" ],
                     [ 'name' => 'edit_post', 'desc' => "Edit Post" ],
                     [ 'name' => 'force_delete_post', 'desc' => "Delete From Trash" ],
+                    [ 'name' => 'restore_post', 'desc' => "Restore From Trash" ],
                     [ 'name' => 'read_all_post', 'desc' => "Read All Post" ],
                     [ 'name' => 'delete_all_post', 'desc' => "Delete All Post" ],
                     [ 'name' => 'edit_all_post', 'desc' => "Edit All Post" ],
                     [ 'name' => 'force_delete_all_post', 'desc' => "Delete All Users From Trash" ],
+                    [ 'name' => 'restore_all_post', 'desc' => "Restore All Users From Trash" ],
                 ],
             ],
 //            "Video" => [
@@ -40,10 +42,12 @@ if (!function_exists("get_json_permissions")) {
                     [ 'name' => 'delete_page', 'desc' => "Delete Page" ],
                     [ 'name' => 'edit_page', 'desc' => "Edit Page" ],
                     [ 'name' => 'force_delete_page', 'desc' => "Delete Page From Trash" ],
+                    [ 'name' => 'restore_page', 'desc' => "Restore Page From Trash" ],
                     [ 'name' => 'read_all_page', 'desc' => "Read All Page" ],
                     [ 'name' => 'delete_all_page', 'desc' => "Delete All Page" ],
                     [ 'name' => 'edit_all_page', 'desc' => "Edit All Page" ],
                     [ 'name' => 'force_delete_all_page', 'desc' => "Delete All Users Page From Trash" ],
+                    [ 'name' => 'restore_all_page', 'desc' => "Restore All Users Page From Trash" ],
                 ],
             ],
             'Media'=>[
@@ -77,7 +81,6 @@ if (!function_exists("get_json_permissions")) {
                     [ 'name' => 'create_tag', 'desc' => "Create Tag" ],
                     [ 'name' => 'delete_tag', 'desc' => "Delete Tag" ],
                     [ 'name' => 'edit_tag', 'desc' => "Edit Tag" ],
-                    [ 'name' => 'force_delete_tag', 'desc' => "Delete Tag From Trash" ],
                 ],
             ],
             "Users" => [
