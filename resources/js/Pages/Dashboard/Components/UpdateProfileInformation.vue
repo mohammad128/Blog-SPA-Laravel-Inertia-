@@ -1,8 +1,8 @@
 <template>
     <div class="flex flex-col p-8">
-        <div class="flex flex-col items-start justify-start">
+        <div class="flex flex-col items-center justify-center">
             <div>
-                <div class="pl-6 flex flex-col justify-start items-center w-38 h-38 relative">
+                <div class="pl-6 flex flex-col justify-center items-center w-38 h-38 relative">
                     <input type="file" class="hidden"
                            ref="photo"
                            @change="updatePhotoPreview">
@@ -21,7 +21,7 @@
 
                     <div class="flex flex-row gap-2 -mt-6 pb-6">
                             <span class="text-lg text-rose-700 font-bold" v-if="editData.profile_photo_path" >
-                                <vs-button danger size="mini" @click="link($event)" method="delete" :url="route('dashboard.user.removeImage', {'user': editData.id})">
+                                <vs-button danger size="mini" @click="link($event)" method="delete" :url="route('dashboard.user.profile.removeImage')">
                                     <i class="bx bx-trash "></i>&nbsp;Remove Image
                                 </vs-button>
                             </span>
@@ -34,24 +34,42 @@
                     <span class="text-xs text-rose-600" v-show="errors['photo']">{{ errors['photo'] }}</span>
                 </div>
             </div>
-            <div class="mt-4 w-full max-w-lg">
-                <vs-input block v-model="editData.name" placeholder="Name" state="primary">
+            <div class="mt-4 flex flex-col md:flex-row w-full gap-4">
+                <vs-input block v-model="editData.username" placeholder="UserName" state="primary" disabled>
                     <template #icon>
                         <i class='bx bx-user'></i>
                     </template>
-                    <template v-if="errors['name']" #message-danger>
-                        {{ errors['name'] }}
+                    <template v-if="errors['username']" #message-danger>
+                        {{ errors['username'] }}
                     </template>
                     <template v-else #message-danger>&nbsp;</template>
                 </vs-input>
-            </div>
-            <div class=" w-full max-w-lg">
-                <vs-input type="email" block v-model="editData.email" placeholder="Email" state="primary">
+                <vs-input type="email" block v-model="editData.email" placeholder="Email" state="primary" disabled>
                     <template #icon>
                         @
                     </template>
                     <template v-if="errors['email']" #message-danger>
                         {{ errors['email'] }}
+                    </template>
+                    <template v-else #message-danger>&nbsp;</template>
+                </vs-input>
+            </div>
+            <div class="mt-4 flex flex-col md:flex-row w-full gap-4">
+                <vs-input block v-model="editData.first_name" placeholder="First Name" state="primary">
+                    <template #icon>
+                        <i class='bx bx-user'></i>
+                    </template>
+                    <template v-if="errors['first_name']" #message-danger>
+                        {{ errors['first_name'] }}
+                    </template>
+                    <template v-else #message-danger>&nbsp;</template>
+                </vs-input>
+                <vs-input block v-model="editData.last_name" placeholder="Last Name" state="primary">
+                    <template #icon>
+                        <i class='bx bx-user'></i>
+                    </template>
+                    <template v-if="errors['last_name']" #message-danger>
+                        {{ errors['last_name'] }}
                     </template>
                     <template v-else #message-danger>&nbsp;</template>
                 </vs-input>
@@ -78,9 +96,11 @@ export default {
         return {
             editData: this.$inertia.form({
                 _method: 'put',
-                id: 0,
-                email: '',
-                name: '',
+                // id: 0,
+                // email: '',
+                // username: '',
+                first_name: '',
+                last_name: '',
                 profile_photo_url: '',
                 profile_photo_path: '',
                 photo: null
@@ -94,9 +114,11 @@ export default {
         },
     },
     mounted() {
-        this.editData.id = this.user.id;
-        this.editData.email = this.user.email;
-        this.editData.name = this.user.name;
+        // this.editData.id = this.user.id;
+        // this.editData.email = this.user.email;
+        // this.editData.username = this.user.username;
+        this.editData.first_name = this.user.first_name;
+        this.editData.last_name = this.user.last_name;
         this.editData.profile_photo_url = this.user.profile_photo_url;
         this.editData.profile_photo_path = this.user.profile_photo_path;
     },
@@ -121,7 +143,7 @@ export default {
         },
         showEditUserDialog(tr) {
             let tmp = tr;//Object.assign({}, tr);
-            this.editData.id  = tmp.id
+            // this.editData.id  = tmp.id
             this.editData.email  = tmp.email
             this.editData.name  = tmp.name
             this.editData.profile_photo_url  = tmp.profile_photo_url
@@ -130,7 +152,7 @@ export default {
             this.editActive=true;
         },
         doEdit() {
-            this.editData.post( route('dashboard.user.update', {'user': this.editData.id}), {
+            this.editData.post( route('dashboard.user.profile.update'), {
                 preserveState: true,
                 preserveScroll: true
             });

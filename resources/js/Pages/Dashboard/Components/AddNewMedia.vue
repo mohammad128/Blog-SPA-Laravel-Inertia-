@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col bg-white rounded-2xl py-2 px-1 rounded-bl-none rounded-br-none">
+    <div class="flex flex-col bg-white rounded-2xl py-2 px-1 rounded-bl-none rounded-br-none" v-if="can('create_media')">
         <div class="flex justify-between items-center">
             <h2 class="text-xl pl-4">Pick File: </h2>
 

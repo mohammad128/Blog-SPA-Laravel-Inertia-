@@ -2,6 +2,7 @@
 
 use App\Models\Menu;
 use App\Models\Meta;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Jenssegers\Agent\Agent;
@@ -47,16 +48,33 @@ Route::middleware([])->group(function () {
                 Route::middleware(['can:edit_post'])
                     ->put("/Edit/{post:slug}", [ \App\Http\Controllers\Dashboard\PostController::class, 'update' ] )
                     ->name('dashboard.post.update');
-                Route::middleware(['can:create_category'])
+
+                Route::middleware(['can:read_category'])
                     ->get('/Categories', [\App\Http\Controllers\Dashboard\PostController::class, 'categories'])
                     ->name('dashboard.post.categories');
 
                 Route::middleware(['can:delete_post'])
                     ->post('/MultiDelete', [\App\Http\Controllers\Dashboard\PostController::class, 'destroy'])
-                    ->name('dashboard.post.multiDelte');
+                    ->name('dashboard.post.multiDelete');
                 Route::middleware(['can:delete_post'])
                     ->delete('/{post:id}', [\App\Http\Controllers\Dashboard\PostController::class, 'delete'])
                     ->name('dashboard.post.delete');
+
+                Route::middleware(['can:force_delete_post'])
+                    ->delete('/forceDelete/{post:id}', [\App\Http\Controllers\Dashboard\PostController::class, 'forceDelete'])
+                    ->name('dashboard.post.forceDelete');
+                Route::middleware(['can:force_delete_post'])
+                    ->post('/multiForceDelete', [\App\Http\Controllers\Dashboard\PostController::class, 'multiForceDelete'])
+                    ->name('dashboard.post.multiForceDelete');
+
+
+
+                Route::middleware(['can:restore_post'])
+                    ->get('/restore/{id}', [\App\Http\Controllers\Dashboard\PostController::class, 'restore'])
+                    ->name('dashboard.post.restore');
+                Route::middleware(['can:restore_post'])
+                    ->post('/restore', [\App\Http\Controllers\Dashboard\PostController::class, 'multiRestore'])
+                    ->name('dashboard.post.multiRestore');
 
                 //Web Services
                 Route::middleware(['can:read_post'])
@@ -136,77 +154,146 @@ Route::middleware([])->group(function () {
 
             // Category Routes
             Route::prefix('/Category')->group(function (){
-                Route::post("/", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'create' ] )->name('dashboard.category.create');
-                Route::put("/{id}", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'update' ] )->name('dashboard.category.update');
-                Route::delete("/{id}", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'delete' ] )->name('dashboard.category.delete');
-                Route::post("/multiDelete", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'multiDelete' ] )->name('dashboard.category.multiDelete');
+                Route::middleware(['can:create_category'])
+                    ->post("/", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'create' ] )
+                    ->name('dashboard.category.create');
+                Route::middleware(['can:edit_category'])
+                    ->put("/{id}", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'update' ] )
+                    ->name('dashboard.category.update');
+                Route::middleware(['can:delete_category'])
+                    ->delete("/{id}", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'delete' ] )
+                    ->name('dashboard.category.delete');
+                Route::middleware(['can:delete_category'])
+                    ->post("/multiDelete", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'multiDelete' ] )
+                    ->name('dashboard.category.multiDelete');
 
                 //Service
-                Route::post("/Service/getAllCategories", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'getAllCategories' ] )->name('dashboard.category.all_categories');
+                Route::middleware(['can:read_category'])
+                    ->post("/Service/getAllCategories", [ \App\Http\Controllers\Dashboard\CategoryController::class, 'getAllCategories' ] )
+                    ->name('dashboard.category.all_categories');
             });
 
             // Media Routes
             Route::prefix('/Media')->group(function () {
-                Route::get('/', [ \App\Http\Controllers\Dashboard\MediaController::class, 'index'])->name('dashboard.media.index');
-                Route::get('/AddMedia', [ \App\Http\Controllers\Dashboard\MediaController::class, 'create'])->name('dashboard.media.create');
+                Route::middleware(['can:read_media'])
+                    ->get('/', [ \App\Http\Controllers\Dashboard\MediaController::class, 'index'])
+                    ->name('dashboard.media.index');
+                Route::middleware(['can:create_media'])
+                    ->get('/AddMedia', [ \App\Http\Controllers\Dashboard\MediaController::class, 'create'])
+                    ->name('dashboard.media.create');
+                Route::middleware(['can:create_media'])
+                    ->post('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'store'])
+                    ->name('dashboard.media.service');
 
-                Route::get('/Download/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'download'])->name('dashboard.media.download');
+                Route::get('/Download/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'download'])
+                    ->name('dashboard.media.download');
 
-                Route::post('/AddMedia/Service', [ \App\Http\Controllers\Dashboard\MediaController::class, 'store'])->name('dashboard.media.service');
-                Route::put('/AddMedia/Service/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'update'])->name('dashboard.media.service.update');;
-                Route::delete('/AddMedia/Service/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'delete'])->name('dashboard.media.service.delete');
-                Route::post('/AddMedia/Service/MultiDelete', [ \App\Http\Controllers\Dashboard\MediaController::class, 'multiDelete'])->name('dashboard.media.service.multidelte');
-                Route::post('/AddMedia/Service/filter', [ \App\Http\Controllers\Dashboard\MediaController::class, 'filter'])->name('dashboard.media.filter');
+                Route::middleware(['can:edit_media'])
+                    ->put('/AddMedia/Service/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'update'])
+                    ->name('dashboard.media.service.update');
+                Route::middleware(['can:delete_media'])
+                    ->delete('/AddMedia/Service/{media:id}', [ \App\Http\Controllers\Dashboard\MediaController::class, 'delete'])
+                    ->name('dashboard.media.service.delete');
+                Route::middleware(['can:delete_media'])
+                    ->post('/AddMedia/Service/MultiDelete', [ \App\Http\Controllers\Dashboard\MediaController::class, 'multiDelete'])
+                    ->name('dashboard.media.service.multidelte');
+                Route::middleware(['can:read_media'])
+                    ->post('/AddMedia/Service/filter', [ \App\Http\Controllers\Dashboard\MediaController::class, 'filter'])
+                    ->name('dashboard.media.filter');
             });
 
             //Comments Route
-            Route::prefix('/Comments')->group(function() {
-                Route::get('/', [\App\Http\Controllers\Dashboard\CommentController::class, 'index'])->name('dashboard.comment.index');
-                Route::put('/{comment:id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'update'])->name('dashboard.comment.update');
-                Route::delete('/{comment:id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'trash'])->name('dashboard.comment.trash');
+            Route::middleware(['can:comments_actions'])->prefix('/Comments')->group(function() {
+                Route::get('/', [\App\Http\Controllers\Dashboard\CommentController::class, 'index'])
+                    ->name('dashboard.comment.index');
+                Route::put('/{comment:id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'update'])
+                    ->name('dashboard.comment.update');
+                Route::delete('/{comment:id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'trash'])
+                    ->name('dashboard.comment.trash');
 
-                Route::post('/approveComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'approveComments'])->name('dashboard.comment.approveComments');
-                Route::post('/trashComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'trashComments'])->name('dashboard.comment.trashComments');
-                Route::post('/spamComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'spamComments'])->name('dashboard.comment.spamComments');
+                Route::post('/approveComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'approveComments'])
+                    ->name('dashboard.comment.approveComments');
+                Route::post('/trashComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'trashComments'])
+                    ->name('dashboard.comment.trashComments');
+                Route::post('/spamComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'spamComments'])
+                    ->name('dashboard.comment.spamComments');
 
-                Route::get('/delete/{id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'delete'])->name('dashboard.comment.delete');
-                Route::post('/deleteComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'deleteComments'])->name('dashboard.comment.deleteComments');
-                Route::get('/restore/{id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'restore'])->name('dashboard.comment.restore');
-                Route::post('/restoreComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'restoreComments'])->name('dashboard.comment.restoreComments');
+                Route::get('/delete/{id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'delete'])
+                    ->name('dashboard.comment.delete');
+                Route::post('/deleteComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'deleteComments'])
+                    ->name('dashboard.comment.deleteComments');
+                Route::get('/restore/{id}', [\App\Http\Controllers\Dashboard\CommentController::class, 'restore'])
+                    ->name('dashboard.comment.restore');
+                Route::post('/restoreComments', [\App\Http\Controllers\Dashboard\CommentController::class, 'restoreComments'])
+                    ->name('dashboard.comment.restoreComments');
             });
 
 
             // Users Routes
             Route::prefix('/User')->group(function() {
 
-                Route::get('/', [\App\Http\Controllers\Dashboard\UserController::class, 'index'])->name('dashboard.user.index');
-                Route::put('/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'update'])->name('dashboard.user.update');
-                Route::delete('/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'delete'])->name('dashboard.user.delete');
-                Route::delete('/removeImage/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'removeImage'])->name('dashboard.user.removeImage');
-                Route::get('/Create', [\App\Http\Controllers\Dashboard\UserController::class, 'create'])->name('dashboard.user.create');
-                Route::post('/', [\App\Http\Controllers\Dashboard\UserController::class, 'store'])->name('dashboard.user.store');
-                Route::post('/multiDelete', [\App\Http\Controllers\Dashboard\UserController::class, 'multiDelete'])->name('dashboard.user.multiDelete');
+                Route::middleware(['can:read_users'])
+                    ->get('/', [\App\Http\Controllers\Dashboard\UserController::class, 'index'])
+                    ->name('dashboard.user.index');
+                Route::middleware(['can:delete_users'])
+                    ->delete('/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'delete'])
+                    ->name('dashboard.user.delete');
+                Route::middleware(['can:create_users'])
+                    ->get('/Create', [\App\Http\Controllers\Dashboard\UserController::class, 'create'])
+                    ->name('dashboard.user.create');
+                Route::middleware(['can:create_users'])
+                    ->post('/', [\App\Http\Controllers\Dashboard\UserController::class, 'store'])
+                    ->name('dashboard.user.store');
+                Route::middleware(['can:delete_users'])
+                    ->post('/multiDelete', [\App\Http\Controllers\Dashboard\UserController::class, 'multiDelete'])
+                    ->name('dashboard.user.multiDelete');
+
+                Route::middleware(['can:edit_users'])
+                    ->put('/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'update'])
+                    ->name('dashboard.user.update');
+                Route::middleware(['can:edit_users'])
+                    ->delete('/removeImage/{user:id}', [\App\Http\Controllers\Dashboard\UserController::class, 'removeImage'])
+                    ->name('dashboard.user.removeImage');
 
                 /* Roles */
                 Route::prefix('/Role')->group(function(){
-                    Route::get('/', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'index' ])->name('dashboard.user.role');
-                    Route::delete('/{role:id}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'delete' ])->name('dashboard.user.role.delete');
-                    Route::post('/multiDelete', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'multiDelete' ])->name('dashboard.user.role.multiDelete');
-                    Route::get('/Create', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'create' ])->name('dashboard.user.role.create');
-                    Route::post('/Create', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'store' ])->name('dashboard.user.role.store');
-                    Route::get('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'edit' ])->name('dashboard.user.role.edit');
-                    Route::put('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'update' ])->name('dashboard.user.role.update');
+                    Route::middleware(['can:read_role'])
+                        ->get('/', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'index' ])
+                        ->name('dashboard.user.role');
+                    Route::middleware(['can:delete_role'])
+                        ->delete('/{role:id}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'delete' ])
+                        ->name('dashboard.user.role.delete');
+                    Route::middleware(['can:delete_role'])
+                        ->post('/multiDelete', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'multiDelete' ])
+                        ->name('dashboard.user.role.multiDelete');
+                    Route::middleware(['can:create_role'])
+                        ->get('/Create', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'create' ])
+                        ->name('dashboard.user.role.create');
+                    Route::middleware(['can:create_role'])
+                        ->post('/Create', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'store' ])
+                        ->name('dashboard.user.role.store');
+                    Route::middleware(['can:edit_role'])
+                        ->get('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'edit' ])
+                        ->name('dashboard.user.role.edit');
+                    Route::middleware(['can:edit_role'])
+                        ->put('/Edit/{role:name}', [ \App\Http\Controllers\Dashboard\UserRoleController::class,'update' ])
+                        ->name('dashboard.user.role.update');
                 });
 
 
                 Route::prefix('/Profile')->group(function (){
-                    Route::get('/', [\App\Http\Controllers\Dashboard\ProfileController::class, 'index'])->name('dashboard.user.profile');
+                    Route::get('/', [\App\Http\Controllers\Dashboard\ProfileController::class, 'index'])
+                        ->name('dashboard.user.profile');
+                    Route::put('/UpdateProfile', [\App\Http\Controllers\Dashboard\ProfileController::class, 'update'])
+                        ->name('dashboard.user.profile.update');
+                    Route::delete('/removeImage/', [\App\Http\Controllers\Dashboard\ProfileController::class, 'removeImage'])
+                        ->name('dashboard.user.profile.removeImage');
 
                 });
             });
 
             // Settings Routes
-            Route::prefix('/Settings')->controller(\App\Http\Controllers\Dashboard\SettingsController::class)->group(function() {
+            Route::middleware(['can:change_site_settings'])->prefix('/Settings')->controller(\App\Http\Controllers\Dashboard\SettingsController::class)->group(function() {
                 Route::get('/', 'index')->name('dashboard.settings.index');
                 Route::post('/', 'update')->name('dashboard.settings.update');
             });
@@ -275,6 +362,8 @@ Route::middleware([])->group(function () {
 
 
 Route::get('test', function (\Illuminate\Http\Request $request) {
+
+
     $post = \App\Models\Post::query()->published()->first();
 //    $post->dislikeThis();
 //    for($i=10; $i<30; $i++)

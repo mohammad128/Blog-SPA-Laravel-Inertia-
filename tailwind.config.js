@@ -17,6 +17,14 @@ module.exports = {
             fontSize: {
                 'ssm': ['.85rem', '24px'],
             },
+            backgroundSize: {
+                'auto': 'auto',
+                'cover': 'cover',
+                'contain': 'contain',
+                '50%': '40%',
+                '100%': '100%',
+                '120%': '120%',
+            }
         },
     },
 

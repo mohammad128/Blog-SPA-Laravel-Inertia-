@@ -161,8 +161,11 @@
                             <vs-checkbox :val="tr" v-model="selected" />
                         </vs-td>
                         <vs-td class="font-bold text-lg">
-                            {{ tr.title }} <span v-if="tr.draft" class="text-xs text-gray-700 bg-amber-200 px-2 py-1 rounded-lg">draft</span>
-                                            <span v-else class="text-xs text-gray-700 bg-lime-200 px-2 py-1 rounded-lg">publish</span>
+                            {{ tr.title }}&nbsp;
+                            <span v-if="tr.user_id == $page.props.user.id" class="text-white rounded-lg p-1 text-xs font-bold bg-green-700">for you</span>
+                            <span v-if="tr.draft" class="text-xs text-gray-700 bg-amber-200 px-2 py-1 rounded-lg">draft</span>
+                            <span v-else class="text-xs text-gray-700 bg-lime-200 px-2 py-1 rounded-lg">publish</span>
+
                             <div class="pt-2 flex opacity-0 group-hover:opacity-100 duration-300 transition space-x-4 pl-2 ">
 
                                 <a v-if="post_type=='trash'" class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
@@ -179,7 +182,7 @@
                             </div>
                         </vs-td>
                         <vs-td>
-                            {{ tr.user.name }}
+                            {{ tr.user.username }}
                         </vs-td>
                         <vs-td>
                             <span>

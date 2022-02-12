@@ -131,8 +131,8 @@
                                         @change="selected = $vs.checkAll(selected, users.data)"
                                     />
                                 </vs-th>
-                                <vs-th sort ref="th_name" @click="sort($event, 'name')">
-                                    Name
+                                <vs-th sort ref="th_username" @click="sort($event, 'username')">
+                                    UserName
                                 </vs-th>
                                 <vs-th sort ref="th_email" @click="sort($event, 'email')">
                                     Email
@@ -167,7 +167,7 @@
                                     <vs-checkbox :val="tr" v-model="selected" />
                                 </vs-td>
                                 <vs-td class="flex flex-row items-start gap-4">
-                                    {{ tr.name }} <span v-if="user.id == tr.id" class="bg-yellow-400 rounded-lg text-xs px-2 py-1 font-bold text-white">you</span>
+                                    {{ tr.username }} <span v-if="user.id == tr.id" class="bg-green-500 rounded-lg text-xs px-2 py-1 font-bold text-white">you</span>
                                 </vs-td>
                                 <vs-td>
                                     {{ tr.email }}
@@ -195,9 +195,12 @@
                                                 <img :src="tr.profile_photo_url" :alt="tr.name">
                                             </vs-avatar>
                                             <p class="text-xs font-bold flex flex-col">
-                                                {{ tr.name }}
+                                                {{ tr.username }}
                                                 <span class="text-gray-800 font-medium">
                                                     {{ tr.email }}
+                                                </span>
+                                                <span class="text-gray-800 font-medium">
+                                                    {{ tr.first_name }} {{ tr.last_name }}
                                                 </span>
                                                 <span class="text-sky-700 font-medium">
                                                     {{ tr.roles.map(item=>item['name']).join(', ') }}
@@ -307,12 +310,12 @@
                     </vs-option>
                 </vs-select>
 
-                <vs-input v-model="editData.name" placeholder="Name" block state="primary">
+                <vs-input v-model="editData.username" placeholder="UserName" block state="primary">
                     <template #icon>
                         <i class='bx bx-user'></i>
                     </template>
-                    <template v-if="errors['name']" #message-danger>
-                        {{ errors['name'] }}
+                    <template v-if="errors['username']" #message-danger>
+                        {{ errors['username'] }}
                     </template>
                     <template v-else #message-danger>&nbsp;</template>
                 </vs-input>
@@ -322,6 +325,25 @@
                     </template>
                     <template v-if="errors['email']" #message-danger>
                         {{ errors['email'] }}
+                    </template>
+                    <template v-else #message-danger>&nbsp;</template>
+                </vs-input>
+
+                <vs-input v-model="editData.first_name" placeholder="UserName" block state="primary">
+                    <template #icon>
+                        <i class='bx bx-user'></i>
+                    </template>
+                    <template v-if="errors['first_name']" #message-danger>
+                        {{ errors['first_name'] }}
+                    </template>
+                    <template v-else #message-danger>&nbsp;</template>
+                </vs-input>
+                <vs-input v-model="editData.last_name" placeholder="UserName" block state="primary">
+                    <template #icon>
+                        <i class='bx bx-user'></i>
+                    </template>
+                    <template v-if="errors['last_name']" #message-danger>
+                        {{ errors['last_name'] }}
                     </template>
                     <template v-else #message-danger>&nbsp;</template>
                 </vs-input>
@@ -383,7 +405,9 @@ export default {
                 _method: 'put',
                 id: 0,
                 email: '',
-                name: '',
+                username: '',
+                last_name: '',
+                first_name: '',
                 profile_photo_url: '',
                 profile_photo_path: '',
                 roles: [],
@@ -398,13 +422,13 @@ export default {
         },
     },
     beforeMount() {
-        this.$store.state.dashboard.activeSidebarItem = 'Users_All_Users';
+        this.$store.state.dashboard.activeSidebarItem = 'User_All_Users';
     },
     mounted() {
         let el = null;
         switch(this.orderKey) {
-            case 'name':
-                el = this.$refs.th_name.$el;
+            case 'username':
+                el = this.$refs.username.$el;
                 break;
             case 'email':
                 el = this.$refs.th_email.$el;
@@ -538,11 +562,13 @@ export default {
         },
         showEditUserDialog(tr) {
             let tmp = tr;//Object.assign({}, tr);
-            this.editData.id  = tmp.id
-            this.editData.email  = tmp.email
-            this.editData.name  = tmp.name
-            this.editData.profile_photo_url  = tmp.profile_photo_url
-            this.editData.profile_photo_path  = tmp.profile_photo_path
+            this.editData.id  = tmp.id;
+            this.editData.email  = tmp.email;
+            this.editData.username  = tmp.username;
+            this.editData.last_name  = tmp.last_name;
+            this.editData.first_name  = tmp.first_name;
+            this.editData.profile_photo_url  = tmp.profile_photo_url;
+            this.editData.profile_photo_path  = tmp.profile_photo_path;
             this.editData.roles  = tmp.roles.map(item=>item['name']);
             this.editActive=true;
         },

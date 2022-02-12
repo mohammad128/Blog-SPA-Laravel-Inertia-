@@ -52,9 +52,9 @@
 
             <form class="loginForm" @submit.prevent="submit">
                 <div class="center content-inputs grid gap-4 sm:grid-cols-1 md:grid-cols-2 justify-items-center">
-                    <vs-input v-model="form.email" placeholder="User name" type="email"
-                              :danger="errors['email']!=null  ? true : false"
-                              :state="errors['email'] ? 'danger' : ''">
+                    <vs-input v-model="form.username" placeholder="UserName Or Email" type="text"
+                              :danger="errors['username']!=null  ? true : false"
+                              :state="errors['username'] ? 'danger' : ''">
                         <template #icon>
                             <i class='bx bx-user'></i>
                         </template>
@@ -107,7 +107,7 @@
         data() {
             return {
                 form: this.$inertia.form({
-                    email: '',
+                    username: '',
                     password: '',
                     remember: false
                 }),

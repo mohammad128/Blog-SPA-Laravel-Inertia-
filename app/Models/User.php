@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -25,7 +26,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'username',
         'email',
         'password',
     ];
@@ -52,6 +55,17 @@ class User extends Authenticatable
     ];
 
 
+
+    protected function defaultProfilePhotoUrl()
+    {
+        return 'https://ui-avatars.com/api/?name='.urlencode($this->first_name.' '.$this->last_name).'&color=7F9CF5&background=EBF4FF';
+    }
+
+
+    protected function getNameAttribute() {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     /**
      * The accessors to append to the model's array form.
      *
@@ -59,6 +73,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'name'
     ];
 
     public function posts() {

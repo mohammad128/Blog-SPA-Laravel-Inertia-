@@ -49,5 +49,11 @@ class Post extends Model
         return $query->where('draft', false);
     }
 
+    public function scopeUserPosts($query) {
+        if( auth()->check() ) {
+            return $query->where('user_id', auth()->user()->id);
+        }
+        return $query;
+    }
 
 }

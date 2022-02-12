@@ -87,7 +87,7 @@ class PostController extends Controller
             ->rootComments()
             ->select(['id','created_at','content', 'user_id'])
             ->with(['user'=>function($q){
-                return $q->select(['id','created_at', 'profile_photo_path','name'])->with(['roles'=> function($query) {
+                return $q->select(['id','created_at', 'profile_photo_path', 'first_name', 'last_name'])->with(['roles'=> function($query) {
                     return $query->select([ 'name']);
                 }]);
             }])
@@ -110,7 +110,7 @@ class PostController extends Controller
             ->childComments($comment_id)
             ->select(['id','created_at','content', 'user_id'])
             ->with(['user'=>function($q){
-                return $q->select(['id','created_at', 'profile_photo_path','name'])->with(['roles'=> function($query) {
+                return $q->select(['id','created_at', 'profile_photo_path','first_name', 'last_name'])->with(['roles'=> function($query) {
                     return $query->select([ 'name']);
                 }]);
             }])
@@ -129,7 +129,7 @@ class PostController extends Controller
             $comment = $post->comments()->with(['user'])->firstWhere('id', $parent_id);
             if ($comment->parent_id != 0) {
                 $parent_id = $comment->parent_id;
-                $content = '<span class="user_name cursor-pointer text-xs font-bold text-sky-700 px-2" data-user-url="'.route('User.index',['user'=>$comment->user->name]).'" data-for-comment="'.$request->get('parent_id').'">@'.$comment->user->name.'</span>'.$content;
+                $content = '<span class="user_name cursor-pointer text-xs font-bold text-sky-700 px-2" data-user-url="'.route('User.index',['user'=>$comment->user->username]).'" data-for-comment="'.$request->get('parent_id').'">@'.$comment->user->name.'</span>'.$content;
             }
         }
 

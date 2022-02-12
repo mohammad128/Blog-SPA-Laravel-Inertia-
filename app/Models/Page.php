@@ -37,4 +37,10 @@ class Page extends Model
     public function scopePublished($query) {
         $query->where('draft', false);
     }
+    public function scopeUserPages($query) {
+        if( auth()->check() ) {
+            return $query->where('user_id', auth()->user()->id);
+        }
+        return $query;
+    }
 }

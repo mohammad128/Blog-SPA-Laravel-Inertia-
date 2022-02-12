@@ -18,7 +18,7 @@ class CommentController extends Controller
     {
         $pre_page = RequestFacade::input('prePage') ? RequestFacade::input('prePage') : 15;
 
-        $comments = Comment::query()->with(['user:id,email,name,profile_photo_path', 'commentable:id,created_at,updated_at,title,slug'])
+        $comments = Comment::query()->with(['user:id,email,username,profile_photo_path', 'commentable:id,created_at,updated_at,title,slug'])
             ->when(RequestFacade::input('comment_type'), function ($query) {
                 switch ( RequestFacade::input('comment_type') ) {
                     case 'all':
@@ -51,13 +51,13 @@ class CommentController extends Controller
             ->when( RequestFacade::input('sortKey') && RequestFacade::input('sortType'), function($query) {
                 $sortKey = RequestFacade::input('sortKey');
                 $sortType = RequestFacade::input('sortType');
-                if( !in_array($sortType, ['desc', 'asc']) OR !in_array($sortKey, ['name', 'comment', 'date', 'status']) )
+                if( !in_array($sortType, ['desc', 'asc']) OR !in_array($sortKey, ['username', 'comment', 'date', 'status']) )
                     return $query;
                 switch ($sortKey) {
-                    case 'name':
+                    case 'username':
                         return $query->join('users', 'comments.user_id', '=', 'users.id')
-                            ->select('comments.*', 'users.name')
-                            ->orderBy('name', RequestFacade::input('sortType'));
+                            ->select('comments.*', 'users.username')
+                            ->orderBy('username', RequestFacade::input('sortType'));
                         break;
                     case 'comment':
                         return $query->orderBy( 'content',  RequestFacade::input('sortType'));
@@ -76,7 +76,7 @@ class CommentController extends Controller
             ->paginate($pre_page);
         $comments->through(function ($item) {
             if($item['parent_id'] != 0 ) {
-                $c = Comment::select('id','created_at', 'content', 'user_id', 'parent_id')->with('user:id,email,name')->find($item['parent_id']);
+                $c = Comment::select('id','created_at', 'content', 'user_id', 'parent_id')->with('user:id,email,username')->find($item['parent_id']);
                 $result = $item;
                 $result['parent'] = $c;
                 return $result;

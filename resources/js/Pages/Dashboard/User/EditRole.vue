@@ -88,7 +88,7 @@ export default {
         }
     },
     beforeMount() {
-        this.$store.state.dashboard.activeSidebarItem = 'Users_User_Roles';
+        this.$store.state.dashboard.activeSidebarItem = 'User_User_Roles';
     },
     mounted() {
         this.form.name = this.role.name;

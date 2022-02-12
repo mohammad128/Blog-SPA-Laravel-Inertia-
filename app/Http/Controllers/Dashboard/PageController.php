@@ -16,7 +16,7 @@ class PageController extends Controller
     public function index() {
         $pre_page = RequestFacade::input('postPrePage') ? RequestFacade::input('postPrePage') : 15;
         $posts = Page::query()->with([
-                'user:id,name'
+                'user:id,username'
             ])
             ->when(RequestFacade::input('post_type'), function ($query) {
                 switch (RequestFacade::input('post_type')) {

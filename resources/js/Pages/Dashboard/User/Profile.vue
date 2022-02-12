@@ -82,7 +82,7 @@ export default {
         }
     },
     beforeMount() {
-        this.$store.state.dashboard.activeSidebarItem = 'Users_Profile';
+        this.$store.state.dashboard.activeSidebarItem = 'User_Profile';
     },
 }
 </script>

@@ -20,7 +20,7 @@ class UserController extends Controller
         $users = User::with(['roles'])
             ->when(RequestFacade::input('search'), function ($query) {
                 $query->where(function ($query) {
-                    $query->where('name', 'LIKE', '%'.RequestFacade::input('search').'%')
+                    $query->where('username', 'LIKE', '%'.RequestFacade::input('search').'%')
                         ->orWhere('email', 'LIKE', '%'.RequestFacade::input('search').'%');
                 });
             })
@@ -40,11 +40,11 @@ class UserController extends Controller
             ->when(RequestFacade::input('orderKey') && RequestFacade::input('orderType'), function ($query){
                 $orderKey = RequestFacade::input('orderKey');
                 $orderType = RequestFacade::input('orderType');
-                if( !in_array($orderType, ['desc', 'asc']) OR !in_array($orderKey, ['name', 'email', 'role', 'created_at', 'post', 'page','comment']) )
+                if( !in_array($orderType, ['desc', 'asc']) OR !in_array($orderKey, ['username', 'email', 'role', 'created_at', 'post', 'page','comment']) )
                     return $query;
                 switch($orderKey) {
-                    case 'name':
-                        return $query->orderBy('name', $orderType);
+                    case 'username':
+                        return $query->orderBy('username', $orderType);
                         break;
                     case 'email':
                         return $query->orderBy('email', $orderType);
@@ -108,13 +108,17 @@ class UserController extends Controller
     public function update(User $user, Request $request) {
         $request->validate([
             'photo'=>[ 'nullable', 'image','mimes:jpg,jpeg,png,bmp,gif', 'dimensions:min_width=100,min_height=100,max_width=1500,max_height=1500'],
-            'name'=>['required', Rule::unique('users')->ignore($user)],
+            'username'=>['required', Rule::unique('users')->ignore($user)],
             'email'=>['required', 'email', Rule::unique('users')->ignore($user)],
+            'first_name' => ['required'],
+            'last_name' => ['required'],
             'roles'=>['nullable', 'array']
         ]);
 
-        $user->name = $request->get('name');
+        $user->username = $request->get('username');
         $user->email = $request->get('email');
+        $user->first_name = $request->get('first_name');
+        $user->last_name = $request->get('last_name');
 
         if($request->exists('roles'))
             $user->syncRoles($request->get('roles'));

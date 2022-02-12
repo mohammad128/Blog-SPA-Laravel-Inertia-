@@ -15,39 +15,23 @@
                            method="get" flat circle  >
                     <i class='bx bx-home-alt'></i>
                 </vs-button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <vs-navbar-group>
-                    <i class='bx bx-add-to-queue'></i> New
-                    <template #items>
-                        <vs-navbar-item :active="active == 'Post'" id="Post">
-                            Post
-                        </vs-navbar-item>
-                        <vs-navbar-item :active="active == 'Page'" id="Page">
-                            Page
-                        </vs-navbar-item>
-                        <vs-navbar-item :active="active == 'Video'" id="Video">
-                            Video
-                        </vs-navbar-item>
-                        <vs-navbar-item :active="active == 'Media'" id="Media">
-                            Media
-                        </vs-navbar-item>
-                    </template>
-                </vs-navbar-group>
+
             </template>
 
-            <vs-tooltip interactivity left bottom>
-                <vs-avatar circle size="40" badge-color="danger" badge-position="top-right">
-                    <img :src="$page.props.user.profile_photo_url" alt="">
+            <vs-tooltip interactivity left bottom not-hover v-model="activeTooltip1">
+                <vs-avatar circle size="40" badge-color="danger" badge-position="top-right" @click="activeTooltip1=!activeTooltip1" class="cursor-painter">
+                    <img :src="$page.props.user.profile_photo_url" alt="" class="cursor-pointer">
                     <template #badge>
                         28
                     </template>
                 </vs-avatar>
-                <template #tooltip>
+                <template #tooltip >
                     <div class="content-tooltip">
                         <div class="body">
                             <div class="text">
                             </div>
-                            <vs-avatar circle size="80" badge-color="danger" badge-position="top-right">
-                                <img :src="$page.props.user.profile_photo_url" alt="">
+                            <vs-avatar circle size="80" badge-color="danger" badge-position="top-right" @click="activeTooltip1=false">
+                                <img :src="$page.props.user.profile_photo_url" class="cursor-pointer" alt="">
                                 <template #badge>
                                     28
                                 </template>
@@ -56,10 +40,10 @@
                             </div>
                         </div>
                         <footer>
-                            <vs-button circle icon border>
+                            <vs-button circle icon border @click="activeTooltip1=false;link($event)" method="get" :url="route('dashboard.user.profile')">
                                 <i class="bx bx-user"></i>
                             </vs-button>
-                            <vs-button @click="link($event)" method="post" :url="route('logout')"  danger circle>
+                            <vs-button @click="activeTooltip1=false;link($event)" method="post" :url="route('logout')"  danger circle>
                                 Logout
                             </vs-button>
                             <vs-button circle icon border>
@@ -275,6 +259,7 @@ export default {
         openSideBar: true,
         mainContentWidht: 500,
         sideBarWidht: 200,
+        activeTooltip1: false,
 
         sidebarItems: [
             {
@@ -368,7 +353,7 @@ export default {
                 'can': 'comments_actions',
             },
             {
-                'title': 'Users',
+                'title': 'User',
                 'icon': 'bx bxs-user',
                 'group': [
                     {
@@ -424,13 +409,13 @@ export default {
                         'title': 'Menu',
                         'url': route('dashboard.appearance.menu'),
                         'icon': 'bx bx-menu',
-                        'can': 'read_media'
+                        'can': 'change_site_settings'
                     },
                     {
                         'title': 'Sliders',
                         'url': route('dashboard.appearance.sliders.index'),
                         'icon': 'bx bx-images',
-                        'can': 'read_media'
+                        'can': 'change_site_settings'
                     },
                 ]
             },

@@ -27,9 +27,23 @@
             <h3 class="text-lg font-extrabold text-gray-700 block sm:hidden text-center mb-5">Register</h3>
             <form class="loginForm" @submit.prevent="submit">
                 <div class="center content-inputs grid sm:grid-cols-1 md:grid-cols-2 justify-items-center gap-4">
-                    <vs-input v-model="form.name" placeholder="User name"
-                              :danger="errors['name']!=null ? true : false  "
-                              :state="errors['name'] ? 'danger' : ''" >
+                    <vs-input v-model="form.first_name" placeholder="Frist Name"
+                              :danger="errors['first_name']!=null ? true : false  "
+                              :state="errors['first_name'] ? 'danger' : ''" >
+                        <template #icon>
+                            <i class='bx bx-user'></i>
+                        </template>
+                    </vs-input>
+                    <vs-input v-model="form.last_name" placeholder="Last name"
+                              :danger="errors['last_name']!=null ? true : false  "
+                              :state="errors['last_name'] ? 'danger' : ''" >
+                        <template #icon>
+                            <i class='bx bx-user'></i>
+                        </template>
+                    </vs-input>
+                    <vs-input v-model="form.username" placeholder="User name"
+                              :danger="errors['username']!=null ? true : false  "
+                              :state="errors['username'] ? 'danger' : ''" >
                         <template #icon>
                             <i class='bx bx-user'></i>
                         </template>
@@ -96,7 +110,9 @@
         data() {
             return {
                 form: this.$inertia.form({
-                    name: '',
+                    first_name: '',
+                    last_name: '',
+                    username: '',
                     email: '',
                     password: '',
                     password_confirmation: '',

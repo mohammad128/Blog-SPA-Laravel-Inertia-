@@ -75,7 +75,7 @@
                             open-expand-only-td
                         >
                             <vs-td checkbox>
-                                <vs-checkbox :disabled="tr.name == 'admin'" :val="tr" v-model="selected" />
+                                <vs-checkbox :val="tr" v-model="selected" />
                             </vs-td>
                             <vs-td class="font-bold">
                                 {{ tr.name }}
@@ -208,7 +208,7 @@ export default {
 
     },
     beforeMount() {
-        this.$store.state.dashboard.activeSidebarItem = 'Users_User_Roles';
+        this.$store.state.dashboard.activeSidebarItem = 'User_User_Roles';
     },
     mounted() {
         this.initRolePermissions();

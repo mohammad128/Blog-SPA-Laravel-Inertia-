@@ -146,8 +146,8 @@
                                     @change="selected = $vs.checkAll(selected, comments.data)"
                                 />
                             </vs-th>
-                            <vs-th sort ref="th_name" @click="sort($event, 'name')">
-                                Name
+                            <vs-th sort ref="th_username" @click="sort($event, 'username')">
+                                UserName
                             </vs-th>
                             <vs-th sort ref="th_comment" @click="sort($event, 'comment')">
                                 Comment
@@ -177,7 +177,7 @@
                                 <vs-checkbox :val="tr" v-model="selected" />
                             </vs-td>
                             <vs-td class="text-xs font-bold text-gray-800">
-                                {{ tr.user.name }}
+                                {{ tr.user.username }}
                             </vs-td>
                             <vs-td class="flex items-center no-underline text-xs font-bold" v-html="tr.content">
                             </vs-td>
@@ -199,7 +199,7 @@
                                             <img :src="tr.user.profile_photo_url" alt="">
                                         </vs-avatar>
                                         <div class="flex flex-col">
-                                            <span class="text-md font-bold text-gray-900">{{ tr.user.name }}</span>
+                                            <span class="text-md font-bold text-gray-900">{{ tr.user.username }}</span>
                                             <span class="text-xs text-gray-600">{{ tr.user.email }}</span>
                                         </div>
                                     </div>
@@ -281,7 +281,7 @@
                                     <img :src="edit.user.profile_photo_url" alt="">
                                 </vs-avatar>
                                 <div class="flex flex-col">
-                                    <span class="text-md font-bold text-gray-900">{{ edit.user.name }}</span>
+                                    <span class="text-md font-bold text-gray-900">{{ edit.user.username }}</span>
                                     <span class="text-xs text-gray-600">{{ edit.user.email }}</span>
                                 </div>
                             </div>
@@ -336,7 +336,7 @@ export default {
                 id: 0,
                 content: '',
                 user: {
-                    name: '',
+                    username: '',
                     email: '',
                     profile_photo_url: '',
                 }
@@ -373,8 +373,8 @@ export default {
     mounted(){
         let el = null;
         switch(this.sortKey) {
-            case 'name':
-                el = this.$refs.th_name.$el;
+            case 'username':
+                el = this.$refs.th_username.$el;
                 break;
             case 'comment':
                 el = this.$refs.th_comment.$el;

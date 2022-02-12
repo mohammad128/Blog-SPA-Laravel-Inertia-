@@ -124,7 +124,7 @@ export default {
         }
     },
     beforeMount() {
-        this.$store.state.dashboard.activeSidebarItem = 'Users_Add_New';
+        this.$store.state.dashboard.activeSidebarItem = 'User_Add_New';
     },
     computed: {
         errors() {

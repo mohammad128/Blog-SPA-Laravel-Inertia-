@@ -18,7 +18,9 @@ class MetaSeeder extends Seeder
             [
                 'site_title' => 'Laravel inertia',
                 'tag_line' => 'laravel inertia blog',
-                'new_user_default_role' => [],
+                'new_user_default_role' => [
+                    \Spatie\Permission\Models\Role::where('name', 'Subscriber')->first()->id
+                ],
                 'menu' => [
                     'header_menu' => 0,
                     'mobile_menu' => 0,

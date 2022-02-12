@@ -18,6 +18,14 @@ class PermissionSeeder extends Seeder
         $permissions = get_json_permissions();
         $roles = [
             'admin' => $permissions,
+            'Subscriber' => [
+                "Comments" => [
+                    'desc' => "Permission for manage comments",
+                    'permissions' => [
+                        [ 'name' => 'create_comment', 'desc' => "Permission for create Comment" ]
+                    ]
+                ],
+            ]
         ];
         foreach ($roles as $role_name=>$role_permissions) {
             $__role_permissions = [];
@@ -25,7 +33,10 @@ class PermissionSeeder extends Seeder
                 foreach ($_p['permissions'] as $__p) {
                     $name = $__p['name'];
                     $desc = $__p['desc'];
-                    array_push($__role_permissions, Permission::create(['name'=>$name]) );
+                    $permision = Permission::query()->firstWhere('name',$name);
+                    if( ! $permision )
+                        $permision = Permission::create(['name'=>$name]);
+                    array_push($__role_permissions, $permision );
                 }
             }
             $r = Role::create(['name'=>$role_name]);

@@ -35,7 +35,7 @@
 
 
                         <transition name="scale">
-                            <vs-button v-if="selectedItems.length" danger icon @click="mulitDeleteMedia()" :loading="onDeleteProcessing">
+                            <vs-button v-if="selectedItems.length && can('delete_media')" danger icon @click="mulitDeleteMedia()" :loading="onDeleteProcessing">
                                 <i class='bx bx-trash'></i> Delete {{ selectedItems.length }}
                             </vs-button>
                         </transition>
@@ -130,7 +130,7 @@
                                 </p>
                             </template>
                             <template #interactions>
-                                <vs-button danger icon @click="deleteMedia(media.id)">
+                                <vs-button v-if="can('delete_media')" danger icon @click="deleteMedia(media.id)">
                                     <i class='bx bx-trash'></i>
                                 </vs-button>
                             </template>

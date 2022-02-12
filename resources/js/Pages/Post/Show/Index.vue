@@ -8,12 +8,12 @@
         </Head>
 
         <div id="postsContainer" >
-            <div class="relative banner h-64 md:h-96 bg-cover bg-fixed bg-center filter flex flex-row justify-center" :style="`background-image: url('${post.feature_image}')`">
-                <div class="w-1/3 transform backdrop-grayscale"></div>
-                <div class="w-1/3 "></div>
-                <div class="w-1/3 transform backdrop-hue-rotate-180"></div>
+            <div class="relative banner h-64 md:h-96 bg-cover bg-fixed bg-center filter flex flex-row justify-center grayscale hover:grayscale-0 bg-100% hover:bg-120% bg-center bg-no-repeat duration-700" :style="`background-image: url('${post.feature_image}')`">
+<!--                <div class="w-1/3 transform backdrop-grayscale"></div>-->
+<!--                <div class="w-1/3 "></div>-->
+<!--                <div class="w-1/3 transform backdrop-hue-rotate-180"></div>-->
             </div>
-            <div class="post w-full mb-8 max-w-screen-xl mx-auto divide-y-2">
+            <div class="post w-full mb-8 max-w-screen-xl mx-auto divide-y-2 bg-white">
                 <div class="relative flex flex-row justify-between w-full bg-white rounded-tl-2xl rounded-tr-2xl p-4">
                     <h2 class="text-center font-bold text-lg lg:text-4xl text-gray-800">{{post.title}}</h2>
 
@@ -50,8 +50,9 @@
                 </div>
             </div>
         </div>
+        <div class="shadowDiv"> </div>
 
-        <div class="bg-white rounded-lg shadow-lg w-full mb-8 max-w-screen-xl mx-auto divide-y-2">
+        <div class="bg-white rounded-lg shadow-lg w-full mb-8 max-w-screen-xl mx-auto divide-y-2" v-if="!post.disable_comment">
             <div class="w-full p-4">
                 <h3 class="text-3xl text-gray-800 font-bold">Comments</h3>
             </div>
@@ -59,6 +60,7 @@
                 <Comments :comments="comments" :post-id="post.id"/>
             </div>
         </div>
+        <div class="shadowDiv" v-if="!post.disable_comment"></div>
 
     </Layout>
 </template>
@@ -120,5 +122,14 @@ export default {
 <style>
 body{
     overflow-x: hidden;
+}
+.shadowDiv {
+    background: url(https://www.monas.lt/blogas/wp-content/themes/themia-lite/images/post-shadow.png) top center no-repeat;
+    height: 29px;
+    margin-top: -30px;
+    margin-bottom: 2em;
+    box-shadow: none;
+    border-bottom: 0;
+    outline: 0;
 }
 </style>
