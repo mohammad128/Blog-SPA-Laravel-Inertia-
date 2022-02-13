@@ -22,11 +22,15 @@
                 <vs-button dark @click="doFilter()">
                     <i class="bx bxs-filter-alt"></i> Filter
                 </vs-button>
+                <vs-button icon dark
+                           @click="index+1==options.length ? index=0 : index++">
+                    <i class="bx bx-bar-chart-alt"></i>
+                </vs-button>
             </div>
         </div>
         <div class="flex-1">
             <div class="w-full grid grid-cols-1">
-                <apexchart type="bar" height="350px" width="100%" :options="in_30_days_chartOptions" :series="in_30_days_series"></apexchart>
+                <apexchart :type="types[index]" height="350px" width="100%" :options="in_30_days_chartOptions" :series="in_30_days_series"></apexchart>
             </div>
         </div>
     </div>
@@ -50,6 +54,10 @@ export default {
             toDate: '',
             in_30_days_series: [],
             in_30_days_chartOptions: { },
+
+            options: [],
+            types: ['area', 'bar'],
+            index: 1
         }
     },
     methods: {
@@ -67,8 +75,25 @@ export default {
         this.fromDate = this.data.categories[0];
         this.toDate = this.data.categories[this.data.categories.length-1];
 
-        this.in_30_days_series = this.data.series;
-        this.in_30_days_chartOptions = {
+
+
+        this.options[0] = {
+            chart: {
+                height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            xaxis: {
+                type: 'datetime',
+                    categories: this.data.categories,
+            },
+        };
+        this.options[1] = {
             chart: {
                 type: 'bar',
                 height: 350
@@ -105,8 +130,11 @@ export default {
                         return "" + val + " count"
                     }
                 }
-            }
-        };
+            },
+        }
+
+        this.in_30_days_series = this.data.series;
+        this.in_30_days_chartOptions = this.options[this.index];
     }
 }
 </script>

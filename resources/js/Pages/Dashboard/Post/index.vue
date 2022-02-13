@@ -153,10 +153,10 @@
                                 @change="selected = $vs.checkAll(selected, posts.data)"
                             />
                         </vs-th>
-                        <vs-th sort @click="posts.data = $vs.sortData($event ,posts.data, 'name')">
+                        <vs-th sort ref="th_title" @click="sort($event, 'title')">
                             Title
                         </vs-th>
-                        <vs-th>
+                        <vs-th sort ref="th_author" @click="sort($event, 'author')">
                             Author
                         </vs-th>
                         <vs-th>
@@ -165,11 +165,11 @@
                         <vs-th>
                             Tags
                         </vs-th>
-                        <vs-th>
+                        <vs-th sort ref="th_comment_count" @click="sort($event, 'comment_count')">
                             <i class="text-2xl bx bxs-comment"></i>
                         </vs-th>
-                        <vs-th>
-                            Last Modified
+                        <vs-th sort ref="th_created_at" @click="sort($event, 'created_at')">
+                            Created At
                         </vs-th>
                     </vs-tr>
                 </template>
@@ -295,8 +295,35 @@ export default {
         postPrePage: 15,
         page: 1,
         allow: false,
+        sortKey: '',
+        sortType: '',
     }),
     methods: {
+        sort(event, sortKey, type) {
+
+            var sortType = type || 'desc';
+            var el = event.target;
+
+            if (el.dataset["sortType" + sortKey] == 'desc') {
+                sortType = 'asc';
+            } else if (el.dataset["sortType" + sortKey] == 'asc') {
+                sortType = null;
+            }
+
+            el.dataset["sortType" + sortKey] = sortType;
+            el.dataset["sortType"] = sortType;
+            el.dataset["sortKey"] = "sortType" + sortKey;
+            var parent = el.closest('.vs-table__tr');
+            var ths = parent.querySelectorAll('th.sort');
+            ths.forEach(function (th) {
+                if (th != el) {
+                    th.dataset.sortType = null;
+                    th.dataset[th.dataset["sortKey"]] = null;
+                }
+            });
+            this.sortKey = sortKey;
+            this.sortType = sortType;
+        },
         doFilter() {
             let data = {};
             // if(this.selectedCat.length > 0 )
@@ -313,6 +340,10 @@ export default {
                 data['postPrePage'] = this.postPrePage;
             if(this.page !== 1 )
                 data['page'] = this.page;
+            if(this.sortKey && this.sortType ) {
+                data['sortKey'] = this.sortKey;
+                data['sortType'] = this.sortType;
+            }
 
             Inertia.get(route('dashboard.post.allPosts'), data, {
                 preserveState: true,
@@ -349,6 +380,28 @@ export default {
     beforeMount() {
         this.$store.state.dashboard.activeSidebarItem = 'Post_All_Posts';
     },
+    mounted(){
+        let el = null;
+        switch(this.sortKey) {
+            case 'title':
+                el = this.$refs.th_title.$el;
+                break;
+            case 'author':
+                el = this.$refs.th_author.$el;
+                break;
+            case 'comment_count':
+                el = this.$refs.th_comment_count.$el;
+                break;
+            case 'created_at':
+                el = this.$refs.th_created_at.$el;
+                break;
+        }
+        if( el ) {
+            el.dataset["sortType" + this.sortKey] = this.sortType;
+            el.dataset["sortType"] = this.sortType;
+            el.dataset["sortKey"] = "sortType" + this.sortKey;
+        }
+    },
     created() {
         this.allow = false;
         if( this.filters['selectedCat'] != '' ) {
@@ -365,6 +418,8 @@ export default {
         this.post_type = this.filters['post_type'];
         this.postPrePage = parseInt(this.filters['postPrePage']);
         this.page = this.filters['page'];
+        this.sortType = this.filters['sortType'];
+        this.sortKey = this.filters['sortKey'];
 
         let that = this;
         setInterval(function () {
@@ -417,6 +472,14 @@ export default {
         page: function(val, oldVal) {
             if (!this.allow) return;
             console.log('page:',val);
+            this.doFilter();
+        },
+        sortKey: function () {
+            if (!this.allow) return;
+            this.doFilter();
+        },
+        sortType: function f() {
+            if (!this.allow) return;
             this.doFilter();
         },
     }

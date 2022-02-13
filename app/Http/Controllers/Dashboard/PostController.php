@@ -60,6 +60,33 @@ class PostController extends Controller
             ->withCount(['comments as trashComments'=> function ($q) {
                 $q->onlyTrashed();
             }])
+            ->when(RequestFacade::input('sortKey') && RequestFacade::input('sortType'), function ($query) {
+//                author
+//                comment_count
+//                created_at
+
+                $sortKey = RequestFacade::input('sortKey');
+                $sortType = RequestFacade::input('sortType');
+                if( !in_array($sortType, ['desc', 'asc']) OR !in_array($sortKey, ['title', 'author', 'comment_count', 'created_at']) )
+                    return $query;
+                switch ($sortKey) {
+                    case 'author':
+                        return $query->join('users', 'posts.user_id', '=', 'users.id')
+                            ->select('posts.*', 'users.username')
+                            ->orderBy('username', $sortType);
+                        break;
+                    case 'title':
+                        return $query->orderBy( 'title',  $sortType);
+                        break;
+                    case 'created_at':
+                        return $query->orderBy( 'created_at',  $sortType);
+                        break;
+                    case 'comment_count':
+                        return $query->orderBy( 'approvedComments',  $sortType);
+                        break;
+                }
+                return $query;
+            })
             ->orderBy('id', 'desc')
             ->paginate($pre_page)->withQueryString();
 
@@ -88,7 +115,7 @@ class PostController extends Controller
     }
 
     public function create() {
-//        $this->authorize('create');
+        $this->authorize('create', Post::class);
         $data = [
             'categories' => app('rinvex.categories.category')->get()->toTree(),
             'tags' => Tag::get(['name'])->map(function ($item) {
@@ -109,7 +136,7 @@ class PostController extends Controller
     }
 
     public function store( Request $request) {
-//        $this->authorize('create');
+        $this->authorize('create', Post::class);
         $request->validate([
             'title' => ['required'],
             'slug' => ['required', 'unique:posts'],
@@ -206,7 +233,7 @@ class PostController extends Controller
         return redirect()->back();
     }
 
-    public function destroy( Request $request ) {
+    public function multiDelete( Request $request ) {
         foreach ($request->get('ids') as $id) {
             $post = Post::query()->findOrFail($id);
             $this->authorize('delete', $post);

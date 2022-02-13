@@ -1,15 +1,15 @@
 <template>
     <DashboardLayout>
         <div class="flex justify-between lg:items-center mb-4 mt-4 flex-col  gap-4 md:flex-row flex bg-white p-4 rounded-2xl">
-            <div class="flex space-x-4 flex space-x-4">
-                <div class="text-5xl font-extrabold">
-                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-purple-800">Create Role</span>
+            <div class="flex space-x-4 flex space-x-4 flex-1">
+                <div class="text-5xl font-extrabold w-full">
+                    <span class="bg-clip-text break-words text-transparent bg-gradient-to-r from-gray-800 to-purple-800">Edit Role {{ form.name }}</span>
                 </div>
 
             </div>
             <vs-button
                 floating
-                class="font-bold"
+                class="font-bold shrink-0"
                 @click="link($event)"
                 method="get"
                 :url="route('dashboard.user.role')"

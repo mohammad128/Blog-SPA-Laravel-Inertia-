@@ -135,17 +135,17 @@
                                 @change="selected = $vs.checkAll(selected, posts.data)"
                             />
                         </vs-th>
-                        <vs-th sort @click="posts.data = $vs.sortData($event ,posts.data, 'name')">
+                        <vs-th sort ref="th_title" @click="sort($event, 'title')">
                             Title
                         </vs-th>
-                        <vs-th>
+                        <vs-th sort ref="th_author" @click="sort($event, 'author')">
                             Author
                         </vs-th>
-                        <vs-th>
+                        <vs-th sort ref="th_comment_count" @click="sort($event, 'comment_count')">
                             <i class="text-2xl bx bxs-comment"></i>
                         </vs-th>
-                        <vs-th>
-                            Last Modified
+                        <vs-th sort ref="th_created_at" @click="sort($event, 'created_at')">
+                            Created At
                         </vs-th>
                     </vs-tr>
                 </template>
@@ -167,32 +167,65 @@
                             <span v-else class="text-xs text-gray-700 bg-lime-200 px-2 py-1 rounded-lg">publish</span>
 
                             <div class="pt-2 flex opacity-0 group-hover:opacity-100 duration-300 transition space-x-4 pl-2 ">
+                                <template v-if="post_type == 'trash'">
+                                    <a v-if="can('restore_all_page') || ( can('restore_page') && tr.user_id == $page.props.user.id )"  class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                       @click="link($event)" method="get" :url="route('dashboard.page.restore', {'id':tr.id})">
+                                        <i class="text-lg bx bx-reset"></i> Restore
+                                    </a>
+                                    <a  v-if="can('force_delete_all_page') || ( can('force_delete_page') && tr.user_id == $page.props.user.id )" class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                       @click="link($event)" method="delete" :url="route('dashboard.page.forceDelete', {'page': tr.id})"><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
 
-                                <a v-if="post_type=='trash'" class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
-                                   @click="link($event)" method="get" :url="route('dashboard.page.restore', {'id':tr.id})"><i class="text-lg bx bx-reset"></i> Restore</a>
-                                <a v-else class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
-                                   @click="link($event)" method="get" :url="route('dashboard.page.edit', {'page':tr.slug})"><i class="text-lg bx bx-edit"></i> Edit</a>
+                                </template>
+                                <template v-else>
+                                    <a v-if="can('edit_all_page') || ( can('edit_page') && tr.user_id == $page.props.user.id )"  class="flex items-center text-xs text-gray-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                       @click="link($event)" method="get" :url="route('dashboard.page.edit', {'page':tr.slug})">
+                                        <i class="text-lg bx bx-edit"></i> Edit
+                                    </a>
 
-                                <a v-if="post_type=='trash'" class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
-                                   @click="link($event)" method="delete" :url="route('dashboard.page.forceDelete', {'page': tr.id})"><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
-                                <a v-else class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
-                                   @click="link($event)" method="delete" :url="route('dashboard.page.delete', {'page': tr.id})"><i class="text-lg bx bxs-trash-alt"></i> Delete</a>
+                                    <a v-if="can('delete_all_page') || ( can('delete_page') && tr.user_id == $page.props.user.id )"  class="flex items-center text-xs text-red-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                       @click="link($event)" method="delete" :url="route('dashboard.page.delete', {'page': tr.id})">
+                                        <i class="text-lg bx bxs-trash-alt"></i> Delete
+                                    </a>
 
-                                <a v-if="post_type != 'trash'" class="flex items-center text-xs text-green-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)" ><i class="text-lg bx bxs-show"></i> View</a>
+                                    <a class="flex items-center text-xs text-green-900 opacity-70 space-x-1 hover:opacity-100 " href="javascript:void(0)"
+                                        @click="link($event)" method="get" :url="tr.url">
+                                        <i class="text-lg bx bxs-show"></i> View
+                                    </a>
+
+                                </template>
+
+
                             </div>
                         </vs-td>
                         <vs-td>
                             {{ tr.user.username }}
                         </vs-td>
                         <vs-td>
-                            <span>
+                            <vs-tooltip left>
                                 <i class="relative bx bxs-comment text-4xl text-gray-900">
-                                    <b class="absolute top-1.5 left-2.5 text-white text-xs">30</b>
+                                    <b class="absolute top-1.5 left-2.5 text-white text-xs">{{ tr.approvedComments }}</b>
+                                    <span class="blink absolute -top-1 -left-1" v-if="tr.pendingComments"></span>
                                 </i>
-                            </span>
+                                <template #tooltip>
+                                    <div class="content-tooltip text-left">
+                                        <p class="text-xs text-lime-300">
+                                            Approved: {{ tr.approvedComments }}
+                                        </p>
+                                        <p class="text-xs text-yellow-300">
+                                            Pending: {{ tr.pendingComments }}
+                                        </p>
+                                        <p class="text-xs text-red-300">
+                                            Spam: {{ tr.sapmComments }}
+                                        </p>
+                                        <p class="text-xs text-red-400">
+                                            Trash: {{ tr.trashComments }}
+                                        </p>
+                                    </div>
+                                </template>
+                            </vs-tooltip>
                         </vs-td>
                         <vs-td>
-                            {{tr.updated_at.substring(0,10)}}<br><span class="text-xs text-gray-600">{{tr.updated_at_for_human}}</span>
+                            {{tr.created_at.substring(0,10)}}<br><span class="text-xs text-gray-600">{{tr.created_at_for_human}}</span>
                         </vs-td>
                     </vs-tr>
                 </template>
@@ -244,8 +277,37 @@ export default {
         postPrePage: 15,
         page: 1,
         allow: false,
+        sortKey: '',
+        sortType: '',
     }),
     methods: {
+
+        sort(event, sortKey, type) {
+
+            var sortType = type || 'desc';
+            var el = event.target;
+
+            if (el.dataset["sortType" + sortKey] == 'desc') {
+                sortType = 'asc';
+            } else if (el.dataset["sortType" + sortKey] == 'asc') {
+                sortType = null;
+            }
+
+            el.dataset["sortType" + sortKey] = sortType;
+            el.dataset["sortType"] = sortType;
+            el.dataset["sortKey"] = "sortType" + sortKey;
+            var parent = el.closest('.vs-table__tr');
+            var ths = parent.querySelectorAll('th.sort');
+            ths.forEach(function (th) {
+                if (th != el) {
+                    th.dataset.sortType = null;
+                    th.dataset[th.dataset["sortKey"]] = null;
+                }
+            });
+            this.sortKey = sortKey;
+            this.sortType = sortType;
+        },
+
         doFilter() {
             let data = {};
             // if(this.selectedCat.length > 0 )
@@ -258,16 +320,21 @@ export default {
                 data['search'] = this.search;
             if(this.post_type !== '' )
                 data['post_type'] = this.post_type;
-            if(this.postPrePage !== 15 )
+            if(this.postPrePage !== '15' )
                 data['postPrePage'] = this.postPrePage;
             if(this.page !== 1 )
                 data['page'] = this.page;
+            if(this.sortKey && this.sortType ) {
+                data['sortKey'] = this.sortKey;
+                data['sortType'] = this.sortType;
+            }
 
             Inertia.get(route('dashboard.page.index'), data, {
                 preserveState: true,
                 preserveScroll: true,
             });
         },
+
         deleteSelected() {
             this.loading=true;
             let url;
@@ -283,6 +350,7 @@ export default {
                 }
             })
         },
+
         restoreSelected() {
             this.loading=true;
             Inertia.post(route('dashboard.page.multiRestore'), {'ids':this.selected.map(item=>item['id'])}, {
@@ -294,9 +362,32 @@ export default {
                 }
             })
         },
+
     },
     beforeMount() {
         this.$store.state.dashboard.activeSidebarItem = 'Page_All_Pages';
+    },
+    mounted(){
+        let el = null;
+        switch(this.sortKey) {
+            case 'title':
+                el = this.$refs.th_title.$el;
+                break;
+            case 'author':
+                el = this.$refs.th_author.$el;
+                break;
+            case 'comment_count':
+                el = this.$refs.th_comment_count.$el;
+                break;
+            case 'created_at':
+                el = this.$refs.th_created_at.$el;
+                break;
+        }
+        if( el ) {
+            el.dataset["sortType" + this.sortKey] = this.sortType;
+            el.dataset["sortType"] = this.sortType;
+            el.dataset["sortKey"] = "sortType" + this.sortKey;
+        }
     },
     created() {
         this.allow = false;
@@ -306,6 +397,8 @@ export default {
         this.post_type = this.filters['post_type'];
         this.postPrePage = parseInt(this.filters['postPrePage']);
         this.page = this.filters['page'];
+        this.sortType = this.filters['sortType'];
+        this.sortKey = this.filters['sortKey'];
 
         let that = this;
         setInterval(function () {
@@ -346,6 +439,14 @@ export default {
         page: function(val, oldVal) {
             if (!this.allow) return;
             console.log('page:',val);
+            this.doFilter();
+        },
+        sortKey: function () {
+            if (!this.allow) return;
+            this.doFilter();
+        },
+        sortType: function f() {
+            if (!this.allow) return;
             this.doFilter();
         },
     }

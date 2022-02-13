@@ -54,7 +54,7 @@ Route::middleware([])->group(function () {
                     ->name('dashboard.post.categories');
 
                 Route::middleware(['can:delete_post'])
-                    ->post('/MultiDelete', [\App\Http\Controllers\Dashboard\PostController::class, 'destroy'])
+                    ->post('/MultiDelete', [\App\Http\Controllers\Dashboard\PostController::class, 'multiDelete'])
                     ->name('dashboard.post.multiDelete');
                 Route::middleware(['can:delete_post'])
                     ->delete('/{post:id}', [\App\Http\Controllers\Dashboard\PostController::class, 'delete'])
@@ -108,7 +108,7 @@ Route::middleware([])->group(function () {
                     ->name('dashboard.page.delete');
 
                 Route::middleware(['can:delete_page'])
-                    ->post('/', [\App\Http\Controllers\Dashboard\PageController::class, 'destroy'])
+                    ->post('/', [\App\Http\Controllers\Dashboard\PageController::class, 'multiDelete'])
                     ->name('dashboard.page.multiDelete');
 
                 Route::middleware(['can:force_delete_page'])
@@ -362,7 +362,6 @@ Route::middleware([])->group(function () {
 
 
 Route::get('test', function (\Illuminate\Http\Request $request) {
-
 
     $post = \App\Models\Post::query()->published()->first();
 //    $post->dislikeThis();

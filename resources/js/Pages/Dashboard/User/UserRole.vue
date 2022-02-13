@@ -101,9 +101,7 @@
                                         </div>
                                     </div>
                                     <div class="flex flex-row justify-end p-4 gap-4">
-                                        <vs-button transparent danger border class="font-bold"
-                                                   @click="link($event)" method="delete" :url="route('dashboard.user.role.delete',{'id': tr.id})"
-                                        >
+                                        <vs-button transparent danger border class="font-bold" @click.stop="deleteConfirmForm=tr;deleteConfirm=true">
                                             Delete
                                         </vs-button>
                                         <vs-button floating gradient class="font-bold" @click="link($event)" method="get" :url="route('dashboard.user.role.edit', {'name': tr.name})">
@@ -123,6 +121,34 @@
                         </span>
                     </template>
                 </vs-table>
+
+
+                <vs-dialog width="550px" not-center v-model="deleteConfirm">
+                    <template #header>
+                        <h4 class="not-margin text-red-700">
+                            Delete Role <b>{{ deleteConfirmForm.name }}</b>
+                        </h4>
+                    </template>
+
+
+                    <div class="con-content">
+                        <p>
+                            Are you sure you want to delete this Role?
+                        </p>
+                    </div>
+
+                    <template #footer>
+                        <div class="con-footer flex flex-row-reverse items-center">
+                            <vs-button danger
+                                       @click="link($event)" method="delete" :url="route('dashboard.user.role.delete',{'id': deleteConfirmForm.id})">
+                                Delete
+                            </vs-button>
+                            <vs-button @click="deleteConfirm=false" dark transparent>
+                                Cancel
+                            </vs-button>
+                        </div>
+                    </template>
+                </vs-dialog>
 
             </div>
         </div>
@@ -150,6 +176,12 @@ export default {
             edit: {},
 
             rolePermissions: [],
+
+            deleteConfirm: false,
+            deleteConfirmForm: {
+                name: '',
+                id: 0
+            }
         }
     },
     methods: {

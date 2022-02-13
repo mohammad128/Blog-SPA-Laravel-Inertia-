@@ -18,6 +18,7 @@ class PageController extends Controller
         $posts = Page::query()->with([
                 'user:id,username'
             ])
+            ->when(!auth()->user()->can('read_all_page'), fn($q) => $q->userPages() )
             ->when(RequestFacade::input('post_type'), function ($query) {
                 switch (RequestFacade::input('post_type')) {
                     case 'all':
@@ -31,18 +32,58 @@ class PageController extends Controller
                 }
                 return $query;
             })
+            ->withCount(['comments as approvedComments'=> function ($q) {
+                $q->approved();
+            }])
+            ->withCount(['comments as pendingComments'=> function ($q) {
+                $q->pending();
+            }])
+            ->withCount(['comments as sapmComments'=> function ($q) {
+                $q->spam();
+            }])
+            ->withCount(['comments as trashComments'=> function ($q) {
+                $q->onlyTrashed();
+            }])
+            ->when(RequestFacade::input('sortKey') && RequestFacade::input('sortType'), function ($query) {
+//                author
+//                comment_count
+//                created_at
+
+                $sortKey = RequestFacade::input('sortKey');
+                $sortType = RequestFacade::input('sortType');
+                if( !in_array($sortType, ['desc', 'asc']) OR !in_array($sortKey, ['title', 'author', 'comment_count', 'created_at']) )
+                    return $query;
+                switch ($sortKey) {
+                    case 'author':
+                        return $query->join('users', 'pages.user_id', '=', 'users.id')
+                            ->select('pages.*', 'users.username')
+                            ->orderBy('username', $sortType);
+                        break;
+                    case 'title':
+                        return $query->orderBy( 'title',  $sortType);
+                        break;
+                    case 'created_at':
+                        return $query->orderBy( 'created_at',  $sortType);
+                        break;
+                    case 'comment_count':
+                        return $query->orderBy( 'approvedComments',  $sortType);
+                        break;
+                }
+                return $query;
+            })
             ->when(RequestFacade::input('search'), function ($query) {
                 return $query->where('title', 'LIKE', '%'.RequestFacade::input('search').'%');
             })
             ->when(RequestFacade::input('fromDate'),function ($query){
-                $query->whereDate('updated_at', '>=', RequestFacade::input('fromDate'));
+                $query->whereDate('created_at', '>=', RequestFacade::input('fromDate'));
             })
             ->when(RequestFacade::input('toDate'),function ($query){
-                $query->whereDate('updated_at', '<=', RequestFacade::input('toDate'));
+                $query->whereDate('created_at', '<=', RequestFacade::input('toDate'));
             })
-            ->select(['id', 'title', 'user_id','updated_at', 'created_at', 'slug', 'draft'])
+//            ->select(['id', 'title', 'user_id','updated_at', 'created_at', 'slug', 'draft'])
             ->orderBy('id', 'desc')
-            ->paginate($pre_page)->withQueryString();
+            ->paginate($pre_page)
+            ->withQueryString();
 
         return Inertia::render('Dashboard/Page/index', [
             'posts' => $posts,
@@ -53,20 +94,24 @@ class PageController extends Controller
                 'post_type' => RequestFacade::input('post_type', ''),
                 'postPrePage' => RequestFacade::input('postPrePage',15),
                 'page' => RequestFacade::input('page', 1),
+                'sortKey' => RequestFacade::input('sortKey', ''),
+                'sortType' => RequestFacade::input('sortType', ''),
             ],
             'post_count'=>[
-                'all'=> Page::all()->count(),
-                'trash'=>Page::onlyTrashed()->count(),
-                'draft'=>Page::draft()->count(),
-                'published'=>Page::published()->count(),
+                'all'=> Page::query()->when(!auth()->user()->can('read_all_page'), fn($q) => $q->userPages() )->count(),
+                'trash'=>Page::query()->when(!auth()->user()->can('read_all_page'), fn($q) => $q->userPages() )->onlyTrashed()->count(),
+                'draft'=>Page::query()->when(!auth()->user()->can('read_all_page'), fn($q) => $q->userPages() )->draft()->count(),
+                'published'=>Page::query()->when(!auth()->user()->can('read_all_page'), fn($q) => $q->userPages() )->published()->count(),
             ],
         ]);
     }
 
     public function create() {
+        $this->authorize('create', Page::class);
         return Inertia::render('Dashboard/Page/Create');
     }
     public function store( Request $request) {
+        $this->authorize('create', Page::class);
         $request->validate([
             'title' => ['required'],
             'slug' => ['required', 'unique:posts'],
@@ -82,11 +127,13 @@ class PageController extends Controller
     }
 
     public function edit( Page  $page) {
+        $this->authorize('update', $page);
         return Inertia::render('Dashboard/Page/Edit', [
             'post' => $page
         ]);
     }
     public function update(Page $page, Request $request) {
+        $this->authorize('update', $page);
         $request->validate([
             'title' => ['required'],
             'slug' => ['required',
@@ -102,30 +149,50 @@ class PageController extends Controller
 
 
     public function delete( Page $page ) {
+        $this->authorize('delete', $page);
         $page->delete();
         return redirect()->back();
     }
 
-    public function destroy(Request $request) {
-        Page::destroy($request->get('ids'));
+    public function multiDelete(Request $request) {
+//        Page::destroy($request->get('ids'));
+        $pages = Page::whereIn( 'id', $request->get('ids', []) )->get();
+        foreach ($pages as $page) {
+            $this->authorize('forceDelete', $page);
+            $page->delete();
+        }
         return redirect()->back();
     }
 
     public function multiForceDelete(Request $request) {
-        Page::withTrashed()->whereIn( 'id', $request->get('ids', []) )->forceDelete();
+//        Page::withTrashed()->whereIn( 'id', $request->get('ids', []) )->forceDelete();
+        $pages = Page::withTrashed()->whereIn( 'id', $request->get('ids', []) )->get();
+        foreach ($pages as $page) {
+            $this->authorize('forceDelete', $page);
+            $page->forceDelete();
+        }
         return redirect()->back();
     }
     public function forceDelete($id) {
-        Page::withTrashed()->find($id)->forceDelete();
+//        Page::withTrashed()->find($id)->forceDelete();
+        $page = Page::withTrashed()->find($id);
+        $this->authorize('forceDelete', $page);
+        $page->forceDelete();
         return redirect()->back();
     }
 
     public function restore($id) {
-        Page::onlyTrashed()->find($id)->restore();
+        $oage = Page::onlyTrashed()->find($id);
+        $this->authorize('restore', $oage);
+        $oage->restore();
         return redirect()->back();
     }
     public function multiRestore(Request $request) {
-        Page::onlyTrashed()->whereIn('id', $request->get('ids'))->restore();
+        $pages = Page::onlyTrashed()->whereIn('id', $request->get('ids'))->get();
+        foreach ($pages as $page) {
+            $this->authorize('restore', $page);
+            $page->restore();
+        }
         return redirect()->back();
     }
 

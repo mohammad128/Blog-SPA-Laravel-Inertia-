@@ -3,9 +3,9 @@
         <div class="flex flex-col">
             <div class="flex flex-row justify-between">
                 <h3 class="w-full text-left font-bold text-2xl text-gray-800">Overview</h3>
-                <vs-button icon
+                <vs-button icon dark
                     @click="chartTypesIndex+1==chartTypes.length ? chartTypesIndex=0 : chartTypesIndex++">
-                    <i class="bx bx-abacus"></i>
+                    <i class="bx bx-bar-chart-alt"></i>
                 </vs-button>
             </div>
             <apexchart :type="chartTypes[chartTypesIndex]" height="390" :options="chartOptions" :series="series"></apexchart>
