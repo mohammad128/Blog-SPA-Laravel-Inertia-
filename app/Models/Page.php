@@ -3,15 +3,18 @@
 namespace App\Models;
 
 use App\Traits\HasComment;
+use App\Traits\HasLike;
+use App\Traits\HasRate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Page extends Model
 {
-    use HasFactory, SoftDeletes, HasComment;
-    protected $fillable = [ 'title', 'content', 'feature_image', 'draft', 'disable_comment', 'password', 'slug', 'user_id' ];
+    use HasFactory, SoftDeletes;
+    protected $fillable = [ 'title', 'content', 'feature_image', 'draft', 'password', 'slug', 'user_id'];
     protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url'];
+    protected $hidden = ['password'];
 
 
     public function user() {

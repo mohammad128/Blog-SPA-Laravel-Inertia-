@@ -17,7 +17,7 @@ class Post extends Model
 
     protected $fillable = ['title','content','feature_image', 'user_id', 'draft', 'disable_comment', 'password', 'slug' ];
 
-    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url', 'rate','user_rate', 'user_like_status', 'like_status'];
+    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url', 'has_password', 'rate','user_rate', 'user_like_status', 'like_status'];
     protected $hidden = ['password'];
 
     public function user() {
@@ -36,6 +36,9 @@ class Post extends Model
     }
     public function getUrlAttribute() {
         return route('Post.show', ['post'=>$this->slug]);
+    }
+    public function getHasPasswordAttribute() {
+        return $this->password ? true : false;
     }
 
     /*

@@ -18,6 +18,20 @@ use Jenssegers\Agent\Agent;
 |
 */
 
+Route::get('test', function (\Illuminate\Http\Request $request) {
+
+    $post = \App\Models\Post::query()->published()->where('id', 101)->first();
+    $user = User::query()->first();
+    $user->notify(new \App\Notifications\PostPublished($post));
+    dd($user->unreadNotifications->toArray());
+
+//    return Inertia::render('test');
+});
+
+
+//require_once __DIR__.'/fortify.php';
+
+
 Route::middleware([])->group(function () {
 
     Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('index');
@@ -288,8 +302,14 @@ Route::middleware([])->group(function () {
                         ->name('dashboard.user.profile.update');
                     Route::delete('/removeImage/', [\App\Http\Controllers\Dashboard\ProfileController::class, 'removeImage'])
                         ->name('dashboard.user.profile.removeImage');
-
                 });
+
+                Route::prefix('/Notifications')->controller(\App\Http\Controllers\Dashboard\NotificationController::class)->group(function () {
+                    Route::get('/', 'index')->name('dashboard.user.notifications');
+                    Route::delete('/ClearNotifications', 'clearNotifications')->name('dashboard.user.clearNotifications');
+                    Route::post('/', 'getNotifications')->name('dashboard.user.getNotifications');
+                });
+
             });
 
             // Settings Routes
@@ -344,77 +364,36 @@ Route::middleware([])->group(function () {
         Route::post('/{post:id}/Comment/GetChild', [\App\Http\Controllers\PostController::class, 'getPostChildComment'])->name('Post.getPostChildComment');
         Route::middleware(['auth:sanctum', 'verified'])->post('/{post:id}/Comment/Like', [\App\Http\Controllers\PostController::class, 'likeComment'])->name('Post.likeComment');
         Route::middleware(['auth:sanctum', 'verified', 'can:create_comment'])->post('/{post:id}/Comment/Create', [\App\Http\Controllers\PostController::class, 'createComment'])->name('Post.createComment');
-        Route::get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
+        Route::middleware('has.password:'.\App\Models\Post::class)->get('/{post:slug}', [\App\Http\Controllers\PostController::class, 'show'])->name('Post.show');
     });
     // Gust Or Auth User
     Route::prefix("/Page")->group(function () {
-//        Route::get('/', [\App\Http\Controllers\PageController::class, 'index'])->name('Page.index');
-//        Route::post('/{id}', [\App\Http\Controllers\PageController::class, 'postPreview'])->name('Page.postPreview');
-        Route::get('/{page:slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('Page.show');
     });
+    Route::middleware('has.password:'.\App\Models\Page::class)->get('/{page:slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('Page.show');
+
 
     Route::prefix('/User')->group(function () {
         Route::get('/{user:name}')->name('User.index');
     });
 
+    Route::post('/hasPassword', function (\Illuminate\Http\Request $request) {
+        $request->validate([
+            'password'=>['required'],
+            "className" => ["required"],
+            "column" => ["required"],
+            "id" => ["required"],
+            "redirect" => ["required"],
+        ]);
+        $className = $request->get('className');
+        $column = $request->get('column');
+        $id = $request->get('id');
+        $model = app($className)->where($column, $id)->firstOrFail();
+        $password = $request->get('password');
+        if(\Illuminate\Support\Facades\Hash::check( $password, $model->password )) {
+            \Illuminate\Support\Facades\Session::put($className.$column.$id,true);
+        }
+        return redirect()->back()->withErrors(['password'=>'Password is incorrect']);
+    })->name('hasPassword.check');
 
 });
 
-
-Route::get('test', function (\Illuminate\Http\Request $request) {
-
-    $post = \App\Models\Post::query()->published()->first();
-//    $post->dislikeThis();
-//    for($i=10; $i<30; $i++)
-//        $post->addComment("this is test ". $i);
-//    dd($post->comments->toArray());
-
-
-//    dd( \App\Models\Post::orderByRate()->published()->limit(10)->get()->toArray() );
-//    dd(\App\Models\Post::orderByRate()->limit(10)->get()->toArray());
-//    dd($post->setUserRate(10));
-//    dd($post->onChangeRate());
-//    dd($post->toArray());
-//    dd($post->rate());
-
-//    for($i=13; $i<=14; $i++)
-//        \App\Models\MenuItem::find(12)->appendNode( \App\Models\MenuItem::find($i) );
-//
-//    dd( $tree = \App\Models\MenuItem::withDepth()->having('depth', '<=', 1)->get()->toTree()->toArray() );
-
-//    dd( \App\Models\MenuItem::find(21)->delete() );
-
-//    $menu = Menu::query()->find(1);
-//    dd($menu->items()->where('id', '=', 27)->delete());
-
-//    $node = new \App\Models\MenuItem([
-//        'text'=> 'TEST',
-//        'href'=> 'TEST',
-//    ]);
-//    $node->makeRoot(); // Saved as root
-//    $menu->items()->save( $node );
-
-//    dd($menu->items()->defaultOrder()->get()->toTree()->toArray());
-//    $menus = Menu::query()->select(['id', 'name', 'created_at'])->orderBy('id', 'asc')->get();
-//    $menuItems = $menu->items()->select('id','text', 'href', 'menu_id', 'parent_id')->get()->toTree()->toArray();
-//    $menu = $menu->toArray();
-//    $menu['items']=$menuItems;
-//
-    return Inertia::render('test');
-
-//    for($i=0; $i<2; $i++)
-//        \App\Models\Post::find(867)->comments()->create([
-//            'content' => "This is Test Comemnt ".$i,
-//            'user_id' => auth()->id(),
-//            'parent_id' => 2
-//        ]);
-
-//    $comment = \App\Models\Post::find(867)->comments()->rootComments()->paginate(null, ['*'], 'page', 2);//->offset(10)->limit(10)->get();
-//
-//    return Inertia::render('test', [
-//        'comments' => $comment
-//    ]);
-});
-
-
-//require_once __DIR__.'/fortify.php';

@@ -22,7 +22,7 @@
                 <vs-avatar circle size="40" badge-color="danger" badge-position="top-right" @click="activeTooltip1=!activeTooltip1" class="cursor-painter">
                     <img :src="$page.props.user.profile_photo_url" alt="" class="cursor-pointer">
                     <template #badge>
-                        28
+                        {{ $page.props.user.new_notifications_count }}
                     </template>
                 </vs-avatar>
                 <template #tooltip >
@@ -46,7 +46,7 @@
                             <vs-button @click="activeTooltip1=false;link($event)" method="post" :url="route('logout')"  danger circle>
                                 Logout
                             </vs-button>
-                            <vs-button circle icon border>
+                            <vs-button circle icon border @click="activeTooltip1=false;link($event)" :url="route('dashboard.user.notifications')" method="get">
                                 <i class='bx bx-bell' ></i>
                             </vs-button>
                         </footer>
@@ -136,10 +136,10 @@
 
                             <template #footer>
                                 <vs-row justify="space-between" class="flex justify-between">
-                                    <vs-avatar badge-color="danger" dark color="#FFF" badge-position="top-right">
+                                    <vs-avatar badge-color="danger" dark color="#FFF" badge-position="top-right" >
                                         <img :src="$page.props.user.profile_photo_url" alt="">
                                         <template #badge>
-                                            28
+                                            {{ $page.props.user.new_notifications_count }}
                                         </template>
                                     </vs-avatar>
 
@@ -147,10 +147,10 @@
                                         <vs-button color="#000" @click="link($event)" method="get" :url="route('dashboard.user.profile')">
                                             <i class="bx bx-user"></i>
                                         </vs-button>
-                                        <vs-button color="#000" >
+                                        <vs-button color="#000" @click="link($event)" :url="route('dashboard.user.notifications')" method="get">
                                             <i class='bx bx-bell' ></i>
                                         </vs-button>
-                                        <vs-button danger>
+                                        <vs-button danger @click="link($event)" method="post" :url="route('logout')">
                                             <i class="bx bx-log-out"></i>
                                         </vs-button>
                                     </vs-button-group>
@@ -169,80 +169,6 @@
         </div>
     </div>
 </template>
-
-<style scoped>
-.sideBarUserActions {
-    transition: all 1s !important;
-}
-#sideBar.reduce .sideBarUserActions{
-    width: 0 !important;
-    height: 0 !important;
-    transform: scale(0) !important;
-    transition: all 1s !important;
-}
-.vs-tooltip-content{
-
-    width: auto;
-    display: inline-block;
-    position: relative;
-
-}
-.content-tooltip .body {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-}
-.content-tooltip .body .vs-avatar-content {
-    margin-top: -30px;
-    border: 3px solid var(--vs-theme-layout);
-    box-shadow: 0px 4px 15px 0px rgba(0,0,0,0.1);
-}
-.content-tooltip .body .text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    font-size: 0.55rem;
-    padding: 10px;
-    font-weight: normal;
-}
-.content-tooltip .body .text span {
-    font-weight: bold;
-    font-size: 0.7rem;
-}
-.content-tooltip footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.content-tooltip h4 {
-    padding: 8px;
-    margin: 0px;
-    text-align: left;
-}
-.content-tooltip p {
-    text-align: left;
-    padding: 0px;
-    margin: 0px;
-    line-height: 1rem;
-    padding-bottom: 5px;
-    padding-left: 8px;
-}
-.content-tooltip{
-    color: #FFF;
-    box-shadow: 0 32px 34px #10182747;
-    border: 1px solid #0d2756;
-    background: #101827;
-    border-radius: 15px;
-    padding-bottom: 8px;
-    margin-top: -24px;
-}
-</style>
-<style>
-body{
-    background: #e4e7eb;
-}
-</style>
 
 <script>
 import DashboardNav from "@/Partials/DashboardNav";
@@ -353,8 +279,8 @@ export default {
                 'can': 'comments_actions',
             },
             {
-                'title': 'User',
-                'icon': 'bx bxs-user',
+                'title': 'Users',
+                'icon': 'bx bx-male-female',
                 'group': [
                     {
                         'title': 'All Users',
@@ -373,13 +299,7 @@ export default {
                         'url': route('dashboard.user.role'),
                         'icon': 'bx bx-block',
                         'can': 'create_role'
-                    },
-                    {
-                        'title': 'Profile',
-                        'url': route('dashboard.user.profile'),
-                        'icon': 'bx bxs-user-detail',
-                        'can': ''
-                    },
+                    }
 
                 ]
             },
@@ -424,6 +344,25 @@ export default {
                 'url': route('dashboard.settings.index'),
                 'icon': 'bx bxs-dashboard',
                 'can': 'change_site_settings',
+            },
+            {
+                'title': 'User',
+                'icon': 'bx bxs-user',
+                'group': [
+                    {
+                        'title': 'Profile',
+                        'url': route('dashboard.user.profile'),
+                        'icon': 'bx bxs-user-detail',
+                        'can': ''
+                    },
+                    {
+                        'title': 'Notifications',
+                        'url': route('dashboard.user.notifications'),
+                        'icon': 'bx bx bx-bell',
+                        'can': ''
+                    },
+
+                ]
             },
         ]
     }),
@@ -470,4 +409,75 @@ export default {
 </script>
 
 <style scoped>
+.sideBarUserActions {
+    transition: all 1s !important;
+}
+#sideBar.reduce .sideBarUserActions{
+    width: 0 !important;
+    height: 0 !important;
+    transform: scale(0) !important;
+    transition: all 1s !important;
+}
+.vs-tooltip-content{
+
+    width: auto;
+    display: inline-block;
+    position: relative;
+
+}
+.content-tooltip .body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+.content-tooltip .body .vs-avatar-content {
+    margin-top: -30px;
+    border: 3px solid var(--vs-theme-layout);
+    box-shadow: 0px 4px 15px 0px rgba(0,0,0,0.1);
+}
+.content-tooltip .body .text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 0.55rem;
+    padding: 10px;
+    font-weight: normal;
+}
+.content-tooltip .body .text span {
+    font-weight: bold;
+    font-size: 0.7rem;
+}
+.content-tooltip footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.content-tooltip h4 {
+    padding: 8px;
+    margin: 0px;
+    text-align: left;
+}
+.content-tooltip p {
+    text-align: left;
+    padding: 0px;
+    margin: 0px;
+    line-height: 1rem;
+    padding-bottom: 5px;
+    padding-left: 8px;
+}
+.content-tooltip{
+    color: #FFF;
+    box-shadow: 0 32px 34px #10182747;
+    border: 1px solid #0d2756;
+    background: #101827;
+    border-radius: 15px;
+    padding-bottom: 8px;
+    margin-top: -24px;
+}
+</style>
+<style>
+body{
+    background: #e4e7eb;
+}
 </style>

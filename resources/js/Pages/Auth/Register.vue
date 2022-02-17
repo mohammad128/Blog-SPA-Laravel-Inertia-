@@ -31,14 +31,14 @@
                               :danger="errors['first_name']!=null ? true : false  "
                               :state="errors['first_name'] ? 'danger' : ''" >
                         <template #icon>
-                            <i class='bx bx-user'></i>
+                            <span >F</span>
                         </template>
                     </vs-input>
-                    <vs-input v-model="form.last_name" placeholder="Last name"
+                    <vs-input v-model="form.last_name" placeholder="Last name" icon-after
                               :danger="errors['last_name']!=null ? true : false  "
                               :state="errors['last_name'] ? 'danger' : ''" >
                         <template #icon>
-                            <i class='bx bx-user'></i>
+                            <span >L</span>
                         </template>
                     </vs-input>
                     <vs-input v-model="form.username" placeholder="User name"
@@ -48,7 +48,7 @@
                             <i class='bx bx-user'></i>
                         </template>
                     </vs-input>
-                    <vs-input v-model="form.email" placeholder="Email"
+                    <vs-input v-model="form.email" placeholder="Email" icon-after
                               :danger="errors['email']!=null ? true : false "
                               :state="errors['email'] ? 'danger' : ''" >
                         <template #icon>
@@ -62,7 +62,7 @@
                             <i class='bx bx-key'></i>
                         </template>
                     </vs-input>
-                    <vs-input v-model="form.password_confirmation" placeholder="Confirm Password" type="password" id="inputPassword2"
+                    <vs-input v-model="form.password_confirmation" placeholder="Confirm Password" type="password" id="inputPassword2" icon-after
                               :danger="errors['password_confirmation']!=null ? true : false"
                               :state="errors['password_confirmation'] ? 'danger' : ''" >
                         <template #icon>

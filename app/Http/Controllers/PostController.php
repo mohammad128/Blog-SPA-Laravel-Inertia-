@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\FlashMessage\Facade\FlashMessage;
 use App\Models\Post;
+use App\Notifications\CommentLikeNotification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -26,6 +27,7 @@ class PostController extends Controller
                 'feature_image' => $post->feature_image,
                 'url' => $post->url,
                 'comments_count' => $post->comments_count,
+                'has_password' => $post->has_password,
                 'rate' =>$post->rate
             ]);
         return Inertia::render('Post/index', [
@@ -38,6 +40,7 @@ class PostController extends Controller
 
     public function postPreview($id) {
         $post = Post::find($id);
+        if($post->has_password) return "Password Required";
         return [
             'id' => $post->id,
             'content' => $post->content,
@@ -124,12 +127,13 @@ class PostController extends Controller
         ]);
         $content = $request->get('content');
         $parent_id = $request->get('parent_id');
-
+        $reply_comment = 0;
         if( $parent_id!=0 ) {
             $comment = $post->comments()->with(['user'])->firstWhere('id', $parent_id);
             if ($comment->parent_id != 0) {
+                $reply_comment = $parent_id;
                 $parent_id = $comment->parent_id;
-                $content = '<span class="user_name cursor-pointer text-xs font-bold text-sky-700 px-2" data-user-url="'.route('User.index',['user'=>$comment->user->username]).'" data-for-comment="'.$request->get('parent_id').'">@'.$comment->user->name.'</span>'.$content;
+//                $content = '<span class="user_name cursor-pointer text-xs font-bold text-sky-700 px-2" data-user-url="'.route('User.index',['user'=>$comment->user->username]).'" data-for-comment="'.$request->get('parent_id').'">@'.$comment->user->name.'</span>'.$content;
             }
         }
 
@@ -138,6 +142,7 @@ class PostController extends Controller
                 'content' => $content,
                 'parent_id' => $parent_id,
                 'user_id' => auth()->user()->id,
+                'reply_comment' => $reply_comment
             ]
         );
 
@@ -153,19 +158,30 @@ class PostController extends Controller
             'active' => ['required', 'boolean'],
             'comment_id' => ['required', 'integer']
         ]);
+        $comment = $post->comments()->with('user')->firstWhere('id', $request->get('comment_id'));
+
+        if($comment->user->id != auth()->user()->id) {
+            $comment->user->notify(new CommentLikeNotification(
+                auth()->user(),
+                $comment,
+                $request->get('type'),
+                $request->get('active'),
+                $post->url
+            ));
+        }
 
         switch ($request->get('type')) {
             case 'like':
                 if ($request->get('active'))
-                    $post->comments()->firstWhere('id', $request->get('comment_id'))->likeThis();
+                    $comment->likeThis();
                 else
-                    $post->comments()->firstWhere('id', $request->get('comment_id'))->removeLikeThis();
+                    $comment->removeLikeThis();
                 break;
             case 'dislike':
                 if ($request->get('active'))
-                    $post->comments()->firstWhere('id', $request->get('comment_id'))->dislikeThis();
+                    $comment->dislikeThis();
                 else
-                    $post->comments()->firstWhere('id', $request->get('comment_id'))->removeDislikeThis();
+                    $comment->removeDislikeThis();
                 break;
         }
         return redirect()->back();

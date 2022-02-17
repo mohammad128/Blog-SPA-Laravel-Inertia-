@@ -41,12 +41,10 @@
                         </div>
                     </div>
                     <div class="flex flex-col justify-center gap-4 bg-white rounded-2xl p-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <vs-checkbox dark v-model="form.disible_comment" >
-                                Disible Comment
-                            </vs-checkbox>
-
-                            <ProgressPassword v-model="form.password"/>
+                        <div class="flex flex-row items-end gap-8">
+                            <div class="flex-1">
+                                <ProgressPassword v-model="form.password"/>
+                            </div>
                         </div>
                         <div class="grid grid-cols-2">
                             <vs-button success active @click="form.draft = false; submit()" :loading="form.processing">
@@ -100,9 +98,11 @@ export default {
                 slug: '',
                 content: '',
                 feature_image: route('index')+'/uploads/icons/picture.png',
-                disible_comment: false,
+                disable_comment: false,
                 password: '',
-                draft: false
+                draft: false,
+                enable_rate: false,
+                enable_like: false,
             })
         }
     },

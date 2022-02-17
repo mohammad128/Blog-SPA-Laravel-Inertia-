@@ -52,8 +52,13 @@
                             <vs-checkbox dark v-model="form.disable_comment" >
                                 Disible Comment
                             </vs-checkbox>
-
-                            <ProgressPassword v-model="form.password"/>
+                        </div>
+                        <div class="flex flex-col gap-6">
+                            <span v-if="post.has_password" class="text-rose-700 text-xs">This page is protected. You can set a new Password</span>
+                            <div class="flex-1 flex flex-row">
+                                <vs-checkbox v-model="form.enable_password" dark>Enable Password</vs-checkbox>
+                                <ProgressPassword class="flex-1" v-model="form.password" v-show="form.enable_password"/>
+                            </div>
                         </div>
                         <div class="grid grid-cols-2">
                             <vs-button success active @click="form.draft = false; submit()" :loading="form.processing">
@@ -114,7 +119,8 @@ export default {
                 feature_image: route('index')+'/uploads/icons/picture.png',
                 disable_comment: false,
                 password: '',
-                draft: false
+                draft: false,
+                enable_password: false,
             }),
             allow: false
         }
@@ -172,6 +178,7 @@ export default {
         console.log(this.post.disable_comment );
         // this.form.password = this.post.password;
         this.form.draft = Boolean( this.post.draft );
+        this.form.enable_password = Boolean( this.post.has_password );
 
         let that = this;
         setTimeout(function(){

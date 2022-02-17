@@ -38,8 +38,11 @@
                             <inertia-link class="text-sm text-blue-700" :href="post.url">more...</inertia-link>
                         </template>
                         <template #interactions>
-                            <vs-button icon gradient @click.stop="showPreviewPsot(post.id)">
+                            <vs-button icon gradient @click.stop="showPreviewPsot(post.id)" v-if="!post.has_password">
                                 <i class='bx bx-show'></i>
+                            </vs-button>
+                            <vs-button v-else icon gradient danger @click.stop="link($event)" method="get" :url="post.url" >
+                                <i class='bx bx-lock-alt'></i>
                             </vs-button>
                             <vs-button class="btn-chat" v-if="post.comments_count" active icon gradient color="#65a30d">
                                 <i class='bx bxs-comment' ></i>

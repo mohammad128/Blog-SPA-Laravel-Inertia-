@@ -160,7 +160,7 @@ class PostController extends Controller
 
         $post->load(['categories:id,name','tags:id,name']);
         return Inertia::render('Dashboard/Post/Edit', [
-            'post'=>$post,
+            'post'=>$post->toArray() + [ 'has_password' => $post->password ? true :false ],
             'categories' => app('rinvex.categories.category')->get()->toTree(),
             'tags' => Tag::get(['name'])->map(function ($item) {
                 return [ 'value'=>$item['name'] ];
@@ -188,11 +188,27 @@ class PostController extends Controller
 //            'password' => ['required'],
 //            'draft' => ['required'],
         ]);
-        $password = $request->get('password')=='' ? null : Hash::make($request->get('password'));
-        $post->update(  ['user_id' => auth()->user()->id, 'password'=> $password ] + $request->all() );
+
+        if( $request->get('enable_password') ) {
+            $password = $request->get('password')=='' ? null : Hash::make($request->get('password'));
+            if(!$password) {
+                $post->update( $request->except('password'));
+            }
+            else {
+                $post->update(['password' => $password] + $request->all());
+            }
+        }
+        else {
+            $post->update(  ['password'=> null ] + $request->all() );
+        }
+//        $password = $request->get('password')=='' ? null : Hash::make($request->get('password'));
+//        $post->update(  ['user_id' => auth()->user()->id, 'password'=> $password ] + $request->all() );
+
         $post->syncTags($request->get('tags'));
         $post->attachCategories($request->get('categuries'));
-        return redirect()->route('dashboard.post.allPosts');
+
+        return redirect()->route('dashboard.post.edit', ['post'=>$post->slug]);
+//        return redirect()->route('dashboard.post.allPosts');
     }
 
     public function delete( Post $post ) {

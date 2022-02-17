@@ -12,7 +12,7 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
@@ -86,7 +86,7 @@ class CommentController extends Controller
         return Inertia::render('Dashboard/Comments/index', [
             'comments' => $comments,
             'filters' => [
-                'comment_type' => RequestFacade::input('comment_type', 'all'),
+//                'comment_type' => RequestFacade::input('comment_type', 'all'),
                 'page' => RequestFacade::input('page', 1),
                 'comment_type' => RequestFacade::input('comment_type', ''),
                 'search' => RequestFacade::input('search', ''),
@@ -122,12 +122,17 @@ class CommentController extends Controller
 
     public function deleteComments(Request $request) {
         $ids = $request->get('ids', []);
-        Comment::onlyTrashed()->whereIn('id', $ids )->forceDelete();
+        $comments = Comment::onlyTrashed()->whereIn('id', $ids )->get();
+        foreach ($comments as $comment)
+            $comment->forceDelete();
+
         return redirect()->back();
     }
     public function restoreComments(Request $request) {
         $ids = $request->get('ids', []);
-        Comment::onlyTrashed()->whereIn('id', $ids )->restore();
+        $comments = Comment::onlyTrashed()->whereIn('id', $ids )->get();
+        foreach ($comments as $comment)
+            $comment->restore();
         return redirect()->back();
     }
 
@@ -135,17 +140,23 @@ class CommentController extends Controller
 
     public function approveComments(Request $request) {
         $ids = $request->get('ids', []);
-        Comment::query()->whereIn('id', $ids)->update(['status'=>'approve']);
+        $comments = Comment::query()->whereIn('id', $ids)->get();
+        foreach ($comments as $comment)
+            $comment->update(['status'=>'approve']);
         return redirect()->back();
     }
     public function trashComments(Request $request) {
         $ids = $request->get('ids', []);
-        Comment::query()->whereIn('id', $ids)->delete();
+        $comments = Comment::query()->whereIn('id', $ids)->get();
+        foreach ($comments as $comment)
+            $comment->delete();
         return redirect()->back();
     }
     public function spamComments(Request $request) {
         $ids = $request->get('ids', []);
-        Comment::query()->whereIn('id', $ids)->update(['status'=>'spam']);
+        $comments = Comment::query()->whereIn('id', $ids)->get();
+        foreach ($comments as $comment)
+            $comment->update(['status'=>'spam']);
         return redirect()->back();
     }
 

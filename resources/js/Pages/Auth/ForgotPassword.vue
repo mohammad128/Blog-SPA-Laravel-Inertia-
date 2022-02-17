@@ -41,9 +41,10 @@
                     <div class="grid justify-items-center pt-0 sm:pt-0">
                         <vs-button
                             :loading="form.processing"
+                            dark
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
                         >
-                            Email Password Reset Link
+                            Send Password Reset Link
                         </vs-button>
                     </div>
                 </div>

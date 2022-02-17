@@ -68,19 +68,34 @@
 
 
         <template #footer>
-            <vs-row justify="space-between">
-                <vs-avatar>
-                    <img src="/uploads/avatars/avatar-5.png" alt="">
-                </vs-avatar>
+            <template v-if="$page.props.user">
+                <vs-row justify="space-between">
+                    <vs-avatar  class="cursor-pointer" @click="link($event)" :url="route('dashboard')" method="get">
+                        <img :src="$page.props.user.profile_photo_url" alt="">
+                    </vs-avatar>
 
-                <vs-avatar badge-color="danger" badge-position="top-right">
-                    <i class='bx bx-bell' ></i>
+                    <vs-avatar class="cursor-pointer" badge-color="danger" badge-position="top-right"  @click="link($event)" :url="route('dashboard.user.notifications')" method="get">
+                        <i class='bx bx-bell' ></i>
 
-                    <template #badge>
-                        28
-                    </template>
-                </vs-avatar>
-            </vs-row>
+                        <template v-if="$page.props.user.new_notifications_count" #badge>
+                            {{ $page.props.user.new_notifications_count }}
+                        </template>
+                    </vs-avatar>
+                </vs-row>
+            </template>
+            <template v-else>
+                <vs-row justify="space-between">
+                    <div class="w-full flex flex-row-reverse">
+                        <vs-button flat @click="link($event)"
+                                   :url="route('login')"
+                                   method="get" >Login</vs-button>
+
+                        <vs-button @click="link($event)"
+                                   :url="route('register')"
+                                   method="get">Register</vs-button>
+                    </div>
+                </vs-row>
+            </template>
         </template>
 
     </vs-sidebar>

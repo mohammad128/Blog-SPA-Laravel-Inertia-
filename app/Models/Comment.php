@@ -14,7 +14,7 @@ class Comment extends Model
      * Status: ['pending', 'approve', 'spam']
      * parent_id default 0
      * */
-    protected $fillable = ['content', 'user_id', 'status', 'parent_id' ];
+    protected $fillable = ['content', 'user_id', 'status', 'parent_id', 'reply_comment' ];
     protected $appends = ['created_at_for_human','child_count', 'user_like_status', 'like_status'];
 
     public function commentable() {

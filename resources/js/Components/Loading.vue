@@ -106,7 +106,7 @@ export default {
     height: 120px;
     margin: 5px;
     border-radius: 20px;
-    box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.07);
+    /*box-shadow: 0px 10px 20px -10px rgba(0,0,0,0.07);*/
     overflow: hidden;
     cursor: pointer;
     transition: all 0.25s ease;

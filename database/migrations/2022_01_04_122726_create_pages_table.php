@@ -19,7 +19,6 @@ class CreatePagesTable extends Migration
             $table->text('content');
             $table->string('feature_image');
             $table->boolean('draft' )->default(false);
-            $table->boolean('disable_comment')->default(false);
             $table->string('password')->default(null)->nullable();
             $table->string('slug')->unique();
             $table->unsignedBigInteger('user_id');

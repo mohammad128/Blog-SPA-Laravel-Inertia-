@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         // My Middlewares
-        'inertia_dashboard' => \App\Http\Middleware\InertiaDashboardShareData::class
+        'inertia_dashboard' => \App\Http\Middleware\InertiaDashboardShareData::class,
+        'has.password' => \App\Http\Middleware\HasPassword::class
     ];
 }

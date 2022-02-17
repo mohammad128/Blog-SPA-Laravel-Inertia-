@@ -41,16 +41,16 @@
                         </div>
                     </div>
                     <div class="flex flex-col justify-center gap-4 bg-white rounded-2xl p-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <vs-checkbox dark v-model="form.disable_comment" >
-                                Disible Comment
-                            </vs-checkbox>
-
-                            <ProgressPassword v-model="form.password"/>
+                        <div class="flex flex-col gap-6">
+                            <span v-if="post.has_password" class="text-rose-700 text-xs">This page is protected. You can set a new Password</span>
+                            <div class="flex-1 flex flex-row">
+                                <vs-checkbox v-model="form.enable_password" dark>Enable Password</vs-checkbox>
+                                <ProgressPassword class="flex-1" v-model="form.password" v-show="form.enable_password"/>
+                            </div>
                         </div>
                         <div class="grid grid-cols-2">
                             <vs-button success active @click="form.draft = false; submit()" :loading="form.processing">
-                                Edit
+                                Publish
                             </vs-button>
                             <vs-button  warn  @click="form.draft = true; submit()"  :loading="form.processing">
                                 Draft
@@ -101,9 +101,9 @@ export default {
                 slug: '',
                 content: '',
                 feature_image: route('index')+'/uploads/icons/picture.png',
-                disable_comment: false,
                 password: '',
-                draft: false
+                draft: false,
+                enable_password: false,
             }),
             allow: false
         }
@@ -150,9 +150,9 @@ export default {
         this.form.slug = this.post.slug;
         this.form.content = this.post.content;
         this.form.feature_image = this.post.feature_image;
-        this.form.disable_comment = Boolean( this.post.disable_comment );
         // this.form.password = this.post.password;
         this.form.draft = Boolean( this.post.draft );
+        this.form.enable_password = Boolean( this.post.has_password );
 
         let that = this;
         setTimeout(function(){

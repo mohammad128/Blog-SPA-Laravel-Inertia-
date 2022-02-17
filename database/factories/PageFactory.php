@@ -27,7 +27,6 @@ class PageFactory extends Factory
             'feature_image'     => "/uploads/images/foto".rand(1,6).".png",
             'user_id'           => 1,
             'draft'             => rand(0,1),
-            'disable_comment'   => rand(0,1),
             'slug'              => Str::slug($title).'-'.rand(1,100),
         ];
     }

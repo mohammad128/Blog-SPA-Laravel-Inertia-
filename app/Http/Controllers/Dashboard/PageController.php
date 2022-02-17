@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard;
 
+use App\FlashMessage\Facade\FlashMessage;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use Illuminate\Http\Request;
@@ -129,7 +130,7 @@ class PageController extends Controller
     public function edit( Page  $page) {
         $this->authorize('update', $page);
         return Inertia::render('Dashboard/Page/Edit', [
-            'post' => $page
+            'post' => $page->toArray() + [ 'has_password' => $page->password ? true :false ],
         ]);
     }
     public function update(Page $page, Request $request) {
@@ -140,11 +141,25 @@ class PageController extends Controller
                 Rule::unique('posts')->ignore($page)
             ],
             'content' => ['required'],
-            'feature_image' => ['required']
+            'feature_image' => ['required'],
         ]);
-        $password = $request->get('password')=='' ? null : Hash::make($request->get('password'));
-        $page->update(  ['user_id' => auth()->user()->id, 'password'=> $password ] + $request->all() );
-        return redirect()->route('dashboard.page.index');
+        if( $request->get('enable_password') ) {
+            $password = $request->get('password')=='' ? null : Hash::make($request->get('password'));
+            if(!$password) {
+                $page->update( $request->except('password'));
+            }
+            else {
+                $page->update(['password' => $password] + $request->all());
+            }
+        }
+        else {
+            $page->update(  ['password'=> null ] + $request->all() );
+        }
+
+        FlashMessage::success($page->title, "Updated Successfully.");
+
+        return redirect()->route('dashboard.page.edit', ['page'=>$page->slug]);
+//        return redirect()->route('dashboard.page.index');
     }
 
 
