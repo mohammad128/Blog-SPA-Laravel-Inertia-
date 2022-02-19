@@ -104,14 +104,14 @@
             <div class="relative">
 
                 <transition name="bounce">
-                    <div class="absolute -bottom-8 -left-6"  v-if="selected.length">
+                    <div class="absolute -bottom-8 -left-6"  v-if="selected.length && can('delete_users')">
                         <vs-button floating icon danger  @click="deleteSelected()" :loading="loading">
                             Delete ({{selected.length}})
                         </vs-button>
                     </div>
                 </transition>
                 <transition name="bounce">
-                    <div class="absolute -top-8 -left-6"  v-if="selected.length">
+                    <div class="absolute -top-8 -left-6"  v-if="selected.length && can('delete_users')">
                         <vs-button floating icon danger  @click="deleteSelected()" :loading="loading">
                             Delete ({{selected.length}})
                         </vs-button>
@@ -221,17 +221,17 @@
                                         </div>
                                         <div class="flex-1 flex justify-end items-end" v-if="user.id != tr.id">
                                             <div class="flex flex-row justify-end items-end">
-                                                <vs-button flat icon warn transparent>
+                                                <vs-button v-if="can('delete_users')" flat icon warn transparent>
                                                     <i class='bx bx-lock-open-alt' ></i>&nbsp;Lock
                                                 </vs-button>
-                                                <vs-button icon transparent dark>
+                                                <vs-button  icon transparent dark>
                                                     <i class='bx bx-message-square-detail' ></i>&nbsp;Send Message
                                                 </vs-button>
-                                                <vs-button transparent icon dark @click="showEditUserDialog(tr)">
+                                                <vs-button  v-if="can('edit_users')" transparent icon dark @click="showEditUserDialog(tr)">
                                                     &nbsp;&nbsp;&nbsp;<i class='bx bxs-edit-alt' ></i>&nbsp;
                                                     Edit&nbsp;&nbsp;&nbsp;&nbsp;
                                                 </vs-button>
-                                                <vs-button border danger
+                                                <vs-button v-if="can('delete_users')" border danger
                                                            @click="link($event)" method="delete"
                                                            :url="route('dashboard.user.delete', {'id': tr.id})">
                                                     <i class='bx bx-trash' ></i>&nbsp;

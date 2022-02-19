@@ -13,7 +13,7 @@ class Page extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [ 'title', 'content', 'feature_image', 'draft', 'password', 'slug', 'user_id'];
-    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url'];
+    protected $appends = ['updated_at_for_human', 'created_at_for_human', 'url', 'has_password'];
     protected $hidden = ['password'];
 
 
@@ -33,6 +33,9 @@ class Page extends Model
     }
     public function getUrlAttribute() {
         return route('Page.show', ['page'=>$this->slug]);
+    }
+    public function getHasPasswordAttribute() {
+        return $this->password ? true : false;
     }
 
     public function scopeDraft($query) {

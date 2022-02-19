@@ -90,7 +90,6 @@ if (!function_exists("get_json_permissions")) {
                     [ 'name' => 'create_users', 'desc' => "Create All Users" ],
                     [ 'name' => 'delete_users', 'desc' => "Delete All Users" ],
                     [ 'name' => 'edit_users', 'desc' => "Edit All Users" ],
-                    [ 'name' => 'force_delete_users', 'desc' => "Delete Category From Trash" ],
                 ],
             ],
             "Role" => [

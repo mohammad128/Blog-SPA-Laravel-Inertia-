@@ -21,7 +21,7 @@
             <vs-tooltip interactivity left bottom not-hover v-model="activeTooltip1">
                 <vs-avatar circle size="40" badge-color="danger" badge-position="top-right" @click="activeTooltip1=!activeTooltip1" class="cursor-painter">
                     <img :src="$page.props.user.profile_photo_url" alt="" class="cursor-pointer">
-                    <template #badge>
+                    <template #badge v-if="$page.props.user.new_notifications_count">
                         {{ $page.props.user.new_notifications_count }}
                     </template>
                 </vs-avatar>
@@ -32,22 +32,22 @@
                             </div>
                             <vs-avatar circle size="80" badge-color="danger" badge-position="top-right" @click="activeTooltip1=false">
                                 <img :src="$page.props.user.profile_photo_url" class="cursor-pointer" alt="">
-                                <template #badge>
-                                    28
+                                <template #badge v-if="$page.props.user.new_notifications_count">
+                                    {{ $page.props.user.new_notifications_count }}
                                 </template>
                             </vs-avatar>
                             <div class="text">
                             </div>
                         </div>
                         <footer>
-                            <vs-button circle icon border @click="activeTooltip1=false;link($event)" method="get" :url="route('dashboard.user.profile')">
-                                <i class="bx bx-user"></i>
+                            <vs-button transparent circle relief color="tumblr" animation-type="rotate" icon flat @click="activeTooltip1=false;link($event)" method="get" :url="route('dashboard.user.profile')">
+                                <i class="bx bx-user font-bold text-gray-300"></i>
                             </vs-button>
                             <vs-button @click="activeTooltip1=false;link($event)" method="post" :url="route('logout')"  danger circle>
                                 Logout
                             </vs-button>
-                            <vs-button circle icon border @click="activeTooltip1=false;link($event)" :url="route('dashboard.user.notifications')" method="get">
-                                <i class='bx bx-bell' ></i>
+                            <vs-button   transparent circle relief color="tumblr" animation-type="rotate" icon flat @click="activeTooltip1=false;link($event)" :url="route('dashboard.user.notifications')" method="get">
+                                <i class='bx bx-bell font-bold text-gray-300' ></i>
                             </vs-button>
                         </footer>
                     </div>
@@ -138,7 +138,7 @@
                                 <vs-row justify="space-between" class="flex justify-between">
                                     <vs-avatar badge-color="danger" dark color="#FFF" badge-position="top-right" >
                                         <img :src="$page.props.user.profile_photo_url" alt="">
-                                        <template #badge>
+                                        <template #badge v-if="$page.props.user.new_notifications_count">
                                             {{ $page.props.user.new_notifications_count }}
                                         </template>
                                     </vs-avatar>

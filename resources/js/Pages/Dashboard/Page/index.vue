@@ -141,9 +141,6 @@
                         <vs-th sort ref="th_author" @click="sort($event, 'author')">
                             Author
                         </vs-th>
-                        <vs-th sort ref="th_comment_count" @click="sort($event, 'comment_count')">
-                            <i class="text-2xl bx bxs-comment"></i>
-                        </vs-th>
                         <vs-th sort ref="th_created_at" @click="sort($event, 'created_at')">
                             Created At
                         </vs-th>
@@ -163,6 +160,7 @@
                         <vs-td class="font-bold text-lg">
                             {{ tr.title }}&nbsp;
                             <span v-if="tr.user_id == $page.props.user.id" class="text-white rounded-lg p-1 text-xs font-bold bg-green-700">for you</span>
+                            <span v-if="tr.has_password" class="text-xs text-gray-700 bg-yellow-300 font-bold px-2 py-1 rounded-lg"><i class="bx bx-lock-alt"></i></span>
                             <span v-if="tr.draft" class="text-xs text-gray-700 bg-amber-200 px-2 py-1 rounded-lg">draft</span>
                             <span v-else class="text-xs text-gray-700 bg-lime-200 px-2 py-1 rounded-lg">publish</span>
 
@@ -199,30 +197,6 @@
                         </vs-td>
                         <vs-td>
                             {{ tr.user.username }}
-                        </vs-td>
-                        <vs-td>
-                            <vs-tooltip left>
-                                <i class="relative bx bxs-comment text-4xl text-gray-900">
-                                    <b class="absolute top-1.5 left-2.5 text-white text-xs">{{ tr.approvedComments }}</b>
-                                    <span class="blink absolute -top-1 -left-1" v-if="tr.pendingComments"></span>
-                                </i>
-                                <template #tooltip>
-                                    <div class="content-tooltip text-left">
-                                        <p class="text-xs text-lime-300">
-                                            Approved: {{ tr.approvedComments }}
-                                        </p>
-                                        <p class="text-xs text-yellow-300">
-                                            Pending: {{ tr.pendingComments }}
-                                        </p>
-                                        <p class="text-xs text-red-300">
-                                            Spam: {{ tr.sapmComments }}
-                                        </p>
-                                        <p class="text-xs text-red-400">
-                                            Trash: {{ tr.trashComments }}
-                                        </p>
-                                    </div>
-                                </template>
-                            </vs-tooltip>
                         </vs-td>
                         <vs-td>
                             {{tr.created_at.substring(0,10)}}<br><span class="text-xs text-gray-600">{{tr.created_at_for_human}}</span>
@@ -375,9 +349,6 @@ export default {
                 break;
             case 'author':
                 el = this.$refs.th_author.$el;
-                break;
-            case 'comment_count':
-                el = this.$refs.th_comment_count.$el;
                 break;
             case 'created_at':
                 el = this.$refs.th_created_at.$el;

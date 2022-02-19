@@ -33,18 +33,6 @@ class PageController extends Controller
                 }
                 return $query;
             })
-            ->withCount(['comments as approvedComments'=> function ($q) {
-                $q->approved();
-            }])
-            ->withCount(['comments as pendingComments'=> function ($q) {
-                $q->pending();
-            }])
-            ->withCount(['comments as sapmComments'=> function ($q) {
-                $q->spam();
-            }])
-            ->withCount(['comments as trashComments'=> function ($q) {
-                $q->onlyTrashed();
-            }])
             ->when(RequestFacade::input('sortKey') && RequestFacade::input('sortType'), function ($query) {
 //                author
 //                comment_count
@@ -52,7 +40,7 @@ class PageController extends Controller
 
                 $sortKey = RequestFacade::input('sortKey');
                 $sortType = RequestFacade::input('sortType');
-                if( !in_array($sortType, ['desc', 'asc']) OR !in_array($sortKey, ['title', 'author', 'comment_count', 'created_at']) )
+                if( !in_array($sortType, ['desc', 'asc']) OR !in_array($sortKey, ['title', 'author', 'created_at']) )
                     return $query;
                 switch ($sortKey) {
                     case 'author':
@@ -65,9 +53,6 @@ class PageController extends Controller
                         break;
                     case 'created_at':
                         return $query->orderBy( 'created_at',  $sortType);
-                        break;
-                    case 'comment_count':
-                        return $query->orderBy( 'approvedComments',  $sortType);
                         break;
                 }
                 return $query;
