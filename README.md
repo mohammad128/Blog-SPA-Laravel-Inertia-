@@ -11,7 +11,7 @@
 ------------
 # Installation
 
-	git https://github.com/mohammad128/Laravel-Blog-With-Inertia
+	git clone https://github.com/mohammad128/Laravel-Blog-With-Inertia
 	cd Laravel-Blog-With-Inertia
 	composer install
 	npm install
